@@ -124,6 +124,10 @@ h2{font-size:17px;margin:0 0 10px}
 .mode-viewer .toolbar{display:none}
 
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
+/* javna stran: plavajoč izbirnik igrišča, vedno viden */
+.seg.float{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:30;border-radius:99px;box-shadow:0 4px 18px rgba(0,0,0,.28)}
+.seg.float button{padding:9px 20px;font-weight:700}
+.floatpad{height:70px}
 .seg button{border:none;border-radius:0;background:var(--surface);padding:4px 13px}
 .seg button+button{border-left:1px solid var(--line)}
 .seg button.active{background:var(--accent-bg);color:var(--accent-strong);font-weight:700}
@@ -965,7 +969,7 @@ function renderSched(){
   const segOpts = MODE === 'viewer'
     ? [['0','Igrišče A'],['1','Igrišče B']]
     : [['all','Obe igrišči'],['0','Igrišče A'],['1','Igrišče B']];
-  const seg = '<span class="seg">' + segOpts
+  const seg = '<span class="' + (MODE === 'viewer' ? 'seg float' : 'seg') + '">' + segOpts
     .map(([v,l]) => `<button data-act="cview" data-v="${v}" class="${courtView===v?'active':''}">${l}</button>`).join('') + '</span>';
   html += `<div class="statusline">${seg}
     ${readonly ? '' : `<button data-act="gbreak">+ Premor za obe igrišči</button>
@@ -1032,6 +1036,7 @@ function renderSched(){
   html += `<p class="legend">⏸ "Prosto igrišče" so vgrajene zračnice — če zamujate, jih izbriši (×) in razpored se stisne.
   Ure so ocenjene: vsako igrišče je vrsta, časi se preračunajo ob vsakem vpisu ali zamiku.
   ${readonly ? '' : 'Namig: gumb "Izvoz v Sheets" prenese turnir v Google preglednico — rezultate potem vpisuje kdorkoli s telefona, igralci pa gledajo eno samo, vedno ažurno povezavo.'}</p>`;
+  if (MODE === 'viewer') html += '<div class="floatpad"></div>'; // prostor pod plavajočim izbirnikom
   return html;
 }
 

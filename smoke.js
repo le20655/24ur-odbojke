@@ -100,6 +100,7 @@ const checks = [];
     ['viewer: privzeto samo igrišče A', /IGRIŠČE A/.test(main) && !/IGRIŠČE B/.test(main)],
     ['viewer: preklop na igrišče B', /IGRIŠČE B/.test(courtB) && !/IGRIŠČE A/.test(courtB)],
     ['viewer: brez možnosti obeh hkrati', !/Obe igrišči/.test(main)],
+    ['viewer: plavajoč izbirnik', /class="seg float"/.test(main) && /floatpad/.test(main)],
     ['viewer: brez ure in brez Natisni', !/clock mono/.test(top) && tools === ''],
     ['viewer: odigrane in konec v glavi', /odigranih/.test(top) && /konec ob/.test(top)],
     ['viewer: pasica z objavo', /Zadnja objava/.test(main)],
