@@ -16,6 +16,7 @@ function makeCtx(dataJs){
   const ctx = {
     document: {
       querySelector: sel => el(sel),
+      querySelectorAll: () => [],
       createElement: () => el('#tmp' + Math.random()),
       addEventListener(){},
       activeElement: null,
@@ -90,10 +91,17 @@ const checks = [];
   const dataJs = fs.readFileSync(path.join(dir, 'data.js'), 'utf8');
   const { ctx, el } = await runPage('index.html', dataJs);
   const main = el('#main').innerHTML, tabs = el('#tabs').innerHTML;
+  const top = el('#topstats').innerHTML, tools = el('#toolbar').innerHTML;
+  vm.runInContext('courtView = "1"; renderMain(); __b = document.querySelector("#main").innerHTML; courtView = "0";', ctx);
+  const courtB = vm.runInContext('__b', ctx);
   vm.runInContext('tab = "board"; renderMain();', ctx);
   const board = el('#main').innerHTML;
   checks.push(
-    ['viewer: razpored naložen iz data.js', /IGRIŠČE A/.test(main) && /IGRIŠČE B/.test(main)],
+    ['viewer: privzeto samo igrišče A', /IGRIŠČE A/.test(main) && !/IGRIŠČE B/.test(main)],
+    ['viewer: preklop na igrišče B', /IGRIŠČE B/.test(courtB) && !/IGRIŠČE A/.test(courtB)],
+    ['viewer: brez možnosti obeh hkrati', !/Obe igrišči/.test(main)],
+    ['viewer: brez ure in brez Natisni', !/clock mono/.test(top) && tools === ''],
+    ['viewer: odigrane in konec v glavi', /odigranih/.test(top) && /konec ob/.test(top)],
     ['viewer: pasica z objavo', /Zadnja objava/.test(main)],
     ['viewer: bralni pogled (brez urejanja)', !/Nastavitev/.test(tabs) && !/data-act="rsave"/.test(main)],
     ['viewer: rezultati vidni', /\d+ : \d+/.test(main.replace(/\d+:\d+/g, ''))],

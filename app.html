@@ -110,6 +110,12 @@ h2{font-size:17px;margin:0 0 10px}
 .warnbox .w-night{color:var(--night)}
 .warnbox .w-err{color:var(--err);font-weight:700}
 .legend{font-size:12.5px;color:var(--muted);margin-top:10px}
+/* javna stran: kompaktna glava v eni vrstici */
+.mode-viewer{flex-wrap:nowrap}
+.mode-viewer .brand{font-size:16px}
+.mode-viewer .topstats{flex-wrap:nowrap;font-size:12px;gap:8px;white-space:nowrap;overflow:hidden}
+.mode-viewer .toolbar{display:none}
+
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
 .seg button{border:none;border-radius:0;background:var(--surface);padding:4px 13px}
 .seg button+button{border-left:1px solid var(--line)}
@@ -168,7 +174,7 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 </style>
 
 <header class="top">
-  <div class="topline">
+  <div class="topline mode-__MODE__">
     <div class="brand">24 UR <b>ODBOJKE</b></div>
     <div class="topstats" id="topstats"></div>
     <div class="spacer"></div>
@@ -231,6 +237,7 @@ function roundChip(m){ return m.makeup ? 'dod.' : 'krog ' + (m.round+1); }
     catch(e){ document.body.innerHTML = '<main><div class="card">Povezava je poškodovana ali prekratka.</div></main>'; return; }
   } else if (MODE === 'viewer'){
     readonly = true; tab = 'sched'; viewerLoading = true;
+    courtView = '0'; // javna stran kaže eno igrišče naenkrat
     loadPublished();
     setInterval(loadPublished, 60000);
   } else {
@@ -267,10 +274,19 @@ function loadPublished(){
         const m = st.matches[id];
         if (m) m.res = pub.rezultati[id] ? { a: +pub.rezultati[id][0], b: +pub.rezultati[id][1] } : null;
       }
+      const first = !S || !S.queues;
       S = st; publishedAt = pub.updated || '';
       viewerLoading = false; renderAll();
+      if (first) scrollToCurrent();
     })
     .catch(() => { if (viewerLoading){ viewerLoading = false; renderAll(); } });
+}
+
+// postavi pogled na zadnjo tekmo z vnesenim rezultatom (dogajanje je tik pod njo)
+function scrollToCurrent(){
+  const rows = document.querySelectorAll('.qrow.done');
+  const last = rows[rows.length - 1];
+  if (last && last.scrollIntoView) last.scrollIntoView({ block: 'center' });
 }
 
 function freshState(){
@@ -290,18 +306,19 @@ function freshState(){
 /* ---------- glava ---------- */
 function renderTop(){
   const st = $('#topstats');
-  let html = '<span class="clock mono">' + new Date().toLocaleTimeString('sl-SI',{hour:'2-digit',minute:'2-digit'}) + '</span>';
+  const viewer = MODE === 'viewer';
+  let html = viewer ? '' : '<span class="clock mono">' + new Date().toLocaleTimeString('sl-SI',{hour:'2-digit',minute:'2-digit'}) + '</span>';
   if (S && S.queues){
     const ms = Object.values(S.matches);
     const done = ms.filter(m=>m.res).length;
     const { courtEnd } = Core.computeTimes(S);
     html += `<span>odigranih <b>${done}/${ms.length}</b></span>`;
-    html += `<span>predviden konec <b class="mono">${fmtT(Math.max(...courtEnd))}</b></span>`;
+    html += `<span>${viewer ? 'konec ob' : 'predviden konec'} <b class="mono">${fmtT(Math.max(...courtEnd))}</b></span>`;
   }
   st.innerHTML = html;
 
   const tb = $('#toolbar');
-  if (readonly) tb.innerHTML = '<button data-act="print" class="small">Natisni</button>';
+  if (readonly) tb.innerHTML = '';
   else tb.innerHTML = `
     ${S.queues ? '<button data-act="publish" class="small">Kopiraj za objavo</button><button data-act="sheets" class="small">Izvoz v Sheets</button><button data-act="share" class="small">Deli razpored</button><button data-act="print" class="small">Natisni</button>' : ''}
     <button data-act="export" class="small">Izvoz</button>
@@ -420,7 +437,10 @@ function renderSched(){
       shown.map(w=>`<li class="w-${w.lvl}">${esc(w.msg)}</li>`).join('') +
       (warns.length > 10 ? `<li>… še ${warns.length-10}</li>` : '') + '</ul></div>';
   }
-  const seg = '<span class="seg">' + [['all','Obe igrišči'],['0','Igrišče A'],['1','Igrišče B']]
+  const segOpts = MODE === 'viewer'
+    ? [['0','Igrišče A'],['1','Igrišče B']]
+    : [['all','Obe igrišči'],['0','Igrišče A'],['1','Igrišče B']];
+  const seg = '<span class="seg">' + segOpts
     .map(([v,l]) => `<button data-act="cview" data-v="${v}" class="${courtView===v?'active':''}">${l}</button>`).join('') + '</span>';
   html += `<div class="statusline">${seg}
     ${readonly ? '' : `<button data-act="gbreak">+ Premor za obe igrišči</button>
@@ -677,7 +697,7 @@ document.addEventListener('click', e => {
   const act = btn.dataset.act; if (!act) return;
   const c = +btn.dataset.c, i = +btn.dataset.i;
 
-  if (act === 'cview'){ courtView = btn.dataset.v; save(); renderAll(); return; }
+  if (act === 'cview'){ courtView = btn.dataset.v; save(); renderAll(); if (readonly) scrollToCurrent(); return; }
   if (act === 'generate') return doGenerate();
   if (act === 'wipe'){ if (confirm('Res izbrišem VSE (imena, razpored, rezultate)?')){ localStorage.removeItem(LSKEY); S = freshState(); undoStack = []; tab='setup'; renderAll(); } return; }
   if (act === 'undo'){ const prev = undoStack.pop(); if (prev){ S = JSON.parse(prev); save(); renderAll(); } return; }
