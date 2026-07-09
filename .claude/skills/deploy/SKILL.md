@@ -3,11 +3,23 @@ name: deploy
 description: Objavi "24 ur odbojke" na GitHub Pages — build, commit, push in počakaj, da je nova verzija živa.
 ---
 
-Stran živi na **https://le20655.github.io/24ur-odbojke/** (repo `le20655/24ur-odbojke`,
-veja `main`, koren). Lenart NE želi claude.ai artifacts.
+Javna stran za igralce: **https://le20655.github.io/24ur-odbojke/** (repo
+`le20655/24ur-odbojke`, veja `main`, koren). Lenart NE želi claude.ai artifacts.
 
-1. Najprej poženi projektni skill `verify` (build + smoke test).
-2. Commit in push (`gh` je v `~/.local/bin/gh`, credential helper je že nastavljen):
+Strani (vse zgradi `build.py`):
+- `index.html` — javni pogled za igralce (razpored + lestvica); podatke bere iz `data.js`
+- `uredi.html` — urejevalnik za organizatorja (localStorage)
+- `24ur-odbojke.html` — offline kopija urejevalnika
+
+Podatki turnirja so v **`data.js`**: `token` (zakodiran razpored, ne urejaj ročno)
++ `rezultati` (id → `[a, b]` ali `null`, vsaka vrstica ima komentar kdo/kdaj igra).
+Lenart jih med turnirjem posodablja ročno: uredi `data.js` → commit → push.
+Celotno svežo vsebino `data.js` naredi gumb **"Kopiraj za objavo"** v `uredi.html`.
+
+Postopek objave kode:
+
+1. Poženi projektni skill `verify` (build + smoke test).
+2. Commit in push (`gh` je v `~/.local/bin/gh`, credential helper je nastavljen):
 
    ```bash
    git add -A && git commit -m "..." && git push origin main

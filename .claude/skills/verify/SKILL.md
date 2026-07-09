@@ -1,6 +1,6 @@
 ---
 name: verify
-description: Preveri spremembe aplikacije "24 ur odbojke" — build, DOM smoke test in (ob spremembi core.js) testi generatorja.
+description: Preveri spremembe aplikacije "24 ur odbojke" — build, DOM smoke test obeh strani in (ob spremembi core.js) testi generatorja.
 ---
 
 Vse poganjaj iz mape projekta. Node ni sistemski:
@@ -9,12 +9,12 @@ Vse poganjaj iz mape projekta. Node ni sistemski:
 export PATH="$HOME/.local/opt/node-v22.17.0-linux-x64/bin:$PATH"
 ```
 
-1. **Vedno** — zgradi in poženi smoke test (izriše stran v mini-DOM brez brskalnika,
-   preveri glavo, zavihke, nastavitev, razpored, filter igrišč A/B in rezultate):
+1. **Vedno** — zgradi in poženi smoke test (mini-DOM brez brskalnika; preveri
+   urejevalnik `uredi.html` in javno stran `index.html`, ki bere `data.js`):
 
    ```bash
    python3 build.py 'https://le20655.github.io/24ur-odbojke/'
-   node smoke.js          # privzeto testira index.html
+   node smoke.js
    ```
 
    Vsa preverjanja morajo biti `OK`. Ob novi vidni funkciji v `app.html` dodaj

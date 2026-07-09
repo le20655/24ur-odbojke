@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Zgradi index.html (za GitHub Pages) in 24ur-odbojke.html (offline kopija)."""
+"""Zgradi tri strani iz app.html + core.js:
+  index.html          — javna stran za igralce (bere data.js; razpored + lestvica)
+  uredi.html          — urejevalnik za organizatorja
+  24ur-odbojke.html   — offline kopija urejevalnika
+"""
 import pathlib, sys
 
 d = pathlib.Path(__file__).parent
@@ -7,12 +11,17 @@ core = (d / 'core.js').read_text()
 app = (d / 'app.html').read_text()
 
 share_base = sys.argv[1] if len(sys.argv) > 1 else ''
-content = app.replace('/*__CORE__*/', core).replace('__SHARE_BASE__', share_base)
+base = app.replace('/*__CORE__*/', core).replace('__SHARE_BASE__', share_base)
 
-page = ('<!doctype html>\n<html lang="sl">\n<head>\n<meta charset="utf-8">\n'
-        '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-        '</head>\n<body>\n' + content + '\n</body>\n</html>\n')
-(d / 'index.html').write_text(page)
-(d / '24ur-odbojke.html').write_text(page)
-print('OK: index.html + 24ur-odbojke.html (%d kB), SHARE_BASE=%r'
-      % (len(page) // 1024, share_base))
+def page(mode):
+    return ('<!doctype html>\n<html lang="sl">\n<head>\n<meta charset="utf-8">\n'
+            '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+            '</head>\n<body>\n' + base.replace('__MODE__', mode) + '\n</body>\n</html>\n')
+
+viewer = page('viewer')
+editor = page('editor')
+(d / 'index.html').write_text(viewer)
+(d / 'uredi.html').write_text(editor)
+(d / '24ur-odbojke.html').write_text(editor)
+print('OK: index.html (viewer, %d kB), uredi.html + 24ur-odbojke.html (editor), SHARE_BASE=%r'
+      % (len(viewer) // 1024, share_base))

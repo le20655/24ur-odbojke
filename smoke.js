@@ -1,78 +1,110 @@
-// Smoke test: zažene oba <script> bloka iz index.html z mini DOM-om
-// in preveri, da boot() izriše glavo, zavihke in vsebino.
+// Smoke test: zažene script bloka iz zgrajenih strani z mini DOM-om (brez brskalnika).
+// - uredi.html  (editor): glava, zavihki, nastavitev, razpored, filter igrišč, objava
+// - index.html  (viewer): naloži data.js, bralni razpored + lestvica
 const fs = require('fs'), vm = require('vm'), path = require('path');
-const file = process.argv[2] || path.join(__dirname, 'index.html');
-const html = fs.readFileSync(file, 'utf8');
-const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
-if (scripts.length !== 2) { console.error('FAIL: pričakovana 2 script bloka, najdenih ' + scripts.length); process.exit(1); }
+const dir = __dirname;
 
-const els = {};
-function el(sel){
-  if (!els[sel]) els[sel] = {
-    innerHTML: '', textContent: '', className: '', value: '',
-    appendChild(){}, remove(){}, classList: { contains: () => false },
+function makeCtx(dataJs){
+  const els = {};
+  function el(sel){
+    if (!els[sel]) els[sel] = {
+      innerHTML: '', textContent: '', className: '', value: '',
+      appendChild(){}, remove(){}, classList: { contains: () => false },
+    };
+    return els[sel];
+  }
+  const ctx = {
+    document: {
+      querySelector: sel => el(sel),
+      createElement: () => el('#tmp' + Math.random()),
+      addEventListener(){},
+      activeElement: null,
+      body: { innerHTML: '', appendChild(){} },
+    },
+    console,
+    location: { hash: '', href: 'https://le20655.github.io/24ur-odbojke/' },
+    localStorage: { getItem: () => null, setItem(){}, removeItem(){} },
+    navigator: {},
+    fetch: dataJs
+      ? () => Promise.resolve({ text: () => Promise.resolve(dataJs) })
+      : () => Promise.reject(new Error('brez mreže')),
+    setInterval(){}, setTimeout(){}, alert(){}, confirm: () => false, prompt: () => null,
+    Date, JSON, Math, Object, Array, String, Number, URL, Blob: class {},
+    TextEncoder, TextDecoder, Uint8Array,
   };
-  return els[sel];
+  ctx.addEventListener = () => {};
+  ctx.window = ctx;
+  ctx.self = ctx; // kot v brskalniku: self === window
+  vm.createContext(ctx);
+  return { ctx, el };
 }
-const document = {
-  querySelector: sel => el(sel),
-  createElement: () => el('#tmp' + Math.random()),
-  addEventListener(){},
-  activeElement: null,
-  body: { innerHTML: '', appendChild(){} },
-};
-const ctx = {
-  document, console,
-  self: {},
-  window: { addEventListener(){} },
-  location: { hash: '', href: 'https://le20655.github.io/24ur-odbojke/' },
-  localStorage: { getItem: () => null, setItem(){}, removeItem(){} },
-  navigator: {},
-  setInterval(){}, setTimeout(fn){ }, alert(){}, confirm: () => false, prompt: () => null,
-  Date, JSON, Math, Object, Array, String, Number, URL, Blob: class {},
-};
-ctx.addEventListener = () => {};
-ctx.window = ctx;
-ctx.self = ctx; // kot v brskalniku: self === window
-vm.createContext(ctx);
-try {
+
+async function runPage(file, dataJs){
+  const html = fs.readFileSync(path.join(dir, file), 'utf8');
+  const scripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+  if (scripts.length !== 2) throw new Error(file + ': pričakovana 2 script bloka, najdenih ' + scripts.length);
+  const { ctx, el } = makeCtx(dataJs);
   vm.runInContext(scripts[0], ctx, { filename: 'core.js' });
   vm.runInContext(scripts[1], ctx, { filename: 'app.js' });
-} catch (e) {
-  console.error('FAIL: napaka ob zagonu strani:', e.message);
-  process.exit(1);
+  for (let i = 0; i < 10; i++) await new Promise(r => setImmediate(r)); // fetch verige
+  return { ctx, el };
 }
-const top = el('#topstats').innerHTML, tabs = el('#tabs').innerHTML, main = el('#main').innerHTML;
-const checks = [
-  ['ura v glavi', /clock mono/.test(top)],
-  ['zavihki', /Nastavitev/.test(tabs)],
-  ['vsebina (setup)', /Igralci in nastavitve/.test(main)],
-  ['privzeta imena', /NEŽA/.test(main) && /JAKA/.test(main)],
-  ['Core na voljo', vm.runInContext(
-     'typeof Core.generate === "function" && typeof Core.encodeState === "function" && typeof Core.standings === "function"', ctx)],
-];
-// faza 2: razpored z 2 tekmama, izbirnik igrišč
-let schedAll = '', schedB = '';
-try {
+
+(async () => {
+const checks = [];
+
+// ===== editor (uredi.html) =====
+{
+  const { ctx, el } = await runPage('uredi.html');
+  checks.push(
+    ['editor: ura v glavi', /clock mono/.test(el('#topstats').innerHTML)],
+    ['editor: zavihki', /Nastavitev/.test(el('#tabs').innerHTML)],
+    ['editor: nastavitev', /Igralci in nastavitve/.test(el('#main').innerHTML)],
+    ['editor: privzeta imena', /NEŽA/.test(el('#main').innerHTML) && /JAKA/.test(el('#main').innerHTML)],
+    ['editor: Core na voljo', vm.runInContext('typeof Core.generate === "function" && typeof Core.encodeState === "function"', ctx)],
+  );
+  // razpored z 2 tekmama, izbirnik igrišč, objava
   vm.runInContext(`
     S.matches = { 1: {id:1,g1:0,b1:0,g2:1,b2:1,round:0,res:null},
                   2: {id:2,g1:2,b1:2,g2:3,b2:3,round:0,res:{a:21,b:15}} };
     S.queues = [[{t:'m',id:1}],[{t:'m',id:2}]];
     S.breaks = {};
     tab = 'sched'; courtView = 'all'; renderMain();
-    __sched_all = document.querySelector('#main').innerHTML;
+    __all = document.querySelector('#main').innerHTML;
     courtView = '1'; renderMain();
-    __sched_b = document.querySelector('#main').innerHTML;
-  `, ctx, { filename: 'phase2.js' });
-  schedAll = el('#main').innerHTML && vm.runInContext('__sched_all', ctx);
-  schedB = vm.runInContext('__sched_b', ctx);
-} catch (e) { console.error('FAIL: napaka pri izrisu razporeda:', e.message); process.exit(1); }
-checks.push(
-  ['razpored: izbirnik igrišč', /Obe igrišči/.test(schedAll) && /data-act="cview"/.test(schedAll)],
-  ['razpored: obe igrišči vidni', /IGRIŠČE A/.test(schedAll) && /IGRIŠČE B/.test(schedAll)],
-  ['razpored: filter samo B', !/IGRIŠČE A/.test(schedB) && /IGRIŠČE B/.test(schedB) && / single/.test(schedB)],
-  ['razpored: rezultat izpisan', /21 : 15/.test(schedB)],
-);
+    __b = document.querySelector('#main').innerHTML;
+    __pub = publishText();
+  `, ctx, { filename: 'faza2.js' });
+  const all = vm.runInContext('__all', ctx), b = vm.runInContext('__b', ctx), pub = vm.runInContext('__pub', ctx);
+  checks.push(
+    ['editor: izbirnik igrišč', /Obe igrišči/.test(all) && /data-act="cview"/.test(all)],
+    ['editor: obe igrišči vidni', /IGRIŠČE A/.test(all) && /IGRIŠČE B/.test(all)],
+    ['editor: filter samo B', !/IGRIŠČE A/.test(b) && /IGRIŠČE B/.test(b) && / single/.test(b)],
+    ['editor: rezultat izpisan', /21 : 15/.test(b)],
+    ['editor: publishText format', /^PUB = \{$/m.test(pub) && /rezultati: \{/.test(pub) && / 2: \[21, 15\],/.test(pub) && / 1: null,/.test(pub)],
+  );
+}
+
+// ===== viewer (index.html + pravi data.js) =====
+{
+  const dataJs = fs.readFileSync(path.join(dir, 'data.js'), 'utf8');
+  const { ctx, el } = await runPage('index.html', dataJs);
+  const main = el('#main').innerHTML, tabs = el('#tabs').innerHTML;
+  vm.runInContext('tab = "board"; renderMain();', ctx);
+  const board = el('#main').innerHTML;
+  checks.push(
+    ['viewer: razpored naložen iz data.js', /IGRIŠČE A/.test(main) && /IGRIŠČE B/.test(main)],
+    ['viewer: pasica z objavo', /Zadnja objava/.test(main)],
+    ['viewer: bralni pogled (brez urejanja)', !/Nastavitev/.test(tabs) && !/data-act="rsave"/.test(main)],
+    ['viewer: rezultati vidni', /\d+ : \d+/.test(main.replace(/\d+:\d+/g, ''))],
+    ['viewer: lestvica', /Punce/.test(board) && /Fantje/.test(board) && /Točke\/T/.test(board)],
+  );
+  // brez mreže: prijazno sporočilo, ne prazna stran
+  const off = await runPage('index.html', null);
+  checks.push(['viewer: brez data.js pokaže sporočilo', /ni objavljen/.test(off.el('#main').innerHTML)]);
+}
+
 let ok = true;
 for (const [name, pass] of checks){ console.log((pass ? 'OK  ' : 'FAIL') + ' ' + name); if (!pass) ok = false; }
 process.exit(ok ? 0 : 1);
+})().catch(e => { console.error('FAIL:', e.message); process.exit(1); });
