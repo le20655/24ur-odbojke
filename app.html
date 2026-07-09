@@ -1,0 +1,726 @@
+<title>24 ur odbojke</title>
+<style>
+:root{
+  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#23252c; --muted:#6d6f78;
+  --line:#dedbce; --accent:#a86f0a; --accent-bg:#f5e3bc; --accent-strong:#8a5c08;
+  --courtA:#a86f0a; --courtA-bg:#f8ecd2; --courtB:#35609f; --courtB-bg:#dfe8f5;
+  --ok:#2f7d4f; --err:#b0433c; --err-bg:#f6dedc; --warn-bg:#f5e3bc; --night:#5d4fa8;
+  --gold:#b8860b; --silver:#7a7f8a; --bronze:#9a6039;
+  --shadow:0 1px 3px rgba(35,37,44,.08);
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#14161d; --surface:#1d2029; --surface2:#252935; --ink:#e9eaee; --muted:#9a9daa;
+  --line:#2e3341; --accent:#e8a020; --accent-bg:#3a2f14; --accent-strong:#f2b747;
+  --courtA:#e8a020; --courtA-bg:#33290f; --courtB:#7fa8e0; --courtB-bg:#1c2637;
+  --ok:#58b380; --err:#e07b74; --err-bg:#3d1f1d; --warn-bg:#3a2f14; --night:#a294e0;
+  --gold:#e8b53a; --silver:#a8aeba; --bronze:#c98a5e;
+  --shadow:0 1px 4px rgba(0,0,0,.4);
+}}
+:root[data-theme="light"]{
+  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#23252c; --muted:#6d6f78;
+  --line:#dedbce; --accent:#a86f0a; --accent-bg:#f5e3bc; --accent-strong:#8a5c08;
+  --courtA:#a86f0a; --courtA-bg:#f8ecd2; --courtB:#35609f; --courtB-bg:#dfe8f5;
+  --ok:#2f7d4f; --err:#b0433c; --err-bg:#f6dedc; --warn-bg:#f5e3bc; --night:#5d4fa8;
+  --gold:#b8860b; --silver:#7a7f8a; --bronze:#9a6039;
+  --shadow:0 1px 3px rgba(35,37,44,.08);
+}
+:root[data-theme="dark"]{
+  --bg:#14161d; --surface:#1d2029; --surface2:#252935; --ink:#e9eaee; --muted:#9a9daa;
+  --line:#2e3341; --accent:#e8a020; --accent-bg:#3a2f14; --accent-strong:#f2b747;
+  --courtA:#e8a020; --courtA-bg:#33290f; --courtB:#7fa8e0; --courtB-bg:#1c2637;
+  --ok:#58b380; --err:#e07b74; --err-bg:#3d1f1d; --warn-bg:#3a2f14; --night:#a294e0;
+  --gold:#e8b53a; --silver:#a8aeba; --bronze:#c98a5e;
+  --shadow:0 1px 4px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,"Segoe UI",Roboto,sans-serif}
+button{font:inherit;color:inherit;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:700}
+button.small{padding:1px 7px;font-size:12.5px}
+input,textarea,select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+textarea{resize:vertical}
+.mono{font-family:ui-monospace,Consolas,"Liberation Mono",monospace;font-variant-numeric:tabular-nums}
+.eyebrow{text-transform:uppercase;letter-spacing:.09em;font-size:11.5px;font-weight:700;color:var(--muted)}
+
+header.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:2px solid var(--accent);box-shadow:var(--shadow)}
+.topline{display:flex;align-items:center;gap:16px;padding:9px 16px;flex-wrap:wrap}
+.brand{font-size:21px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+.brand b{color:var(--accent)}
+.topstats{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;color:var(--muted);font-size:13.5px}
+.topstats .clock{font-size:17px;font-weight:700;color:var(--ink)}
+.spacer{flex:1}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap}
+nav.tabs{display:flex;gap:2px;padding:0 12px;border-top:1px solid var(--line)}
+nav.tabs button{border:none;background:none;border-radius:0;padding:8px 14px;font-weight:600;color:var(--muted);border-bottom:2.5px solid transparent;margin-bottom:-1px}
+nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent)}
+
+main{max-width:1180px;margin:0 auto;padding:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:var(--shadow)}
+h2{font-size:17px;margin:0 0 10px}
+.hint{color:var(--muted);font-size:13.5px}
+
+/* nastavitev */
+.setupgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.setupgrid textarea{width:100%;min-height:230px}
+.optrow{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;align-items:end}
+.optrow label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);font-weight:600}
+.optrow input{width:auto}
+.optrow input[type=number]{width:70px}
+.genrow{margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.counts{font-size:13px;color:var(--muted);margin-top:4px}
+
+/* razpored */
+.courts{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+@media (max-width:860px){.courts{grid-template-columns:1fr}.setupgrid{grid-template-columns:1fr}}
+.court{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.courthead{padding:9px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.court[data-c="0"] .courthead{background:var(--courtA-bg)}
+.court[data-c="1"] .courthead{background:var(--courtB-bg)}
+.courtname{font-weight:800;letter-spacing:.04em}
+.court[data-c="0"] .courtname{color:var(--courtA)}
+.court[data-c="1"] .courtname{color:var(--courtB)}
+.courthead .end{font-size:12.5px;color:var(--muted);margin-left:auto}
+.courtbtns{display:flex;gap:5px;flex-wrap:wrap;padding:7px 12px;border-bottom:1px solid var(--line);background:var(--surface2)}
+.qrow{display:flex;gap:10px;align-items:center;padding:7px 12px;border-bottom:1px solid var(--line);position:relative}
+.qrow:last-child{border-bottom:none}
+.qrow .time{width:52px;flex:none;font-weight:700}
+.qrow .time .nd{display:block;font-size:10px;color:var(--night);font-weight:700}
+.qrow .body{flex:1;min-width:0}
+.qrow .pair{font-weight:600}
+.qrow .vs{color:var(--muted);font-weight:400;padding:0 4px}
+.qrow .meta{font-size:12px;color:var(--muted)}
+.qrow.done{opacity:.62}
+.qrow.now{background:var(--accent-bg)}
+.qrow.now::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.qrow.now .time{color:var(--accent-strong)}
+.qrow.next::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--line)}
+.qrow.brk{background:var(--surface2);color:var(--muted)}
+.qrow.brk.night{background:color-mix(in srgb,var(--night) 12%,var(--surface));color:var(--night)}
+.qrow .score{font-size:16px;font-weight:800;white-space:nowrap}
+.qrow .ctl{display:flex;gap:3px;flex-none}
+.qrow .ctl button{padding:0 6px;font-size:12px;line-height:22px}
+.qrow input.sc{width:46px;text-align:center;padding:2px 4px}
+.chip{display:inline-block;font-size:10.5px;font-weight:700;border:1px solid var(--line);border-radius:99px;padding:0 7px;color:var(--muted);vertical-align:1px}
+.statusline{display:flex;gap:10px;align-items:center;margin:0 0 12px;flex-wrap:wrap}
+.warnbox{border:1px solid var(--line);border-left:4px solid var(--err);border-radius:8px;background:var(--surface);padding:8px 14px;margin-bottom:14px;font-size:13.5px}
+.warnbox ul{margin:6px 0 2px;padding-left:18px}
+.warnbox .w-night{color:var(--night)}
+.warnbox .w-err{color:var(--err);font-weight:700}
+.legend{font-size:12.5px;color:var(--muted);margin-top:10px}
+
+/* lestvica */
+.boards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:860px){.boards{grid-template-columns:1fr}}
+table.board{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+table.board th{text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:4px 7px;border-bottom:2px solid var(--line)}
+table.board th.nm,table.board td.nm{text-align:left}
+table.board td{padding:5px 7px;border-bottom:1px solid var(--line);text-align:right}
+table.board tbody tr:nth-child(1) td.nm{color:var(--gold);font-weight:800}
+table.board tbody tr:nth-child(2) td.nm{color:var(--silver);font-weight:800}
+table.board tbody tr:nth-child(3) td.nm{color:var(--bronze);font-weight:800}
+.tablewrap{overflow-x:auto}
+
+.banner-ro{background:var(--accent-bg);border:1px solid var(--accent);border-radius:8px;padding:8px 14px;margin-bottom:14px;font-size:14px}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.overlay{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 80%,transparent);display:flex;align-items:center;justify-content:center;z-index:50;font-size:17px;font-weight:700}
+@media (prefers-reduced-motion: no-preference){
+  .qrow.now{transition:background .3s}
+}
+
+/* tisk */
+#printArea{display:none}
+@media print{
+  header.top,main,.overlay{display:none !important}
+  #printArea{display:block;font:11.5px/1.45 system-ui,sans-serif;color:#000}
+  #printArea h1{font-size:19px;margin:0 0 2px}
+  #printArea h2{font-size:14px;margin:14px 0 5px}
+  #printArea table{width:100%;border-collapse:collapse}
+  #printArea th,#printArea td{border:1px solid #999;padding:3px 6px;text-align:left}
+  #printArea .res{width:70px}
+  #printArea .rules{margin-top:10px}
+}
+</style>
+
+<header class="top">
+  <div class="topline">
+    <div class="brand">24 UR <b>ODBOJKE</b></div>
+    <div class="topstats" id="topstats"></div>
+    <div class="spacer"></div>
+    <div class="toolbar" id="toolbar"></div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="main"></main>
+<div id="printArea"></div>
+
+<script>
+/*__CORE__*/
+</script>
+<script>
+'use strict';
+/* ===== aplikacija "24 ur odbojke" ===== */
+const LSKEY = 'odbojka24.v1';
+const SHARE_BASE = '__SHARE_BASE__'; // javna povezava (artifact); nastavi build
+let S = null;            // stanje turnirja
+let readonly = false;    // bralni pogled prek #d=
+let tab = 'setup';
+let undoStack = [];
+const DEFAULT_GIRLS = ['NEŽA BERCE','NINA TOMAŽIN','ERIKA MOHORIČ','MARUŠA DOLINAR','LIZA POLJANČŠEK','LIA BERCE','LOTI GRUŠKO VANJAK','MAŠA VEGELJ','PUNCA 9','PUNCA 10','PUNCA 11','PUNCA 12'];
+const DEFAULT_BOYS = ['JAKA KOPAČ','ROK MROULE','MATIC ENIKO','JAN GOVEKAR','JUŠ BURJEK','DOMEN DOLENC','KRIŠTOF GANTAR','DAVID ŠENK','JAN DOLENC','URBAN JEREB','LUYGGY','JAKA ENIKO'];
+
+/* ---------- pomožno ---------- */
+const $ = sel => document.querySelector(sel);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function startClockMin(){ return Core.clockToMin(S.cfg.startClock) ?? 1020; }
+function startEpoch(){
+  const [y,mo,d] = (S.cfg.startDate || new Date().toISOString().slice(0,10)).split('-').map(Number);
+  const sm = startClockMin();
+  return new Date(y, mo-1, d, Math.floor(sm/60), sm%60).getTime();
+}
+function nowMin(){ return (Date.now() - startEpoch())/60000; }
+function fmtT(rel){ // relativne minute -> ura (+ oznaka naslednjega dne)
+  const abs = startClockMin() + rel;
+  return Core.minToClock(abs) + (abs >= 1440 ? '<span class="nd">+1 dan</span>' : '');
+}
+function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify({S, tab})); }catch(e){} }
+function mutate(fn){
+  undoStack.push(JSON.stringify(S));
+  if (undoStack.length > 25) undoStack.shift();
+  fn();
+  save(); renderAll();
+}
+function newId(){ return S.nextId = (S.nextId || 5000) + 1; }
+function pairStr(g,b){ return esc(S.cfg.girls[g]) + ' & ' + esc(S.cfg.boys[b]); }
+function roundChip(m){ return m.makeup ? 'dod.' : 'krog ' + (m.round+1); }
+
+/* ---------- zagon ---------- */
+(function boot(){
+  const h = /^#d=([A-Za-z0-9_-]+)(?:&t=(\w+))?$/.exec(location.hash);
+  if (h){
+    try { S = Core.decodeState(h[1]); readonly = true; tab = h[2] === 'board' ? 'board' : 'sched'; }
+    catch(e){ document.body.innerHTML = '<main><div class="card">Povezava je poškodovana ali prekratka.</div></main>'; return; }
+  } else {
+    try {
+      const raw = localStorage.getItem(LSKEY);
+      if (raw){ const o = JSON.parse(raw); S = o.S; tab = o.tab || 'setup'; }
+    } catch(e){}
+  }
+  if (!S) S = freshState();
+  // starejše shranjeno stanje brez imen: napolni privzeti seznam
+  if (!S.queues && S.cfg && (!S.cfg.girls || !S.cfg.girls.length)){
+    S.cfg.girls = DEFAULT_GIRLS.slice();
+    S.cfg.boys = DEFAULT_BOYS.slice();
+  }
+  if (!S.queues) tab = 'setup';
+  renderAll();
+  setInterval(()=>{
+    renderTop();
+    // ne osvežuj, če organizator ravno tipka rezultat
+    const ae = document.activeElement;
+    if (tab === 'sched' && !(ae && ae.classList && ae.classList.contains('sc'))) renderMain();
+  }, 30000);
+  window.addEventListener('hashchange', ()=>location.reload());
+})();
+
+function freshState(){
+  return {
+    cfg: {
+      girls: DEFAULT_GIRLS.slice(), boys: DEFAULT_BOYS.slice(), startClock: '17:00',
+      startDate: new Date().toISOString().slice(0,10),
+      matchMin: 20, gapMin: 10,
+      nightStartClock: '00:00', nightEndClock: '04:00',
+      pauseOn: true, pauseClock: '01:00', pauseMin: 120,
+      seed: 1 + Math.floor(Math.random()*1e6)
+    },
+    matches: null, queues: null, breaks: {}, nextId: 5000
+  };
+}
+
+/* ---------- glava ---------- */
+function renderTop(){
+  const st = $('#topstats');
+  let html = '<span class="clock mono">' + new Date().toLocaleTimeString('sl-SI',{hour:'2-digit',minute:'2-digit'}) + '</span>';
+  if (S && S.queues){
+    const ms = Object.values(S.matches);
+    const done = ms.filter(m=>m.res).length;
+    const { courtEnd } = Core.computeTimes(S);
+    html += `<span>odigranih <b>${done}/${ms.length}</b></span>`;
+    html += `<span>predviden konec <b class="mono">${fmtT(Math.max(...courtEnd))}</b></span>`;
+  }
+  st.innerHTML = html;
+
+  const tb = $('#toolbar');
+  if (readonly) tb.innerHTML = '<button data-act="print" class="small">Natisni</button>';
+  else tb.innerHTML = `
+    ${S.queues ? '<button data-act="sheets" class="small">Izvoz v Sheets</button><button data-act="share" class="small">Deli razpored</button><button data-act="print" class="small">Natisni</button>' : ''}
+    <button data-act="export" class="small">Izvoz</button>
+    <button data-act="import" class="small">Uvoz</button>
+    ${undoStack.length ? '<button data-act="undo" class="small">↶ Razveljavi</button>' : ''}`;
+
+  const tabs = $('#tabs');
+  const items = readonly
+    ? [['sched','Razpored'],['board','Lestvica']]
+    : [['setup','Nastavitev'],['sched','Razpored'],['board','Lestvica']];
+  tabs.innerHTML = items.map(([id,l]) =>
+    `<button data-tab="${id}" class="${tab===id?'active':''}" ${id!=='setup'&&!S.queues?'disabled':''}>${l}</button>`).join('');
+}
+
+/* ---------- nastavitev ---------- */
+function renderSetup(){
+  const c = S.cfg;
+  return `<div class="card">
+    <h2>Igralci in nastavitve</h2>
+    <p class="hint">Vpiši imena — eno na vrstico. Punc in fantov mora biti enako, od 8 do 13 na spol (16–26 skupaj).
+    Vsaka punca bo igrala v paru z vsakim fantom natanko enkrat; pare in razpored sestavi računalnik tako, da so
+    soigralci popolnoma uravnoteženi, nasprotniki pa čim bolj raznoliki.</p>
+    <div class="setupgrid">
+      <div><div class="eyebrow">Punce</div><textarea id="girls" placeholder="Ana&#10;Barbara&#10;…">${esc(c.girls.join('\n'))}</textarea><div class="counts" id="gcnt"></div></div>
+      <div><div class="eyebrow">Fantje</div><textarea id="boys" placeholder="Andraž&#10;Blaž&#10;…">${esc(c.boys.join('\n'))}</textarea><div class="counts" id="bcnt"></div></div>
+    </div>
+    <div class="optrow">
+      <label>Datum starta<input type="date" id="startDate" value="${esc(c.startDate)}"></label>
+      <label>Ura starta<input type="time" id="startClock" value="${esc(c.startClock)}"></label>
+      <label>Tekma (min)<input type="number" id="matchMin" value="${c.matchMin}" min="5" max="60"></label>
+      <label>Menjava/ogrevanje (min)<input type="number" id="gapMin" value="${c.gapMin}" min="0" max="30"></label>
+    </div>
+    <div class="optrow">
+      <label><span><input type="checkbox" id="pauseOn" ${c.pauseOn?'checked':''}> skupni nočni premor</span></label>
+      <label>začetek premora<input type="time" id="pauseClock" value="${esc(c.pauseClock)}"></label>
+      <label>trajanje (min)<input type="number" id="pauseMin" value="${c.pauseMin}" min="30" max="360" step="15"></label>
+    </div>
+    <p class="hint">Nočni premor (privzeto 01:00–03:00) vsem hkrati zagotovi vsaj 2 uri spanja v kosu.
+    Poleg tega razpored pazi, da nihče ne igra dveh tekem zapored. Med turnirjem lahko premore poljubno dodajaš,
+    krajšaš in prestavljaš na zavihku Razpored.</p>
+    <div class="genrow">
+      <button class="primary" data-act="generate">${S.queues ? 'Ustvari NOV razpored (obstoječi rezultati se izbrišejo!)' : 'Ustvari razpored'}</button>
+      ${S.queues ? '<button data-act="wipe">Izprazni vse</button>' : ''}
+      <span class="hint">Izračun traja do ~30 s.</span>
+    </div>
+  </div>`;
+}
+function setupCounts(){
+  const g = $('#girls'), b = $('#boys');
+  if (!g) return;
+  const gc = g.value.split('\n').map(x=>x.trim()).filter(Boolean).length;
+  const bc = b.value.split('\n').map(x=>x.trim()).filter(Boolean).length;
+  $('#gcnt').textContent = gc + ' punc';
+  $('#bcnt').textContent = bc + ' fantov';
+}
+
+function doGenerate(){
+  const girls = $('#girls').value.split('\n').map(x=>x.trim()).filter(Boolean);
+  const boys  = $('#boys').value.split('\n').map(x=>x.trim()).filter(Boolean);
+  if (girls.length !== boys.length) return alert('Punc in fantov mora biti enako (zdaj ' + girls.length + ' : ' + boys.length + ').');
+  if (girls.length < 8 || girls.length > 13) return alert('Podprtih je 8–13 igralcev na spol (16–26 skupaj).');
+  const dup = [...girls, ...boys].filter((x,i,a)=>a.indexOf(x)!==i);
+  if (dup.length) return alert('Podvojena imena: ' + dup.join(', ') + '. Dodaj priimek ali začetnico.');
+  if (S.queues && !confirm('Obstoječi razpored IN VSI REZULTATI se izbrišejo. Nadaljujem?')) return;
+
+  const c = S.cfg;
+  c.girls = girls; c.boys = boys;
+  c.startDate = $('#startDate').value || c.startDate;
+  c.startClock = $('#startClock').value || c.startClock;
+  c.matchMin = +$('#matchMin').value || 20;
+  c.gapMin = +$('#gapMin').value || 10;
+  c.pauseOn = $('#pauseOn').checked;
+  c.pauseClock = $('#pauseClock').value || '01:00';
+  c.pauseMin = +$('#pauseMin').value || 120;
+  c.seed = 1 + Math.floor(Math.random()*1e6);
+
+  const ov = document.createElement('div');
+  ov.className = 'overlay'; ov.textContent = 'Razporejam tekme … (do ~30 s)';
+  document.body.appendChild(ov);
+  setTimeout(()=>{
+    try {
+      const gen = Core.generate({ ...c, pauseMin: c.pauseOn ? c.pauseMin : 0 });
+      undoStack.push(JSON.stringify(S));
+      S.matches = gen.matches;
+      S.queues = gen.queues;
+      S.breaks = gen.breaks || {};
+      S.nextId = 5000;
+      if (c.pauseOn){
+        const rel = ((Core.clockToMin(c.pauseClock) - startClockMin()) + 1440) % 1440;
+        Core.insertBreakAtTime(S, 0, rel, c.pauseMin, 'Nočni premor', newId());
+        Core.insertBreakAtTime(S, 1, rel, c.pauseMin, 'Nočni premor', newId());
+      }
+      tab = 'sched';
+      save(); renderAll();
+    } finally { ov.remove(); }
+  }, 60);
+}
+
+/* ---------- razpored ---------- */
+function pendingIdx(c){ // indeks prve tekme brez rezultata v vrsti igrišča
+  const q = S.queues[c];
+  for (let i = 0; i < q.length; i++) if (q[i].t === 'm' && !S.matches[q[i].id].res) return i;
+  return -1;
+}
+function renderSched(){
+  const { times, breakTimes } = Core.computeTimes(S);
+  const warns = Core.validate(S);
+  const now = nowMin();
+  let html = '';
+  if (readonly) html += `<div class="banner-ro">Bralni pogled — razpored ureja organizator. Ure so ocenjene in se lahko spremenijo.</div>`;
+  if (warns.length && !readonly){
+    const shown = warns.slice(0, 10);
+    html += `<div class="warnbox"><b>Opozorila (${warns.length})</b><ul>` +
+      shown.map(w=>`<li class="w-${w.lvl}">${esc(w.msg)}</li>`).join('') +
+      (warns.length > 10 ? `<li>… še ${warns.length-10}</li>` : '') + '</ul></div>';
+  }
+  if (!readonly){
+    html += `<div class="statusline">
+      <button data-act="gbreak">+ Premor za obe igrišči</button>
+      <span class="hint">Zamik posameznega igrišča in premori: gumbi pri igrišču. Puščice premikajo tekmo po vrstnem redu, ⇄ jo prestavi na drugo igrišče.</span>
+    </div>`;
+  }
+  const { courtEnd } = Core.computeTimes(S);
+  html += '<div class="courts">';
+  for (let c = 0; c < 2; c++){
+    const q = S.queues[c];
+    const pend = pendingIdx(c);
+    const endT = courtEnd[c];
+    html += `<section class="court" data-c="${c}">
+      <div class="courthead"><span class="courtname">IGRIŠČE ${c ? 'B' : 'A'}</span>
+        <span class="chip">${q.filter(i=>i.t==='m').length} tekem</span>
+        <span class="end">konec ob <b class="mono">${fmtT(endT)}</b></span></div>`;
+    if (!readonly){
+      html += `<div class="courtbtns">
+        <button class="small" data-act="delay" data-c="${c}" data-min="10">+10 min</button>
+        <button class="small" data-act="delay" data-c="${c}" data-min="30">+30 min</button>
+        <button class="small" data-act="delayx" data-c="${c}">± po meri</button>
+        <button class="small" data-act="cbreak" data-c="${c}">+ premor</button>
+        <button class="small" data-act="align" data-c="${c}">poravnaj z zdaj</button>
+      </div>`;
+    }
+    q.forEach((it, i) => {
+      if (it.t === 'b'){
+        const br = S.breaks[it.id], bt = breakTimes[it.id];
+        const night = /noč/i.test(br.label);
+        html += `<div class="qrow brk ${night?'night':''}">
+          <div class="time mono">${fmtT(bt.start)}</div>
+          <div class="body">⏸ ${esc(br.label || 'Premor')} — ${br.dur} min</div>
+          ${readonly ? '' : `<div class="ctl">
+            <button title="premakni gor" data-act="mv" data-c="${c}" data-i="${i}" data-d="-1">↑</button>
+            <button title="premakni dol" data-act="mv" data-c="${c}" data-i="${i}" data-d="1">↓</button>
+            <button title="spremeni trajanje" data-act="bedit" data-c="${c}" data-i="${i}">✎</button>
+            <button title="izbriši premor" data-act="bdel" data-c="${c}" data-i="${i}">×</button></div>`}
+        </div>`;
+        return;
+      }
+      const m = S.matches[it.id], tm = times[it.id];
+      const isNow = !m.res && tm.start <= now && i <= (pend<0?1e9:pend+1);
+      const isNext = !isNow && i === pend && tm.start > now;
+      let score;
+      if (m.res) score = `<span class="score mono">${m.res.a} : ${m.res.b}</span>${readonly?'':`<button class="small" title="popravi rezultat" data-act="redit" data-id="${m.id}">✎</button>`}`;
+      else if (readonly) score = '<span class="hint">—</span>';
+      else score = `<input class="sc mono" type="number" min="0" id="sa${m.id}" placeholder="0"> : <input class="sc mono" type="number" min="0" id="sb${m.id}" placeholder="0"> <button class="small primary" data-act="rsave" data-id="${m.id}">OK</button>`;
+      html += `<div class="qrow ${m.res?'done':''} ${isNow?'now':''} ${isNext?'next':''}">
+        <div class="time mono">${fmtT(tm.start)}</div>
+        <div class="body">
+          <div class="pair">${pairStr(m.g1,m.b1)}<span class="vs">proti</span>${pairStr(m.g2,m.b2)}</div>
+          <div class="meta"><span class="chip">${roundChip(m)}</span>${isNow?' &nbsp;· zdaj igrajo':''}${isNext?' &nbsp;· naslednji':''}</div>
+        </div>
+        <div>${score}</div>
+        ${readonly ? '' : `<div class="ctl">
+          <button title="premakni gor" data-act="mv" data-c="${c}" data-i="${i}" data-d="-1">↑</button>
+          <button title="premakni dol" data-act="mv" data-c="${c}" data-i="${i}" data-d="1">↓</button>
+          <button title="na drugo igrišče" data-act="xcourt" data-c="${c}" data-i="${i}">⇄</button></div>`}
+      </div>`;
+    });
+    html += '</section>';
+  }
+  html += '</div>';
+  html += `<p class="legend">⏸ "Prosto igrišče" so vgrajene zračnice — če zamujate, jih izbriši (×) in razpored se stisne.
+  Ure so ocenjene: vsako igrišče je vrsta, časi se preračunajo ob vsakem vpisu ali zamiku.
+  ${readonly ? '' : 'Namig: gumb "Izvoz v Sheets" prenese turnir v Google preglednico — rezultate potem vpisuje kdorkoli s telefona, igralci pa gledajo eno samo, vedno ažurno povezavo.'}</p>`;
+  return html;
+}
+
+/* ---------- lestvica ---------- */
+function renderBoard(){
+  const st = Core.standings(S);
+  const tbl = (rows, title) => `<div class="card"><h2>${title}</h2><div class="tablewrap"><table class="board">
+    <thead><tr><th>#</th><th class="nm">Ime</th><th>T</th><th>Z</th><th>N</th><th>P</th><th>Točke/T</th><th>+/−/T</th><th>Dane/T</th></tr></thead>
+    <tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td class="nm">${esc(r.name)}</td><td>${r.played}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td>
+      <td><b>${r.avgMp.toFixed(2)}</b></td><td>${r.avgDiff>=0?'+':''}${r.avgDiff.toFixed(1)}</td><td>${r.avgPf.toFixed(1)}</td></tr>`).join('')}</tbody>
+  </table></div></div>`;
+  return `<div class="boards">${tbl(st.girls,'🏐 Punce')}${tbl(st.boys,'🏐 Fantje')}</div>
+  <p class="legend">Točke/T = povprečje tekmovalnih točk na tekmo (zmaga 2, neodločeno 1, poraz 0). Ob enakosti odloča povprečna razlika v točkah, nato povprečje danih točk.
+  Ker vsaka punca igra z vsakim fantom (in obratno), so soigralci za vse popolnoma enaki — lestvica meri posameznika.</p>`;
+}
+
+/* ---------- tisk ---------- */
+function renderPrint(){
+  const { times, breakTimes } = Core.computeTimes(S);
+  const rows = [];
+  for (let c = 0; c < 2; c++) for (const it of S.queues[c]){
+    if (it.t === 'm'){ const m = S.matches[it.id]; rows.push({ t: times[it.id].start, c, m }); }
+    else { const b = S.breaks[it.id]; rows.push({ t: breakTimes[it.id].start, c, b }); }
+  }
+  rows.sort((a,b)=>a.t-b.t || a.c-b.c);
+  const st = Core.standings(S);
+  $('#printArea').innerHTML = `
+    <h1>24 ur odbojke — razpored</h1>
+    <div>Start: ${esc(S.cfg.startDate)} ob ${esc(S.cfg.startClock)} · ${S.cfg.girls.length}+${S.cfg.boys.length} igralcev · tekma ${S.cfg.matchMin} min + ${S.cfg.gapMin} min menjave</div>
+    <h2>Razpored</h2>
+    <table><tr><th>Ura</th><th>Igr.</th><th>Tekma</th><th class="res">Rezultat</th></tr>
+    ${rows.map(r => r.m
+      ? `<tr><td>${Core.minToClock(startClockMin()+r.t)}${startClockMin()+r.t>=1440?' (+1)':''}</td><td>${r.c?'B':'A'}</td><td>${pairStr(r.m.g1,r.m.b1)} — ${pairStr(r.m.g2,r.m.b2)}</td><td class="res">${r.m.res?`${r.m.res.a} : ${r.m.res.b}`:''}</td></tr>`
+      : `<tr><td>${Core.minToClock(startClockMin()+r.t)}${startClockMin()+r.t>=1440?' (+1)':''}</td><td>${r.c?'B':'A'}</td><td>⏸ ${esc(r.b.label||'Premor')} (${r.b.dur} min)</td><td class="res"></td></tr>`).join('')}
+    </table>
+    <h2>Trenutna lestvica</h2>
+    <table><tr><th>#</th><th>Punce</th><th>Točke/T</th><th>#</th><th>Fantje</th><th>Točke/T</th></tr>
+    ${st.girls.map((g,i)=>`<tr><td>${i+1}</td><td>${esc(g.name)}</td><td>${g.avgMp.toFixed(2)}</td><td>${i+1}</td><td>${esc(st.boys[i].name)}</td><td>${st.boys[i].avgMp.toFixed(2)}</td></tr>`).join('')}
+    </table>
+    <div class="rules"><h2>Pravila</h2>
+    Tekma traja ${S.cfg.matchMin} minut, izid ob pisku obvelja (tudi neodločen). Par sodi sam sebi; končni rezultat takoj javita organizatorski mizi.
+    Točkovanje posameznika: zmaga 2, neodločeno 1, poraz 0 — šteje povprečje na tekmo, nato povprečna razlika v točkah.</div>`;
+}
+
+/* ---------- izvoz za Google Sheets ---------- */
+// TSV z vgrajenimi formulami: ure se verižno preračunavajo iz Trajanja,
+// lestvici se polnita sami iz rezultatov. Formule so brez ločil argumentov
+// (samo SUMPRODUCT + aritmetika), da delujejo v SL in EN locale ter v Excelu.
+function sheetsExport(){
+  const c = S.cfg;
+  const slotDur = c.matchMin + c.gapMin;
+  const lines = [];
+  const push = (...cells) => lines.push(cells);
+
+  push('24 UR ODBOJKE — razpored in rezultati');
+  push('Vpisuj samo Rez 1 in Rez 2 (ter Trajanje za zamike/premore). Ure se preračunajo same; ure čez polnoč pomenijo naslednji dan.');
+  push('Povezavo deli enkrat: Share → "Anyone with the link: Viewer" — igralci potem vedno vidijo sveže stanje.');
+  push('');
+
+  const blocks = []; // podatkovne vrstice blokov igrišč (1-indeksirano kot v preglednici)
+  for (let court = 0; court < 2; court++){
+    push('IGRIŠČE ' + (court ? 'B' : 'A'));
+    push('Ura','Trajanje (min)','Oznaka','Punca 1','Fant 1','Punca 2','Fant 2','Rez 1','Rez 2');
+    const r1 = lines.length + 1;
+    S.queues[court].forEach((it, i) => {
+      const r = lines.length + 1;
+      const ura = i === 0 ? c.startClock : '=A' + (r-1) + '+B' + (r-1) + '/1440';
+      if (it.t === 'b'){
+        const br = S.breaks[it.id];
+        push(ura, br.dur, 'PREMOR — ' + (br.label || ''));
+      } else {
+        const m = S.matches[it.id];
+        push(ura, slotDur, m.makeup ? 'dodatna' : 'krog ' + (m.round+1),
+          c.girls[m.g1], c.boys[m.b1], c.girls[m.g2], c.boys[m.b2],
+          m.res ? m.res.a : '', m.res ? m.res.b : '');
+      }
+    });
+    blocks.push({ r1, r2: lines.length });
+    push('');
+  }
+
+  // formule lestvice: 4 členi (2 igrišči x 2 strani tekme)
+  function sumTerms(nameRef, pair, kind){
+    const parts = [];
+    for (const b of blocks){
+      const H = 'H$' + b.r1 + ':H$' + b.r2, I = 'I$' + b.r1 + ':I$' + b.r2;
+      const G = '(' + H + '<>"")*(' + I + '<>"")';
+      for (const [nc, own, opp] of [[pair[0], H, I], [pair[1], I, H]]){
+        const N = '(' + nc + '$' + b.r1 + ':' + nc + '$' + b.r2 + '=' + nameRef + ')';
+        if (kind === 'played') parts.push('SUMPRODUCT(' + N + '*' + G + ')');
+        else if (kind === 'points') parts.push('SUMPRODUCT(' + N + '*' + G + '*((' + own + '>' + opp + ')*2+(' + own + '=' + opp + ')))');
+        else parts.push('SUMPRODUCT(' + N + '*' + G + '*(' + own + '-' + opp + '))');
+      }
+    }
+    return '=' + parts.join('+');
+  }
+  const board = (title, names, pair) => {
+    push(title);
+    push('Ime','Odigrane','Točke','Točke/T','+/− skupaj','+/−/T');
+    for (const name of names){
+      const r = lines.length + 1;
+      push(name,
+        sumTerms('$A' + r, pair, 'played'),
+        sumTerms('$A' + r, pair, 'points'),
+        '=C' + r + '/(B' + r + '+(B' + r + '=0))',
+        sumTerms('$A' + r, pair, 'diff'),
+        '=E' + r + '/(B' + r + '+(B' + r + '=0))');
+    }
+    push('');
+  };
+  board('LESTVICA — PUNCE', c.girls, ['D','F']);
+  board('LESTVICA — FANTJE', c.boys, ['E','G']);
+  push('Zmaga 2, neodločeno 1, poraz 0. Odloča Točke/T, nato +/−/T. Lestvica se posodablja sama ob vpisu rezultatov.');
+
+  return lines.map(cells => cells.join('\t')).join('\n');
+}
+function downloadTsv(tsv){
+  const blob = new Blob([tsv], { type: 'text/tab-separated-values' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '24ur-odbojke-sheets.tsv';
+  a.click(); URL.revokeObjectURL(a.href);
+  alert('Prenesena je datoteka 24ur-odbojke-sheets.tsv.\nV Google Sheets: File → Import → Upload → izberi datoteko.');
+}
+self.__test = { sheetsExport };
+
+/* ---------- akcije ---------- */
+function insertCourtDelay(c, min){
+  // zamik igrišča: podaljšaj/vstavi premor pred prvo neodigrano tekmo; negativni zamik krajša premore
+  const q = S.queues[c];
+  let idx = pendingIdx(c); if (idx < 0) idx = q.length;
+  if (min > 0){
+    const prev = q[idx-1];
+    if (prev && prev.t === 'b'){ S.breaks[prev.id].dur += min; }
+    else { const id = newId(); S.breaks[id] = { id, dur: min, label: 'Zamik' }; q.splice(idx, 0, { t:'b', id }); }
+    return true;
+  }
+  let need = -min;
+  for (let i = idx-1; i >= 0 && need > 0; i--){
+    if (q[i].t !== 'b') continue;
+    const br = S.breaks[q[i].id];
+    const cut = Math.min(br.dur, need);
+    br.dur -= cut; need -= cut;
+    if (br.dur <= 0){ delete S.breaks[br.id]; q.splice(i,1); }
+  }
+  if (need > 0) alert('Pred naslednjo tekmo ni dovolj premorov — igrišča ni mogoče pohitriti za celoten čas.');
+  return true;
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('button'); if (!btn) return;
+  const tb = btn.dataset.tab;
+  if (tb){ tab = tb; save(); renderAll(); return; }
+  const act = btn.dataset.act; if (!act) return;
+  const c = +btn.dataset.c, i = +btn.dataset.i;
+
+  if (act === 'generate') return doGenerate();
+  if (act === 'wipe'){ if (confirm('Res izbrišem VSE (imena, razpored, rezultate)?')){ localStorage.removeItem(LSKEY); S = freshState(); undoStack = []; tab='setup'; renderAll(); } return; }
+  if (act === 'undo'){ const prev = undoStack.pop(); if (prev){ S = JSON.parse(prev); save(); renderAll(); } return; }
+  if (act === 'print'){ renderPrint(); window.print(); return; }
+  if (act === 'export'){
+    const blob = new Blob([JSON.stringify({S}, null, 1)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '24ur-odbojke-' + new Date().toISOString().slice(0,16).replace(/[T:]/g,'-') + '.json';
+    a.click(); URL.revokeObjectURL(a.href); return;
+  }
+  if (act === 'import'){
+    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json';
+    inp.onchange = () => {
+      const f = inp.files[0]; if (!f) return;
+      f.text().then(txt => {
+        try { const o = JSON.parse(txt); if (!o.S || !o.S.cfg) throw 0; mutate(()=>{ S = o.S; }); }
+        catch(_){ alert('Datoteke ni mogoče prebrati — ni izvoz te strani.'); }
+      });
+    };
+    inp.click(); return;
+  }
+  if (act === 'sheets'){
+    const tsv = sheetsExport();
+    const done = () => alert('Skopirano v odložišče!\n\n1) Odpri sheets.new\n2) Klikni celico A1 in prilepi (Ctrl+V)\n3) Share → "Anyone with the link: Viewer" → povezavo pošlji igralcem enkrat.\n\nRezultate nato vpisuješ kar v preglednico — s katerekoli naprave, tudi več ljudi hkrati; ure in lestvica se preračunajo same.');
+    if (navigator.clipboard && navigator.clipboard.writeText)
+      navigator.clipboard.writeText(tsv).then(done, () => downloadTsv(tsv));
+    else downloadTsv(tsv);
+    return;
+  }
+  if (act === 'share'){
+    const base = SHARE_BASE.startsWith('http') ? SHARE_BASE : location.href.split('#')[0];
+    const url = base + '#d=' + Core.encodeState(S);
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(
+      () => alert('Povezava je skopirana. Pošlji jo igralcem (skupina, QR …).\nPo vsaki spremembi razporeda deli svežo povezavo.'),
+      () => prompt('Kopiraj povezavo:', url));
+    return;
+  }
+  if (act === 'delay') return mutate(()=>insertCourtDelay(c, +btn.dataset.min));
+  if (act === 'delayx'){
+    const v = parseInt(prompt('Zamik igrišča v minutah (negativno = pohitri):', '15'), 10);
+    if (v) mutate(()=>insertCourtDelay(c, v));
+    return;
+  }
+  if (act === 'cbreak' || act === 'gbreak'){
+    const v = parseInt(prompt('Trajanje premora v minutah:', '30'), 10);
+    if (!v || v < 1) return;
+    const lbl = prompt('Oznaka premora:', 'Premor') || 'Premor';
+    mutate(()=>{
+      const courts = act === 'gbreak' ? [0,1] : [c];
+      for (const cc of courts){
+        const q = S.queues[cc];
+        let idx = pendingIdx(cc); if (idx < 0) idx = q.length;
+        const id = newId(); S.breaks[id] = { id, dur: v, label: lbl };
+        q.splice(idx, 0, { t:'b', id });
+      }
+    });
+    return;
+  }
+  if (act === 'align'){
+    const { times } = Core.computeTimes(S);
+    const idx = pendingIdx(c);
+    if (idx < 0) return alert('Na tem igrišču ni več čakajočih tekem.');
+    const q = S.queues[c];
+    const next = q[idx];
+    const diff = Math.round(nowMin() - times[next.id].start);
+    if (Math.abs(diff) < 3) return alert('Igrišče je že poravnano (razlika ' + diff + ' min).');
+    if (!confirm((diff > 0 ? 'Zamik igrišča za +' : 'Pohitritev igrišča za ') + diff + ' min, da se naslednja tekma začne zdaj?')) return;
+    mutate(()=>insertCourtDelay(c, diff));
+    return;
+  }
+  if (act === 'mv'){
+    const d = +btn.dataset.d;
+    mutate(()=>{
+      const q = S.queues[c], j = i + d;
+      if (j < 0 || j >= q.length) return;
+      [q[i], q[j]] = [q[j], q[i]];
+    });
+    return;
+  }
+  if (act === 'xcourt'){
+    mutate(()=>{
+      const { times, breakTimes } = Core.computeTimes(S);
+      const q = S.queues[c], it = q[i];
+      const t0 = times[it.id]?.start ?? 0;
+      q.splice(i,1);
+      const q2 = S.queues[1-c];
+      let j = q2.length;
+      for (let k = 0; k < q2.length; k++){
+        const ts = q2[k].t === 'm' ? times[q2[k].id].start : breakTimes[q2[k].id].start;
+        if (ts >= t0){ j = k; break; }
+      }
+      q2.splice(j, 0, it);
+    });
+    return;
+  }
+  if (act === 'bedit'){
+    const br = S.breaks[S.queues[c][i].id];
+    const v = parseInt(prompt('Novo trajanje premora (min):', br.dur), 10);
+    if (v && v > 0) mutate(()=>{ br.dur = v; });
+    return;
+  }
+  if (act === 'bdel'){
+    mutate(()=>{ const it = S.queues[c][i]; delete S.breaks[it.id]; S.queues[c].splice(i,1); });
+    return;
+  }
+  if (act === 'rsave'){
+    const id = +btn.dataset.id;
+    const a = parseInt($('#sa'+id).value, 10), b = parseInt($('#sb'+id).value, 10);
+    if (isNaN(a) || isNaN(b) || a < 0 || b < 0) return alert('Vpiši obe številki rezultata.');
+    mutate(()=>{ S.matches[id].res = { a, b }; });
+    return;
+  }
+  if (act === 'redit'){
+    const id = +btn.dataset.id;
+    mutate(()=>{ S.matches[id].res = null; });
+    return;
+  }
+});
+document.addEventListener('input', e => { if (e.target.id === 'girls' || e.target.id === 'boys') setupCounts(); });
+
+/* ---------- glavni izris ---------- */
+function renderMain(){
+  const m = $('#main');
+  if (tab === 'setup' && !readonly) { m.innerHTML = renderSetup(); setupCounts(); }
+  else if (tab === 'board' && S.queues) m.innerHTML = renderBoard();
+  else if (S.queues) m.innerHTML = renderSched();
+  else { tab = 'setup'; m.innerHTML = renderSetup(); setupCounts(); }
+}
+function renderAll(){ renderTop(); renderMain(); }
+</script>
