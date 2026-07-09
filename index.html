@@ -117,6 +117,28 @@ h2{font-size:17px;margin:0 0 10px}
 .warnbox .w-night{color:var(--night)}
 .warnbox .w-err{color:var(--err);font-weight:700}
 .legend{font-size:12.5px;color:var(--muted);margin-top:10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
+.seg button{border:none;border-radius:0;background:var(--surface);padding:4px 13px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.active{background:var(--accent-bg);color:var(--accent-strong);font-weight:700}
+.courts.single{grid-template-columns:1fr}
+
+/* telefon */
+@media (max-width:640px){
+  main{padding:10px 8px}
+  .topline{padding:7px 10px;gap:10px}
+  .brand{font-size:18px}
+  .topstats{font-size:12.5px;gap:10px}
+  nav.tabs{padding:0 4px}
+  .card{padding:12px}
+  .qrow{flex-wrap:wrap;row-gap:5px;padding:8px 10px}
+  .qrow .body{min-width:calc(100% - 66px)}
+  .qrow .vs{display:block;padding:0;font-size:12.5px}
+  .qrow .scorebox{margin-left:62px}
+  .qrow .ctl{margin-left:auto}
+  .qrow .ctl button{line-height:26px;padding:0 9px;font-size:13px}
+  .qrow input.sc{width:52px;padding:4px}
+}
 
 /* lestvica */
 .boards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -689,10 +711,11 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 'use strict';
 /* ===== aplikacija "24 ur odbojke" ===== */
 const LSKEY = 'odbojka24.v1';
-const SHARE_BASE = ''; // javna povezava (artifact); nastavi build
+const SHARE_BASE = 'https://le20655.github.io/24ur-odbojke/'; // javna povezava (artifact); nastavi build
 let S = null;            // stanje turnirja
 let readonly = false;    // bralni pogled prek #d=
 let tab = 'setup';
+let courtView = 'all';   // 'all' | '0' | '1' — katero igrišče kaže razpored
 let undoStack = [];
 const DEFAULT_GIRLS = ['NEŽA BERCE','NINA TOMAŽIN','ERIKA MOHORIČ','MARUŠA DOLINAR','LIZA POLJANČŠEK','LIA BERCE','LOTI GRUŠKO VANJAK','MAŠA VEGELJ','PUNCA 9','PUNCA 10','PUNCA 11','PUNCA 12'];
 const DEFAULT_BOYS = ['JAKA KOPAČ','ROK MROULE','MATIC ENIKO','JAN GOVEKAR','JUŠ BURJEK','DOMEN DOLENC','KRIŠTOF GANTAR','DAVID ŠENK','JAN DOLENC','URBAN JEREB','LUYGGY','JAKA ENIKO'];
@@ -711,7 +734,7 @@ function fmtT(rel){ // relativne minute -> ura (+ oznaka naslednjega dne)
   const abs = startClockMin() + rel;
   return Core.minToClock(abs) + (abs >= 1440 ? '<span class="nd">+1 dan</span>' : '');
 }
-function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify({S, tab})); }catch(e){} }
+function save(){ if (readonly) return; try{ localStorage.setItem(LSKEY, JSON.stringify({S, tab, courtView})); }catch(e){} }
 function mutate(fn){
   undoStack.push(JSON.stringify(S));
   if (undoStack.length > 25) undoStack.shift();
@@ -731,7 +754,7 @@ function roundChip(m){ return m.makeup ? 'dod.' : 'krog ' + (m.round+1); }
   } else {
     try {
       const raw = localStorage.getItem(LSKEY);
-      if (raw){ const o = JSON.parse(raw); S = o.S; tab = o.tab || 'setup'; }
+      if (raw){ const o = JSON.parse(raw); S = o.S; tab = o.tab || 'setup'; if (o.courtView === '0' || o.courtView === '1') courtView = o.courtView; }
     } catch(e){}
   }
   if (!S) S = freshState();
@@ -896,15 +919,16 @@ function renderSched(){
       shown.map(w=>`<li class="w-${w.lvl}">${esc(w.msg)}</li>`).join('') +
       (warns.length > 10 ? `<li>… še ${warns.length-10}</li>` : '') + '</ul></div>';
   }
-  if (!readonly){
-    html += `<div class="statusline">
-      <button data-act="gbreak">+ Premor za obe igrišči</button>
-      <span class="hint">Zamik posameznega igrišča in premori: gumbi pri igrišču. Puščice premikajo tekmo po vrstnem redu, ⇄ jo prestavi na drugo igrišče.</span>
-    </div>`;
-  }
+  const seg = '<span class="seg">' + [['all','Obe igrišči'],['0','Igrišče A'],['1','Igrišče B']]
+    .map(([v,l]) => `<button data-act="cview" data-v="${v}" class="${courtView===v?'active':''}">${l}</button>`).join('') + '</span>';
+  html += `<div class="statusline">${seg}
+    ${readonly ? '' : `<button data-act="gbreak">+ Premor za obe igrišči</button>
+    <span class="hint">Zamik posameznega igrišča in premori: gumbi pri igrišču. Puščice premikajo tekmo po vrstnem redu, ⇄ jo prestavi na drugo igrišče.</span>`}
+  </div>`;
   const { courtEnd } = Core.computeTimes(S);
-  html += '<div class="courts">';
+  html += `<div class="courts${courtView === 'all' ? '' : ' single'}">`;
   for (let c = 0; c < 2; c++){
+    if (courtView !== 'all' && c !== +courtView) continue;
     const q = S.queues[c];
     const pend = pendingIdx(c);
     const endT = courtEnd[c];
@@ -949,7 +973,7 @@ function renderSched(){
           <div class="pair">${pairStr(m.g1,m.b1)}<span class="vs">proti</span>${pairStr(m.g2,m.b2)}</div>
           <div class="meta"><span class="chip">${roundChip(m)}</span>${isNow?' &nbsp;· zdaj igrajo':''}${isNext?' &nbsp;· naslednji':''}</div>
         </div>
-        <div>${score}</div>
+        <div class="scorebox">${score}</div>
         ${readonly ? '' : `<div class="ctl">
           <button title="premakni gor" data-act="mv" data-c="${c}" data-i="${i}" data-d="-1">↑</button>
           <button title="premakni dol" data-act="mv" data-c="${c}" data-i="${i}" data-d="1">↓</button>
@@ -1118,6 +1142,7 @@ document.addEventListener('click', e => {
   const act = btn.dataset.act; if (!act) return;
   const c = +btn.dataset.c, i = +btn.dataset.i;
 
+  if (act === 'cview'){ courtView = btn.dataset.v; save(); renderAll(); return; }
   if (act === 'generate') return doGenerate();
   if (act === 'wipe'){ if (confirm('Res izbrišem VSE (imena, razpored, rezultate)?')){ localStorage.removeItem(LSKEY); S = freshState(); undoStack = []; tab='setup'; renderAll(); } return; }
   if (act === 'undo'){ const prev = undoStack.pop(); if (prev){ S = JSON.parse(prev); save(); renderAll(); } return; }
