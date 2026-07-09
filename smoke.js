@@ -79,8 +79,8 @@ const checks = [];
   const all = vm.runInContext('__all', ctx), b = vm.runInContext('__b', ctx), pub = vm.runInContext('__pub', ctx);
   checks.push(
     ['editor: izbirnik igrišč', /Obe igrišči/.test(all) && /data-act="cview"/.test(all)],
-    ['editor: obe igrišči vidni', /IGRIŠČE A/.test(all) && /IGRIŠČE B/.test(all)],
-    ['editor: filter samo B', !/IGRIŠČE A/.test(b) && /IGRIŠČE B/.test(b) && / single/.test(b)],
+    ['editor: obe igrišči vidni', /IGRIŠČE 1/.test(all) && /IGRIŠČE 2/.test(all)],
+    ['editor: filter samo 2', !/IGRIŠČE 1/.test(b) && /IGRIŠČE 2/.test(b) && / single/.test(b)],
     ['editor: rezultat izpisan', /21 : 15/.test(b)],
     ['editor: publishText format', /^PUB = \{$/m.test(pub) && /rezultati: \{/.test(pub) && / 2: \[21, 15\],/.test(pub) && / 1: null,/.test(pub)],
   );
@@ -97,8 +97,8 @@ const checks = [];
   vm.runInContext('tab = "board"; renderMain();', ctx);
   const board = el('#main').innerHTML;
   checks.push(
-    ['viewer: privzeto samo igrišče A', /IGRIŠČE A/.test(main) && !/IGRIŠČE B/.test(main)],
-    ['viewer: preklop na igrišče B', /IGRIŠČE B/.test(courtB) && !/IGRIŠČE A/.test(courtB)],
+    ['viewer: privzeto samo igrišče 1', /IGRIŠČE 1/.test(main) && !/IGRIŠČE 2/.test(main)],
+    ['viewer: preklop na igrišče 2', /IGRIŠČE 2/.test(courtB) && !/IGRIŠČE 1/.test(courtB)],
     ['viewer: brez možnosti obeh hkrati', !/Obe igrišči/.test(main)],
     ['viewer: izbirnik v lepljivi glavi', /data-act="cview"/.test(el('#segbar').innerHTML) && !/data-act="cview"/.test(main)],
     ['viewer: brez ure in brez Natisni', !/clock mono/.test(top) && tools === ''],

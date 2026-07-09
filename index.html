@@ -152,6 +152,7 @@ h2{font-size:17px;margin:0 0 10px}
 /* lestvica */
 .boards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:860px){.boards{grid-template-columns:1fr}}
+.boards>.card,.courts>.court{min-width:0} /* tabela ne sme razširiti strani čez zaslon */
 table.board{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 table.board th{text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:4px 7px;border-bottom:2px solid var(--line)}
 table.board th.nm,table.board td.nm{text-align:left}
@@ -835,8 +836,8 @@ function freshState(){
 /* ---------- glava ---------- */
 function segHtml(){
   const opts = MODE === 'viewer'
-    ? [['0','Igrišče A'],['1','Igrišče B']]
-    : [['all','Obe igrišči'],['0','Igrišče A'],['1','Igrišče B']];
+    ? [['0','Igrišče 1'],['1','Igrišče 2']]
+    : [['all','Obe igrišči'],['0','Igrišče 1'],['1','Igrišče 2']];
   return '<span class="seg">' + opts
     .map(([v,l]) => `<button data-act="cview" data-v="${v}" class="${courtView===v?'active':''}">${l}</button>`).join('') + '</span>';
 }
@@ -988,7 +989,7 @@ function renderSched(){
     const pend = pendingIdx(c);
     const endT = courtEnd[c];
     html += `<section class="court" data-c="${c}">
-      <div class="courthead"><span class="courtname">IGRIŠČE ${c ? 'B' : 'A'}</span>
+      <div class="courthead"><span class="courtname">IGRIŠČE ${c ? '2' : '1'}</span>
         <span class="chip">${q.filter(i=>i.t==='m').length} tekem</span>
         <span class="end">konec ob <b class="mono">${fmtT(endT)}</b></span></div>`;
     if (!readonly){
@@ -1073,8 +1074,8 @@ function renderPrint(){
     <h2>Razpored</h2>
     <table><tr><th>Ura</th><th>Igr.</th><th>Tekma</th><th class="res">Rezultat</th></tr>
     ${rows.map(r => r.m
-      ? `<tr><td>${Core.minToClock(startClockMin()+r.t)}${startClockMin()+r.t>=1440?' (+1)':''}</td><td>${r.c?'B':'A'}</td><td>${pairStr(r.m.g1,r.m.b1)} — ${pairStr(r.m.g2,r.m.b2)}</td><td class="res">${r.m.res?`${r.m.res.a} : ${r.m.res.b}`:''}</td></tr>`
-      : `<tr><td>${Core.minToClock(startClockMin()+r.t)}${startClockMin()+r.t>=1440?' (+1)':''}</td><td>${r.c?'B':'A'}</td><td>⏸ ${esc(r.b.label||'Premor')} (${r.b.dur} min)</td><td class="res"></td></tr>`).join('')}
+      ? `<tr><td>${Core.minToClock(startClockMin()+r.t)}${startClockMin()+r.t>=1440?' (+1)':''}</td><td>${r.c?'2':'1'}</td><td>${pairStr(r.m.g1,r.m.b1)} — ${pairStr(r.m.g2,r.m.b2)}</td><td class="res">${r.m.res?`${r.m.res.a} : ${r.m.res.b}`:''}</td></tr>`
+      : `<tr><td>${Core.minToClock(startClockMin()+r.t)}${startClockMin()+r.t>=1440?' (+1)':''}</td><td>${r.c?'2':'1'}</td><td>⏸ ${esc(r.b.label||'Premor')} (${r.b.dur} min)</td><td class="res"></td></tr>`).join('')}
     </table>
     <h2>Trenutna lestvica</h2>
     <table><tr><th>#</th><th>Punce</th><th>Točke/T</th><th>#</th><th>Fantje</th><th>Točke/T</th></tr>
@@ -1104,7 +1105,7 @@ function publishText(){
     if (it.t !== 'm') continue;
     const m = S.matches[it.id];
     L.push(' ' + m.id + ': ' + (m.res ? '[' + m.res.a + ', ' + m.res.b + ']' : 'null') + ','
-      + '  // ' + Core.minToClock(startClockMin() + times[m.id].start) + ' · ' + (c ? 'B' : 'A') + ' · '
+      + '  // ' + Core.minToClock(startClockMin() + times[m.id].start) + ' · ' + (c ? '2' : '1') + ' · '
       + S.cfg.girls[m.g1] + ' & ' + S.cfg.boys[m.b1] + ' — ' + S.cfg.girls[m.g2] + ' & ' + S.cfg.boys[m.b2]);
   }
   L.push('}');
@@ -1136,7 +1137,7 @@ function sheetsExport(){
 
   const blocks = []; // podatkovne vrstice blokov igrišč (1-indeksirano kot v preglednici)
   for (let court = 0; court < 2; court++){
-    push('IGRIŠČE ' + (court ? 'B' : 'A'));
+    push('IGRIŠČE ' + (court ? '2' : '1'));
     push('Ura','Trajanje (min)','Oznaka','Punca 1','Fant 1','Punca 2','Fant 2','Rez 1','Rez 2');
     const r1 = lines.length + 1;
     S.queues[court].forEach((it, i) => {
