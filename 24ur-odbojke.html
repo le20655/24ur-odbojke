@@ -724,6 +724,10 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 const LSKEY = 'odbojka24.v1';
 const SHARE_BASE = 'https://le20655.github.io/24ur-odbojke/'; // javna povezava (GitHub Pages); nastavi build
 const MODE = 'editor';             // 'viewer' = javna stran (bere data.js), sicer urejevalnik; nastavi build
+const GH_REPO = 'le20655/24ur-odbojke'; // repo za objavo prek GitHub API (gumb "Objavi na splet")
+const GH_PATH = 'data.js';           // datoteka, ki jo bere javna stran
+const GH_BRANCH = 'main';            // privzeta veja repozitorija
+const GHTOKEN_KEY = 'odbojka24.ghtoken'; // GitHub token — shranjen lokalno v ta brskalnik
 let S = null;            // stanje turnirja
 let readonly = false;    // bralni pogled (prek #d= ali javna stran)
 let publishedAt = '';    // ISO čas zadnje objave (javna stran)
@@ -857,7 +861,7 @@ function renderTop(){
   const tb = $('#toolbar');
   if (readonly) tb.innerHTML = '';
   else tb.innerHTML = `
-    ${S.queues ? '<button data-act="publish" class="small">Kopiraj za objavo</button><button data-act="sheets" class="small">Izvoz v Sheets</button><button data-act="share" class="small">Deli razpored</button><button data-act="print" class="small">Natisni</button>' : ''}
+    ${S.queues ? '<button data-act="ghpublish" class="small primary">Objavi na splet</button><button data-act="publish" class="small">Kopiraj za objavo</button><button data-act="sheets" class="small">Izvoz v Sheets</button><button data-act="share" class="small">Deli razpored</button><button data-act="print" class="small">Natisni</button>' : ''}
     <button data-act="export" class="small">Izvoz</button>
     <button data-act="import" class="small">Uvoz</button>
     ${undoStack.length ? '<button data-act="undo" class="small">↶ Razveljavi</button>' : ''}`;
@@ -1120,6 +1124,51 @@ function downloadText(name, txt, type){
   a.click(); URL.revokeObjectURL(a.href);
 }
 
+/* ---------- objava na splet z enim klikom (GitHub API) ---------- */
+// Potisne data.js naravnost v repo prek GitHub Contents API. Token (fine-grained,
+// Contents: write za GH_REPO) se shrani samo v localStorage tega brskalnika.
+function ghToken(){
+  let t = (localStorage.getItem(GHTOKEN_KEY) || '').trim();
+  if (!t){
+    t = (prompt('Prilepi GitHub token za objavo (fine-grained, dovoljenje "Contents: write" za repo ' + GH_REPO + ').\n\nShrani se SAMO v ta brskalnik in nikamor drugam.') || '').trim();
+    if (t) localStorage.setItem(GHTOKEN_KEY, t);
+  }
+  return t;
+}
+function b64utf8(str){ // UTF-8 -> standardni base64 (kot zahteva GitHub)
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin);
+}
+async function ghPublish(btn){
+  const token = ghToken();
+  if (!token) return;
+  const api = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_PATH;
+  const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
+  const label = btn && btn.textContent;
+  if (btn){ btn.disabled = true; btn.textContent = 'Objavljam …'; }
+  const badToken = () => { localStorage.removeItem(GHTOKEN_KEY); alert('Token ni veljaven ali nima pravice "Contents: write". Ob naslednji objavi vpiši novega.'); };
+  try {
+    // 1) trenutni sha datoteke (potreben za posodobitev; manjka le, če datoteke še ni)
+    let sha = null;
+    const g = await fetch(api + '?ref=' + GH_BRANCH, { headers, cache: 'no-store' });
+    if (g.status === 401 || g.status === 403) return badToken();
+    if (g.ok) sha = (await g.json()).sha;
+    // 2) potisni novo vsebino
+    const body = { message: 'rezultati — ' + new Date().toLocaleString('sl-SI'), content: b64utf8(publishText()), branch: GH_BRANCH };
+    if (sha) body.sha = sha;
+    const p = await fetch(api, { method: 'PUT', headers, body: JSON.stringify(body) });
+    if (p.status === 401 || p.status === 403) return badToken();
+    if (p.ok) alert('Objavljeno! Javna stran bo sveža v ~1 minuti.');
+    else { const e = await p.json().catch(() => ({})); alert('Napaka pri objavi: ' + (e.message || p.status)); }
+  } catch (err) {
+    alert('Napaka pri povezavi z GitHub: ' + err.message);
+  } finally {
+    if (btn){ btn.disabled = false; btn.textContent = label; }
+  }
+}
+
 /* ---------- izvoz za Google Sheets ---------- */
 // TSV z vgrajenimi formulami: ure se verižno preračunavajo iz Trajanja,
 // lestvici se polnita sami iz rezultatov. Formule so brez ločil argumentov
@@ -1263,6 +1312,7 @@ document.addEventListener('click', e => {
     else downloadText('data.js', txt);
     return;
   }
+  if (act === 'ghpublish') return ghPublish(btn);
   if (act === 'sheets'){
     const tsv = sheetsExport();
     const done = () => alert('Skopirano v odložišče!\n\n1) Odpri sheets.new\n2) Klikni celico A1 in prilepi (Ctrl+V)\n3) Share → "Anyone with the link: Viewer" → povezavo pošlji igralcem enkrat.\n\nRezultate nato vpisuješ kar v preglednico — s katerekoli naprave, tudi več ljudi hkrati; ure in lestvica se preračunajo same.');

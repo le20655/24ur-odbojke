@@ -7,8 +7,8 @@
 import pathlib, sys
 
 d = pathlib.Path(__file__).parent
-core = (d / 'core.js').read_text()
-app = (d / 'app.html').read_text()
+core = (d / 'core.js').read_text(encoding='utf-8')
+app = (d / 'app.html').read_text(encoding='utf-8')
 
 share_base = sys.argv[1] if len(sys.argv) > 1 else ''
 base = app.replace('/*__CORE__*/', core).replace('__SHARE_BASE__', share_base)
@@ -20,8 +20,8 @@ def page(mode):
 
 viewer = page('viewer')
 editor = page('editor')
-(d / 'index.html').write_text(viewer)
-(d / 'uredi.html').write_text(editor)
-(d / '24ur-odbojke.html').write_text(editor)
+(d / 'index.html').write_text(viewer, encoding='utf-8')
+(d / 'uredi.html').write_text(editor, encoding='utf-8')
+(d / '24ur-odbojke.html').write_text(editor, encoding='utf-8')
 print('OK: index.html (viewer, %d kB), uredi.html + 24ur-odbojke.html (editor), SHARE_BASE=%r'
       % (len(viewer) // 1024, share_base))
