@@ -121,6 +121,8 @@
     const cells = M + (opts.extraCells || 0);
     const S = Math.ceil(cells / 2);
     const P = 2 * n;
+    const eveSlots = opts.eveningSlots || 0; // reže pred nočno pavzo (vrhunec) — tam prazna igrišča kaznujemo
+    const emptyW = opts.emptyW || 0;         // teža: prazno igrišče čez večer naj se raje preseli v jutro
 
     // začetni razpored: po vrsti (krogi skupaj), prazne celice na koncu
     const grid = [];
@@ -146,9 +148,18 @@
       return pen;
     }
 
+    // pozicijska kazen praznih rež: prazno igrišče v slotu pred nočno pavzo je (rahlo) nezaželeno
+    const emptyPen = s => (emptyW && s < eveSlots) ? emptyW : 0;
+    function gridEmptyPen() {
+      let e = 0;
+      for (let s = 0; s < S; s++) { if (grid[s][0] < 0) e += emptyPen(s); if (grid[s][1] < 0) e += emptyPen(s); }
+      return e;
+    }
+
     const pens = new Array(P);
     let total = 0;
     for (let p = 0; p < P; p++) { pens[p] = penPlayer(p); total += pens[p]; }
+    total += gridEmptyPen();
 
     function replaceSlot(p, from, to) {
       const arr = pslots[p];
@@ -170,6 +181,11 @@
       if (m2 >= 0) for (const p of players[m2]) aff.add(p);
       let delta = 0;
       for (const p of aff) delta -= pens[p];
+      if (emptyW && s1 !== s2) { // premik prazne reže proti jutru/repu
+        const be = (m1 < 0 ? emptyPen(s1) : 0) + (m2 < 0 ? emptyPen(s2) : 0);
+        const af = (m2 < 0 ? emptyPen(s1) : 0) + (m1 < 0 ? emptyPen(s2) : 0);
+        delta += af - be;
+      }
       if (m1 >= 0) for (const p of players[m1]) replaceSlot(p, s1, s2);
       if (m2 >= 0) for (const p of players[m2]) replaceSlot(p, s2, s1);
       const newPens = {};
@@ -254,6 +270,7 @@
     }
     total = 0;
     for (let p = 0; p < P; p++) { pens[p] = penPlayer(p); total += pens[p]; }
+    total += gridEmptyPen();
     T = 1e-9; // sprejmi le stroge izboljšave
     let guard = 0, improvedAny = true;
     while (improvedAny && guard++ < 30) {
@@ -285,6 +302,13 @@
     const restarts = cfg.restarts || 4;
     const budgetMin = cfg.budgetMin || 1410;
     const pauseMin = cfg.pauseMin != null ? cfg.pauseMin : 120;
+    // prazne reže (prosto igrišče) naj se raje selijo v jutro po nočni pavzi, ne v večerni vrhunec
+    const emptyW = cfg.emptyW != null ? cfg.emptyW : 50;
+    let eveningSlots = 0;
+    if (cfg.pauseOn && cfg.pauseClock) {
+      const relNight = ((clockToMin(cfg.pauseClock) - clockToMin(cfg.startClock)) + 1440) % 1440;
+      eveningSlots = Math.round(relNight / slotMin);
+    }
     let bestAll = null;
     let extraCells = 0;
     for (let r = 0; r < restarts; r++) {
@@ -292,7 +316,7 @@
       const { matches } = generateMatches(n, rng);
       const maxCells = 2 * Math.floor((budgetMin - pauseMin) / slotMin);
       extraCells = Math.max(0, Math.min(Math.max(4, 16 - n), maxCells - matches.length));
-      const sol = assignSlots(matches, { n, iters: cfg.iters, extraCells }, rng);
+      const sol = assignSlots(matches, { n, iters: cfg.iters, extraCells, eveningSlots, emptyW }, rng);
       if (!bestAll || sol.total < bestAll.total) bestAll = { total: sol.total, grid: sol.grid, matches };
       if (bestAll.total < 4000) break; // brez trdih kršitev
     }
@@ -301,7 +325,7 @@
       for (let r = restarts; r < restarts + 2; r++) {
         const rng = mulberry32((cfg.seed || 1) + r * 7919);
         const { matches } = generateMatches(n, rng);
-        const sol = assignSlots(matches, { n, iters: (cfg.iters || 150000) * 3, extraCells }, rng);
+        const sol = assignSlots(matches, { n, iters: (cfg.iters || 150000) * 3, extraCells, eveningSlots, emptyW }, rng);
         if (sol.total < bestAll.total) bestAll = { total: sol.total, grid: sol.grid, matches };
         if (bestAll.total < 8000) break;
       }
