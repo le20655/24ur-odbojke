@@ -735,6 +735,7 @@ let viewerLoading = false;
 let tab = 'setup';
 let courtView = 'all';   // 'all' | '0' | '1' — katero igrišče kaže razpored
 let undoStack = [];
+let locked = false;      // zaklenjen turnir: skrije Nastavitev + generiranje/brisanje; ostane vpisovanje in zamikanje
 const DEFAULT_GIRLS = ['NEŽA BERCE','NINA TOMAŽIN','ERIKA MOHORIČ','MARUŠA DOLINAR','LIZA POLJANČŠEK','LIA BERCE','LOTI GRUŠKO VANJAK','MAŠA VEGELJ','PUNCA 9','PUNCA 10','PUNCA 11','PUNCA 12'];
 const DEFAULT_BOYS = ['JAKA KOPAČ','ROK MROULE','MATIC ENIKO','JAN GOVEKAR','JUŠ BURJEK','DOMEN DOLENC','KRIŠTOF GANTAR','DAVID ŠENK','JAN DOLENC','URBAN JEREB','LUYGGY','JAKA ENIKO'];
 
@@ -752,7 +753,7 @@ function fmtT(rel){ // relativne minute -> ura (+ oznaka naslednjega dne)
   const abs = startClockMin() + rel;
   return Core.minToClock(abs) + (abs >= 1440 ? '<span class="nd">+1 dan</span>' : '');
 }
-function save(){ if (readonly) return; try{ localStorage.setItem(LSKEY, JSON.stringify({S, tab, courtView})); }catch(e){} }
+function save(){ if (readonly) return; try{ localStorage.setItem(LSKEY, JSON.stringify({S, tab, courtView, locked})); }catch(e){} }
 function mutate(fn){
   undoStack.push(JSON.stringify(S));
   if (undoStack.length > 25) undoStack.shift();
@@ -777,7 +778,7 @@ function roundChip(m){ return m.makeup ? 'dod.' : 'krog ' + (m.round+1); }
   } else {
     try {
       const raw = localStorage.getItem(LSKEY);
-      if (raw){ const o = JSON.parse(raw); S = o.S; tab = o.tab || 'setup'; if (o.courtView === '0' || o.courtView === '1') courtView = o.courtView; }
+      if (raw){ const o = JSON.parse(raw); S = o.S; tab = o.tab || 'setup'; if (o.courtView === '0' || o.courtView === '1') courtView = o.courtView; locked = !!o.locked; }
     } catch(e){}
   }
   if (!S) S = freshState();
@@ -863,11 +864,12 @@ function renderTop(){
   else tb.innerHTML = `
     ${S.queues ? '<button data-act="ghpublish" class="small primary">Objavi na splet</button><button data-act="publish" class="small">Kopiraj za objavo</button><button data-act="sheets" class="small">Izvoz v Sheets</button><button data-act="share" class="small">Deli razpored</button><button data-act="print" class="small">Natisni</button>' : ''}
     <button data-act="export" class="small">Izvoz</button>
-    <button data-act="import" class="small">Uvoz</button>
-    ${undoStack.length ? '<button data-act="undo" class="small">↶ Razveljavi</button>' : ''}`;
+    ${locked ? '' : '<button data-act="import" class="small">Uvoz</button>'}
+    ${undoStack.length ? '<button data-act="undo" class="small">↶ Razveljavi</button>' : ''}
+    ${S.queues ? `<button data-act="togglelock" class="small">${locked ? '🔓 Odkleni turnir' : '🔒 Zakleni turnir'}</button>` : ''}`;
 
   const tabs = $('#tabs');
-  const items = readonly
+  const items = (readonly || locked)
     ? [['sched','Razpored'],['board','Lestvica']]
     : [['setup','Nastavitev'],['sched','Razpored'],['board','Lestvica']];
   tabs.innerHTML = items.map(([id,l]) =>
@@ -1281,6 +1283,11 @@ document.addEventListener('click', e => {
   const act = btn.dataset.act; if (!act) return;
   const c = +btn.dataset.c, i = +btn.dataset.i;
 
+  if (act === 'togglelock'){
+    if (locked){ if (!confirm('Odkleni turnir? Znova bosta na voljo zavihek Nastavitev z generiranjem razporeda in brisanjem — pazi, da ne izbrišeš rezultatov.')) return; locked = false; }
+    else { locked = true; if (tab === 'setup') tab = 'sched'; }
+    save(); renderAll(); return;
+  }
   if (act === 'cview'){ courtView = btn.dataset.v; save(); renderAll(); if (readonly) scrollToCurrent(); return; }
   if (act === 'generate') return doGenerate();
   if (act === 'wipe'){ if (confirm('Res izbrišem VSE (imena, razpored, rezultate)?')){ localStorage.removeItem(LSKEY); S = freshState(); undoStack = []; tab='setup'; renderAll(); } return; }
@@ -1423,7 +1430,7 @@ function renderMain(){
     : '<div class="card"><h2>Razpored še ni objavljen</h2><p class="hint">Organizator ga bo kmalu objavil — poskusi znova čez nekaj minut.</p></div>';
   else { tab = 'setup'; m.innerHTML = renderSetup(); setupCounts(); }
 }
-function renderAll(){ renderTop(); renderMain(); }
+function renderAll(){ if (locked && tab === 'setup') tab = 'sched'; renderTop(); renderMain(); }
 </script>
 
 </body>

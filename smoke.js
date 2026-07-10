@@ -84,6 +84,25 @@ const checks = [];
     ['editor: rezultat izpisan', /21 : 15/.test(b)],
     ['editor: publishText format', /^PUB = \{$/m.test(pub) && /rezultati: \{/.test(pub) && / 2: \[21, 15\],/.test(pub) && / 1: null,/.test(pub)],
   );
+  // zaklep turnirja: skrije Nastavitev + generiranje/uvoz, preusmeri s Nastavitve, ostane vpisovanje
+  vm.runInContext(`
+    tab = 'setup'; locked = true; renderAll();
+    __ltabs = document.querySelector('#tabs').innerHTML;
+    __ltools = document.querySelector('#toolbar').innerHTML;
+    __lmain = document.querySelector('#main').innerHTML;
+    __ltab = tab;
+    locked = false; renderAll();
+    __utabs = document.querySelector('#tabs').innerHTML;
+  `, ctx, { filename: 'faza3.js' });
+  const ltabs = vm.runInContext('__ltabs', ctx), ltools = vm.runInContext('__ltools', ctx);
+  const lmain = vm.runInContext('__lmain', ctx), ltab = vm.runInContext('__ltab', ctx);
+  const utabs = vm.runInContext('__utabs', ctx);
+  checks.push(
+    ['editor: zaklep skrije Nastavitev', !/Nastavitev/.test(ltabs)],
+    ['editor: zaklep ponudi Odkleni in skrije Uvoz', /Odkleni turnir/.test(ltools) && !/data-act="import"/.test(ltools)],
+    ['editor: zaklep preusmeri s Nastavitve', ltab === 'sched' && !/Igralci in nastavitve/.test(lmain)],
+    ['editor: odklep vrne Nastavitev', /Nastavitev/.test(utabs)],
+  );
 }
 
 // ===== viewer (index.html + pravi data.js) =====
