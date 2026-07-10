@@ -29,7 +29,7 @@ function makeCtx(dataJs){
     fetch: dataJs
       ? () => Promise.resolve({ text: () => Promise.resolve(dataJs) })
       : () => Promise.reject(new Error('brez mreže')),
-    setInterval(){}, setTimeout(){}, alert(){}, confirm: () => false, prompt: () => null,
+    setInterval(){}, setTimeout(){}, clearInterval(){}, clearTimeout(){}, alert(){}, confirm: () => false, prompt: () => null,
     Date, JSON, Math, Object, Array, String, Number, URL, Blob: class {},
     TextEncoder, TextDecoder, Uint8Array,
   };
@@ -83,6 +83,25 @@ const checks = [];
     ['editor: filter samo 2', !/IGRIŠČE 1/.test(b) && /IGRIŠČE 2/.test(b) && / single/.test(b)],
     ['editor: rezultat izpisan', /21 : 15/.test(b)],
     ['editor: publishText format', /^PUB = \{$/m.test(pub) && /rezultati: \{/.test(pub) && / 2: \[21, 15\],/.test(pub) && / 1: null,/.test(pub)],
+    ['editor: gumb tekma odpade', /data-act="moff"/.test(all)],
+  );
+  // tekma odpade: prečrtana, brez vnosa, publishText jo označi
+  vm.runInContext(`
+    S.matches[1].off = true; courtView = 'all'; renderMain();
+    __off = document.querySelector('#main').innerHTML;
+    __offpub = publishText();
+    S.matches[1].off = false;
+    renderTop();
+    __tools2 = document.querySelector('#toolbar').innerHTML;
+    __top2 = document.querySelector('#topstats').innerHTML;
+  `, ctx, { filename: 'faza2b.js' });
+  const off2 = vm.runInContext('__off', ctx), offpub = vm.runInContext('__offpub', ctx);
+  const tools2 = vm.runInContext('__tools2', ctx), top2 = vm.runInContext('__top2', ctx);
+  checks.push(
+    ['editor: odpadla tekma označena', / offm/.test(off2) && /ODPADE/.test(off2) && !/id="sa1"/.test(off2)],
+    ['editor: publishText označi odpadlo', / 1: null,.*ODPADE/.test(offpub)],
+    ['editor: gumb Obnovi', /data-act="restore"/.test(tools2)],
+    ['editor: indikator objave', /class="pub /.test(top2)],
   );
   // zaklep turnirja: skrije Nastavitev + generiranje/uvoz, preusmeri s Nastavitve, ostane vpisovanje
   vm.runInContext(`
@@ -124,9 +143,20 @@ const checks = [];
     ['viewer: odigrane in konec v glavi', /odigranih/.test(top) && /konec ob/.test(top)],
     ['viewer: pasica z objavo', /Zadnja objava/.test(main)],
     ['viewer: bralni pogled (brez urejanja)', !/Nastavitev/.test(tabs) && !/data-act="rsave"/.test(main)],
-    ['viewer: rezultati vidni', /\d+ : \d+/.test(main.replace(/\d+:\d+/g, ''))],
+    // rezultat izpisan, ali — pri še neodigrani tekmi (trenutna objava je lahko brez rezultatov)
+    ['viewer: rezultati vidni', /\d+ : \d+/.test(main.replace(/\d+:\d+/g, '')) || /class="hint">—</.test(main)],
     ['viewer: lestvica', /Punce/.test(board) && /Fantje/.test(board) && /Točke\/T/.test(board)],
   );
+  // iskalnik igralca: v glavi je izbirnik, pogled pokaže tekme z obeh igrišč
+  const seg = el('#segbar').innerHTML;
+  vm.runInContext('tab = "sched"; playerView = 0; renderAll(); __pv = document.querySelector("#main").innerHTML; __pseg = document.querySelector("#segbar").innerHTML; playerView = -1; renderAll();', ctx);
+  const pv = vm.runInContext('__pv', ctx), pseg = vm.runInContext('__pseg', ctx);
+  checks.push(
+    ['viewer: izbirnik igralca v glavi', /id="psel"/.test(seg)],
+    ['viewer: pogled igralca — naslov in tekme', /Vse tekme — /.test(pv) && /crt0/.test(pv) && /crt1/.test(pv)],
+    ['viewer: pogled igralca skrije izbirnik igrišč', !/data-act="cview"/.test(pseg) && /data-act="pclear"/.test(pseg)],
+  );
+
   // brez mreže: prijazno sporočilo, ne prazna stran
   const off = await runPage('index.html', null);
   checks.push(['viewer: brez data.js pokaže sporočilo', /ni objavljen/.test(off.el('#main').innerHTML)]);

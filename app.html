@@ -1,7 +1,7 @@
 <title>24 ur odbojke</title>
 <style>
 :root{
-  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#23252c; --muted:#6d6f78;
+  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#1e2026; --muted:#5c5f69;
   --line:#dedbce; --accent:#a86f0a; --accent-bg:#f5e3bc; --accent-strong:#8a5c08;
   --courtA:#a86f0a; --courtA-bg:#f8ecd2; --courtB:#35609f; --courtB-bg:#dfe8f5;
   --ok:#2f7d4f; --err:#b0433c; --err-bg:#f6dedc; --warn-bg:#f5e3bc; --night:#5d4fa8;
@@ -17,7 +17,7 @@
   --shadow:0 1px 4px rgba(0,0,0,.4);
 }}
 :root[data-theme="light"]{
-  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#23252c; --muted:#6d6f78;
+  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#1e2026; --muted:#5c5f69;
   --line:#dedbce; --accent:#a86f0a; --accent-bg:#f5e3bc; --accent-strong:#8a5c08;
   --courtA:#a86f0a; --courtA-bg:#f8ecd2; --courtB:#35609f; --courtB-bg:#dfe8f5;
   --ok:#2f7d4f; --err:#b0433c; --err-bg:#f6dedc; --warn-bg:#f5e3bc; --night:#5d4fa8;
@@ -35,7 +35,7 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,"Segoe UI",Roboto,sans-serif}
-button{font:inherit;color:inherit;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer}
+button{font:inherit;color:inherit;background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:4px 10px;cursor:pointer}
 button:hover{border-color:var(--muted)}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 button.primary{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:700}
@@ -58,7 +58,7 @@ nav.tabs button{border:none;background:none;border-radius:0;padding:8px 14px;fon
 nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent)}
 
 main{max-width:1180px;margin:0 auto;padding:16px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:var(--shadow)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
 h2{font-size:17px;margin:0 0 10px}
 .hint{color:var(--muted);font-size:13.5px}
 
@@ -75,7 +75,7 @@ h2{font-size:17px;margin:0 0 10px}
 /* razpored */
 .courts{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
 @media (max-width:860px){.courts{grid-template-columns:1fr}.setupgrid{grid-template-columns:1fr}}
-.court{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.court{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
 .courthead{padding:9px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
 .court[data-c="0"] .courthead{background:var(--courtA-bg)}
 .court[data-c="1"] .courthead{background:var(--courtB-bg)}
@@ -118,7 +118,7 @@ h2{font-size:17px;margin:0 0 10px}
 
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
 /* javna stran: izbirnik igrišča v lepljivi glavi, vedno viden */
-.segbar{display:flex;justify-content:center;padding:7px 10px;border-top:1px solid var(--line)}
+.segbar{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 10px;border-top:1px solid var(--line)}
 .segbar:empty{display:none}
 .seg button{border:none;border-radius:0;background:var(--surface);padding:4px 13px}
 .seg button+button{border-left:1px solid var(--line)}
@@ -161,6 +161,50 @@ dialog::backdrop{background:rgba(0,0,0,.45)}
 .overlay{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 80%,transparent);display:flex;align-items:center;justify-content:center;z-index:50;font-size:17px;font-weight:700}
 @media (prefers-reduced-motion: no-preference){
   .qrow.now{transition:background .3s}
+}
+
+/* indikator objave (urejevalnik) */
+.pub{font-size:12.5px;font-weight:700;white-space:nowrap}
+.pub.ok{color:var(--ok)} .pub.warn{color:var(--accent-strong)} .pub.err{color:var(--err)} .pub.mut{color:var(--muted)}
+
+/* tekma odpade */
+.qrow.offm .pair{text-decoration:line-through;opacity:.6}
+.qrow.offm .time{opacity:.6}
+.chip.offc{color:var(--err);border-color:var(--err);font-size:11.5px}
+
+/* dialog Obnovi */
+#restoreDlg{max-width:460px;width:92vw;padding:16px}
+#restoreDlg h2{margin-top:0}
+#restoreDlg .eyebrow{margin:14px 0 4px}
+#restoreDlg .snaprow{display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+#restoreDlg .snaprow:last-of-type{border-bottom:none}
+
+/* iskalnik igralca + oznaki igrišč (javna stran) */
+#psel{max-width:52vw}
+.chip.crt0{color:var(--courtA);border-color:var(--courtA)}
+.chip.crt1{color:var(--courtB);border-color:var(--courtB)}
+.pcard{padding:0;overflow:hidden}
+.pcard h2{padding:12px 14px;margin:0;border-bottom:1px solid var(--line)}
+
+/* javna stran: večje, čitljivejše (telefon, sonce, noč) */
+body.m-viewer main{max-width:860px}
+body.m-viewer .qrow{padding:10px 14px;gap:12px}
+body.m-viewer .qrow .time{font-size:15.5px;width:58px}
+body.m-viewer .qrow .pair{font-size:15px;line-height:1.45}
+body.m-viewer .qrow.now{box-shadow:inset 0 0 0 2px var(--accent)}
+body.m-viewer .qrow.now .pair{font-size:16.5px;font-weight:700}
+body.m-viewer .qrow.now .time{font-size:17px}
+body.m-viewer .seg button{padding:8px 20px;font-size:15px}
+body.m-viewer #psel{padding:7px 10px;border-radius:8px}
+@media (max-width:640px){
+  body.m-viewer{font-size:16px}
+  body.m-viewer .qrow .body{min-width:calc(100% - 72px)}
+  body.m-viewer .qrow .scorebox{margin-left:70px}
+  body.m-viewer table.board th:nth-child(4),body.m-viewer table.board td:nth-child(4),
+  body.m-viewer table.board th:nth-child(5),body.m-viewer table.board td:nth-child(5),
+  body.m-viewer table.board th:nth-child(6),body.m-viewer table.board td:nth-child(6),
+  body.m-viewer table.board th:nth-child(9),body.m-viewer table.board td:nth-child(9){display:none}
+  body.m-viewer table.board td{padding:8px 7px;font-size:15px}
 }
 
 /* tisk */
@@ -211,6 +255,13 @@ let tab = 'setup';
 let courtView = 'all';   // 'all' | '0' | '1' — katero igrišče kaže razpored
 let undoStack = [];
 let locked = false;      // zaklenjen turnir: skrije Nastavitev + generiranje/brisanje; ostane vpisovanje in zamikanje
+let playerView = -1;     // javna stran: -1 = razpored po igriščih, sicer indeks igralca (vse njegove tekme)
+let netErr = false;      // javna stran: zadnji prenos data.js ni uspel
+let lsWarned = false;    // enkratno opozorilo, če localStorage ne dela
+const PUBCACHE_KEY = 'odbojka24.pub';   // javna stran: zadnja uspešno prenesena data.js
+const SNAPKEY = 'odbojka24.snap';       // urejevalnik: obroč lokalnih posnetkov stanja
+// samodejna objava: stanje in časovniki (debounce + ponovni poskusi z backoffom)
+const pubst = { state: 'idle', lastOk: 0, errMsg: '', timer: null, retry: null, retryMs: 15000, lastPushedUpdated: '', confirmedOverwrite: '', busy: false };
 const DEFAULT_GIRLS = ['NEŽA BERCE','NINA TOMAŽIN','ERIKA MOHORIČ','MARUŠA DOLINAR','LIZA POLJANČŠEK','LIA BERCE','LOTI GRUŠKO VANJAK','MAŠA VEGELJ','PUNCA 9','PUNCA 10','PUNCA 11','PUNCA 12'];
 const DEFAULT_BOYS = ['JAKA KOPAČ','ROK MROULE','MATIC ENIKO','JAN GOVEKAR','JUŠ BURJEK','DOMEN DOLENC','KRIŠTOF GANTAR','DAVID ŠENK','JAN DOLENC','URBAN JEREB','LUYGGY','JAKA ENIKO'];
 
@@ -228,12 +279,16 @@ function fmtT(rel){ // relativne minute -> ura (+ oznaka naslednjega dne)
   const abs = startClockMin() + rel;
   return Core.minToClock(abs) + (abs >= 1440 ? '<span class="nd">+1 dan</span>' : '');
 }
-function save(){ if (readonly) return; try{ localStorage.setItem(LSKEY, JSON.stringify({S, tab, courtView, locked})); }catch(e){} }
+function save(){ if (readonly) return; try{ localStorage.setItem(LSKEY, JSON.stringify({S, tab, courtView, locked})); }catch(e){ lsWarn(); } }
+function lsWarn(){
+  if (lsWarned) return; lsWarned = true;
+  alert('Opozorilo: brskalnik ne more shranjevati (poln ali blokiran localStorage).\nStanje se ohranja samo prek objave na splet — spremljaj indikator objave v glavi.');
+}
 function mutate(fn){
   undoStack.push(JSON.stringify(S));
   if (undoStack.length > 25) undoStack.shift();
   fn();
-  save(); renderAll();
+  save(); pushSnapshot(); schedulePublish(); renderAll();
 }
 function newId(){ return S.nextId = (S.nextId || 5000) + 1; }
 function pairStr(g,b){ return esc(S.cfg.girls[g]) + ' & ' + esc(S.cfg.boys[b]); }
@@ -273,23 +328,53 @@ function roundChip(m){ return m.makeup ? 'dod.' : 'krog ' + (m.round+1); }
   window.addEventListener('hashchange', ()=>location.reload());
 })();
 
+// iz vsebine data.js sestavi stanje (token + rezultati)
+function statePubApply(pub){
+  const st = Core.decodeState(pub.token);
+  for (const id in (pub.rezultati || {})){
+    const m = st.matches[id];
+    if (m) m.res = pub.rezultati[id] ? { a: +pub.rezultati[id][0], b: +pub.rezultati[id][1] } : null;
+  }
+  return st;
+}
 // javna stran: prenese data.js (razpored kot token + ročno vzdrževani rezultati) in ga uveljavi
+function applyPubCode(code){
+  const pub = new Function(code + ';return PUB;')();
+  const first = !S || !S.queues;
+  S = statePubApply(pub); publishedAt = pub.updated || '';
+  viewerLoading = false; renderAll();
+  if (first) scrollToCurrent();
+}
 function loadPublished(){
   fetch('data.js?_=' + Date.now(), { cache: 'no-store' })
     .then(r => r.text())
     .then(code => {
-      const pub = new Function(code + ';return PUB;')();
-      const st = Core.decodeState(pub.token);
-      for (const id in (pub.rezultati || {})){
-        const m = st.matches[id];
-        if (m) m.res = pub.rezultati[id] ? { a: +pub.rezultati[id][0], b: +pub.rezultati[id][1] } : null;
-      }
-      const first = !S || !S.queues;
-      S = st; publishedAt = pub.updated || '';
-      viewerLoading = false; renderAll();
-      if (first) scrollToCurrent();
+      applyPubCode(code); // vrže ob pokvarjeni datoteki -> catch spodaj obdrži zadnje dobro stanje
+      netErr = false;
+      try{ localStorage.setItem(PUBCACHE_KEY, code); }catch(e){}
     })
-    .catch(() => { if (viewerLoading){ viewerLoading = false; renderAll(); } });
+    .catch(() => {
+      netErr = true;
+      // brez mreže ali pokvarjeni podatki: pokaži zadnjo dobro kopijo iz tega brskalnika
+      if (!S || !S.queues){
+        try{ const c = localStorage.getItem(PUBCACHE_KEY); if (c) applyPubCode(c); }catch(e){}
+      }
+      viewerLoading = false; renderAll();
+    });
+}
+// pasica javne strani: svežina objave + morebitna izguba povezave
+function agoStr(iso){
+  const min = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (!isFinite(min) || min < 1) return '';
+  return ' (pred ' + (min < 60 ? min + ' min' : Math.round(min / 60) + ' h') + ')';
+}
+function viewerBanner(){
+  let h = '';
+  if (netErr) h += '<div class="warnbox">⚠ Ni povezave — prikazano je zadnje znano stanje.</div>';
+  h += `<div class="banner-ro">${publishedAt
+    ? 'Zadnja objava: <b>' + new Date(publishedAt).toLocaleString('sl-SI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}) + '</b>' + agoStr(publishedAt) + ' — stran se osvežuje sama. Ure so ocenjene.'
+    : 'Bralni pogled — razpored ureja organizator. Ure so ocenjene in se lahko spremenijo.'}</div>`;
+  return h;
 }
 
 // postavi pogled na zadnjo tekmo z vnesenim rezultatom (dogajanje je tik pod njo)
@@ -332,6 +417,7 @@ function renderTop(){
     html += `<span>odigranih <b>${done}/${ms.length}</b></span>`;
     html += `<span>${viewer ? 'konec ob' : 'predviden konec'} <b class="mono">${fmtT(Math.max(...courtEnd))}</b></span>`;
   }
+  html += pubStatusHtml();
   st.innerHTML = html;
 
   const tb = $('#toolbar');
@@ -340,6 +426,7 @@ function renderTop(){
     ${S.queues ? '<button data-act="ghpublish" class="small primary">Objavi na splet</button><button data-act="publish" class="small">Kopiraj za objavo</button><button data-act="sheets" class="small">Izvoz v Sheets</button><button data-act="share" class="small">Deli razpored</button><button data-act="print" class="small">Natisni</button>' : ''}
     <button data-act="export" class="small">Izvoz</button>
     ${locked ? '' : '<button data-act="import" class="small">Uvoz</button>'}
+    <button data-act="restore" class="small">Obnovi …</button>
     ${undoStack.length ? '<button data-act="undo" class="small">↶ Razveljavi</button>' : ''}
     ${S.queues ? `<button data-act="togglelock" class="small">${locked ? '🔓 Odkleni turnir' : '🔒 Zakleni turnir'}</button>` : ''}`;
 
@@ -350,8 +437,20 @@ function renderTop(){
   tabs.innerHTML = items.map(([id,l]) =>
     `<button data-tab="${id}" class="${tab===id?'active':''}" ${id!=='setup'&&!S.queues?'disabled':''}>${l}</button>`).join('');
 
-  // javna stran: izbirnik igrišča v lepljivi glavi (viden tudi med drsenjem)
-  $('#segbar').innerHTML = (MODE === 'viewer' && S && S.queues && tab === 'sched') ? segHtml() : '';
+  // javna stran: izbirnik igrišča + iskalnik igralca v lepljivi glavi (vidna tudi med drsenjem)
+  $('#segbar').innerHTML = (MODE === 'viewer' && S && S.queues && tab === 'sched')
+    ? (playerView < 0 ? segHtml() : '') + playerSelHtml()
+    : '';
+}
+
+// javna stran: izbirnik igralca — pokaže vse njegove tekme z obeh igrišč
+function playerSelHtml(){
+  const c = S.cfg;
+  const opt = (name, p) => `<option value="${p}" ${playerView === p ? 'selected' : ''}>${esc(name)}</option>`;
+  return `<select id="psel" title="Poišči igralca"><option value="">🔍 Poišči igralca …</option>
+    <optgroup label="Punce">${c.girls.map((g,i)=>opt(g,i)).join('')}</optgroup>
+    <optgroup label="Fantje">${c.boys.map((b,i)=>opt(b,i+c.girls.length)).join('')}</optgroup></select>` +
+    (playerView >= 0 ? '<button data-act="pclear" title="nazaj na razpored">✕</button>' : '');
 }
 
 /* ---------- nastavitev ---------- */
@@ -433,25 +532,60 @@ function doGenerate(){
         Core.insertBreakAtTime(S, 1, rel, c.pauseMin, 'Nočni premor', newId());
       }
       tab = 'sched';
-      save(); renderAll();
+      save(); pushSnapshot(); schedulePublish(); renderAll();
     } finally { ov.remove(); }
   }, 60);
 }
 
 /* ---------- razpored ---------- */
-function pendingIdx(c){ // indeks prve tekme brez rezultata v vrsti igrišča
+function pendingIdx(c){ // indeks prve neodigrane (in ne odpadle) tekme v vrsti igrišča
   const q = S.queues[c];
-  for (let i = 0; i < q.length; i++) if (q[i].t === 'm' && !S.matches[q[i].id].res) return i;
+  for (let i = 0; i < q.length; i++){
+    if (q[i].t !== 'm') continue;
+    const m = S.matches[q[i].id];
+    if (!m.res && !m.off) return i;
+  }
   return -1;
 }
+// javna stran: vse tekme izbranega igralca z OBEH igrišč, urejene po času
+function renderPlayerSched(){
+  const n = S.cfg.girls.length;
+  const { times } = Core.computeTimes(S);
+  const now = nowMin();
+  const items = [];
+  for (let c = 0; c < 2; c++) for (const it of S.queues[c]){
+    if (it.t !== 'm') continue;
+    const m = S.matches[it.id];
+    if (!Core.matchPlayers(m, n).includes(playerView)) continue;
+    items.push({ m, c, t: times[m.id].start });
+  }
+  items.sort((a,b) => a.t - b.t);
+  let mark = -1; // prva neodigrana tekma igralca -> "zdaj" ali "naslednja"
+  for (let i = 0; i < items.length; i++) if (!items[i].m.res && !items[i].m.off){ mark = i; break; }
+  let html = viewerBanner();
+  html += `<div class="card pcard"><h2>Vse tekme — ${esc(Core.playerName(S.cfg, playerView))} <span class="chip">${items.length} tekem</span></h2>`;
+  html += items.map((x, i) => {
+    const isNow = i === mark && x.t <= now;
+    const isNext = i === mark && x.t > now;
+    return `<div class="qrow ${x.m.res ? 'done' : ''} ${x.m.off ? 'offm' : ''} ${isNow ? 'now' : ''} ${isNext ? 'next' : ''}">
+      <div class="time mono">${fmtT(x.t)}</div>
+      <div class="body">
+        <div class="pair">${pairStr(x.m.g1, x.m.b1)}<span class="vs">proti</span>${pairStr(x.m.g2, x.m.b2)}</div>
+        <div class="meta"><span class="chip crt${x.c}">Igrišče ${x.c + 1}</span> <span class="chip">${roundChip(x.m)}</span>${x.m.off ? ' &nbsp;· odpade' : ''}${isNow ? ' &nbsp;· zdaj igrajo' : ''}${isNext ? ' &nbsp;· naslednja' : ''}</div>
+      </div>
+      <div class="scorebox">${x.m.off ? '<span class="chip offc">ODPADE</span>' : x.m.res ? `<span class="score mono">${x.m.res.a} : ${x.m.res.b}</span>` : '<span class="hint">—</span>'}</div>
+    </div>`;
+  }).join('');
+  html += '</div><p class="legend">Pogled zapreš s ✕ v glavi. Pazi: tekme so na obeh igriščih — glej oznako Igrišče 1/2.</p>';
+  return html;
+}
 function renderSched(){
+  if (MODE === 'viewer' && playerView >= 0 && S.queues) return renderPlayerSched();
   const { times, breakTimes } = Core.computeTimes(S);
   const warns = Core.validate(S);
   const now = nowMin();
   let html = '';
-  if (readonly) html += `<div class="banner-ro">${publishedAt
-    ? 'Zadnja objava: <b>' + new Date(publishedAt).toLocaleString('sl-SI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}) + '</b> — stran se osvežuje sama. Ure so ocenjene.'
-    : 'Bralni pogled — razpored ureja organizator. Ure so ocenjene in se lahko spremenijo.'}</div>`;
+  if (readonly) html += viewerBanner();
   if (warns.length && !readonly){
     const shown = warns.slice(0, 10);
     html += `<div class="warnbox"><b>Opozorila (${warns.length})</b><ul>` +
@@ -498,13 +632,14 @@ function renderSched(){
         return;
       }
       const m = S.matches[it.id], tm = times[it.id];
-      const isNow = !m.res && tm.start <= now && i <= (pend<0?1e9:pend+1);
-      const isNext = !isNow && i === pend && tm.start > now;
+      const isNow = !m.res && !m.off && tm.start <= now && i <= (pend<0?1e9:pend+1);
+      const isNext = !isNow && !m.off && i === pend && tm.start > now;
       let score;
-      if (m.res) score = `<span class="score mono">${m.res.a} : ${m.res.b}</span>${readonly?'':`<button class="small" title="popravi rezultat" data-act="redit" data-id="${m.id}">✎</button>`}`;
+      if (m.off) score = '<span class="chip offc">ODPADE</span>';
+      else if (m.res) score = `<span class="score mono">${m.res.a} : ${m.res.b}</span>${readonly?'':`<button class="small" title="popravi rezultat" data-act="redit" data-id="${m.id}">✎</button>`}`;
       else if (readonly) score = '<span class="hint">—</span>';
       else score = `<input class="sc mono" type="number" min="0" id="sa${m.id}" placeholder="0"> : <input class="sc mono" type="number" min="0" id="sb${m.id}" placeholder="0"> <button class="small primary" data-act="rsave" data-id="${m.id}">OK</button>`;
-      html += `<div class="qrow ${m.res?'done':''} ${isNow?'now':''} ${isNext?'next':''}">
+      html += `<div class="qrow ${m.res?'done':''} ${m.off?'offm':''} ${isNow?'now':''} ${isNext?'next':''}">
         <div class="time mono">${fmtT(tm.start)}</div>
         <div class="body">
           <div class="pair">${pairStr(m.g1,m.b1)}<span class="vs">proti</span>${pairStr(m.g2,m.b2)}</div>
@@ -514,7 +649,8 @@ function renderSched(){
         ${readonly ? '' : `<div class="ctl">
           <button title="premakni gor" data-act="mv" data-c="${c}" data-i="${i}" data-d="-1">↑</button>
           <button title="premakni dol" data-act="mv" data-c="${c}" data-i="${i}" data-d="1">↓</button>
-          <button title="na drugo igrišče" data-act="xcourt" data-c="${c}" data-i="${i}">⇄</button></div>`}
+          <button title="na drugo igrišče" data-act="xcourt" data-c="${c}" data-i="${i}">⇄</button>
+          <button title="${m.off ? 'tekma se vseeno igra' : 'tekma odpade'}" data-act="moff" data-id="${m.id}">⊘</button></div>`}
       </div>`;
     });
     html += '</section>';
@@ -587,7 +723,8 @@ function publishText(){
     const m = S.matches[it.id];
     L.push(' ' + m.id + ': ' + (m.res ? '[' + m.res.a + ', ' + m.res.b + ']' : 'null') + ','
       + '  // ' + Core.minToClock(startClockMin() + times[m.id].start) + ' · ' + (c ? '2' : '1') + ' · '
-      + S.cfg.girls[m.g1] + ' & ' + S.cfg.boys[m.b1] + ' — ' + S.cfg.girls[m.g2] + ' & ' + S.cfg.boys[m.b2]);
+      + S.cfg.girls[m.g1] + ' & ' + S.cfg.boys[m.b1] + ' — ' + S.cfg.girls[m.g2] + ' & ' + S.cfg.boys[m.b2]
+      + (m.off ? ' · ODPADE' : ''));
   }
   L.push('}');
   L.push('};');
@@ -612,38 +749,175 @@ function ghToken(){
   }
   return t;
 }
+function ghHasToken(){ return !!(localStorage.getItem(GHTOKEN_KEY) || '').trim(); }
+function badToken(){ localStorage.removeItem(GHTOKEN_KEY); alert('Token ni veljaven ali nima pravice "Contents: write". Ob naslednji objavi vpiši novega.'); }
 function b64utf8(str){ // UTF-8 -> standardni base64 (kot zahteva GitHub)
   const bytes = new TextEncoder().encode(str);
   let bin = '';
   for (const b of bytes) bin += String.fromCharCode(b);
   return btoa(bin);
 }
+function b64d(b64){ // GitHubov base64 (z novimi vrsticami) -> UTF-8 niz
+  const bin = atob((b64 || '').replace(/\s+/g, ''));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+// potisne data.js v repo; interactive=true sme ob konfliktu vprašati s confirm
+async function ghPush(token, interactive){
+  const api = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_PATH;
+  const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
+  // 1) trenutni sha + čas oddaljene objave (za posodobitev in zaznavo konflikta)
+  let sha = null, remoteUpdated = '';
+  const g = await fetch(api + '?ref=' + GH_BRANCH, { headers, cache: 'no-store' });
+  if (g.status === 401 || g.status === 403) return { auth: false };
+  if (g.ok){
+    const j = await g.json();
+    sha = j.sha;
+    try{ remoteUpdated = (/updated: "([^"]+)"/.exec(b64d(j.content)) || [])[1] || ''; }catch(e){}
+  }
+  // 2) zaščita: ne povozi tiho objave, ki je ni naredil ta brskalnik (ročni popravki, druga naprava)
+  if (remoteUpdated && remoteUpdated !== pubst.lastPushedUpdated && remoteUpdated !== pubst.confirmedOverwrite){
+    if (!interactive) return { ok: false, blocked: true };
+    if (!confirm('Na spletu je objava iz ' + new Date(remoteUpdated).toLocaleString('sl-SI') +
+      ', ki je ni naredil ta brskalnik.\nPrepišem s trenutnim stanjem tega urejevalnika?\n\n(Če dvomiš, prekliči in najprej poglej "Obnovi …".)')) return { ok: false, blocked: true };
+    pubst.confirmedOverwrite = remoteUpdated;
+  }
+  // 3) potisni novo vsebino
+  const text = publishText();
+  const myUpdated = (/updated: "([^"]+)"/.exec(text) || [])[1] || '';
+  const body = { message: 'rezultati — ' + new Date().toLocaleString('sl-SI'), content: b64utf8(text), branch: GH_BRANCH };
+  if (sha) body.sha = sha;
+  const p = await fetch(api, { method: 'PUT', headers, body: JSON.stringify(body) });
+  if (p.status === 401 || p.status === 403) return { auth: false };
+  if (p.ok){ pubst.lastPushedUpdated = myUpdated; return { ok: true }; }
+  const e = await p.json().catch(() => ({}));
+  return { ok: false, msg: e.message || String(p.status) };
+}
 async function ghPublish(btn){
   const token = ghToken();
   if (!token) return;
-  const api = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_PATH;
-  const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
   const label = btn && btn.textContent;
   if (btn){ btn.disabled = true; btn.textContent = 'Objavljam …'; }
-  const badToken = () => { localStorage.removeItem(GHTOKEN_KEY); alert('Token ni veljaven ali nima pravice "Contents: write". Ob naslednji objavi vpiši novega.'); };
-  try {
-    // 1) trenutni sha datoteke (potreben za posodobitev; manjka le, če datoteke še ni)
-    let sha = null;
-    const g = await fetch(api + '?ref=' + GH_BRANCH, { headers, cache: 'no-store' });
-    if (g.status === 401 || g.status === 403) return badToken();
-    if (g.ok) sha = (await g.json()).sha;
-    // 2) potisni novo vsebino
-    const body = { message: 'rezultati — ' + new Date().toLocaleString('sl-SI'), content: b64utf8(publishText()), branch: GH_BRANCH };
-    if (sha) body.sha = sha;
-    const p = await fetch(api, { method: 'PUT', headers, body: JSON.stringify(body) });
-    if (p.status === 401 || p.status === 403) return badToken();
-    if (p.ok) alert('Objavljeno! Javna stran bo sveža v ~1 minuti.');
-    else { const e = await p.json().catch(() => ({})); alert('Napaka pri objavi: ' + (e.message || p.status)); }
-  } catch (err) {
-    alert('Napaka pri povezavi z GitHub: ' + err.message);
-  } finally {
-    if (btn){ btn.disabled = false; btn.textContent = label; }
+  let r;
+  try{ r = await ghPush(token, true); }
+  catch (err){ r = { ok: false, msg: err.message }; }
+  if (btn){ btn.disabled = false; btn.textContent = label; }
+  if (r.auth === false){ badToken(); pubst.state = 'err'; pubst.errMsg = 'neveljaven token'; }
+  else if (r.ok){ pubst.state = 'ok'; pubst.lastOk = Date.now(); pubst.retryMs = 15000; alert('Objavljeno! Javna stran bo sveža v ~1 minuti.'); }
+  else if (r.blocked){ pubst.state = 'blocked'; }
+  else { pubst.state = 'err'; pubst.errMsg = r.msg || ''; alert('Napaka pri objavi: ' + (r.msg || 'neznana')); }
+  renderTop();
+}
+
+/* ---------- samodejna objava: vsaka sprememba gre (debounced) na GitHub ---------- */
+function schedulePublish(){
+  if (MODE === 'viewer' || readonly || !S || !S.queues || !ghHasToken()) return;
+  clearTimeout(pubst.timer); clearTimeout(pubst.retry);
+  pubst.state = 'pending';
+  pubst.timer = setTimeout(autoPublish, 8000);
+}
+async function autoPublish(){
+  if (pubst.busy){ pubst.timer = setTimeout(autoPublish, 3000); return; }
+  const token = (localStorage.getItem(GHTOKEN_KEY) || '').trim();
+  if (!token || !S || !S.queues) return;
+  pubst.busy = true;
+  let r;
+  try{ r = await ghPush(token, false); }
+  catch (err){ r = { ok: false, msg: err.message }; }
+  pubst.busy = false;
+  if (r.ok){ pubst.state = 'ok'; pubst.lastOk = Date.now(); pubst.retryMs = 15000; }
+  else if (r.auth === false){ pubst.state = 'err'; pubst.errMsg = 'neveljaven token — klikni Objavi na splet'; }
+  else if (r.blocked){ pubst.state = 'blocked'; }
+  else {
+    pubst.state = 'err'; pubst.errMsg = r.msg || 'ni povezave';
+    pubst.retry = setTimeout(autoPublish, pubst.retryMs);
+    pubst.retryMs = Math.min(pubst.retryMs * 2, 60000);
   }
+  renderTop();
+}
+function pubStatusHtml(){
+  if (MODE === 'viewer' || readonly || !S || !S.queues) return '';
+  if (!ghHasToken()) return '<span class="pub mut" title="Za samodejno varnostno kopijo enkrat klikni Objavi na splet in vpiši token.">● samodejna objava izklopljena</span>';
+  if (pubst.state === 'ok') return '<span class="pub ok">● objavljeno ' + new Date(pubst.lastOk).toLocaleTimeString('sl-SI',{hour:'2-digit',minute:'2-digit'}) + '</span>';
+  if (pubst.state === 'pending') return '<span class="pub warn">● objavljam …</span>';
+  if (pubst.state === 'err') return '<span class="pub err" title="' + esc(pubst.errMsg) + '">● objava ne uspe — poskušam znova</span>';
+  if (pubst.state === 'blocked') return '<span class="pub err">● na spletu je tuja objava — klikni Objavi na splet</span>';
+  return '<span class="pub mut">● še neobjavljeno v tej seji</span>';
+}
+
+/* ---------- lokalni posnetki stanja (obroč v localStorage; preživijo tudi "Izprazni vse") ---------- */
+function loadSnaps(){ try{ return JSON.parse(localStorage.getItem(SNAPKEY)) || []; }catch(e){ return []; } }
+function pushSnapshot(){
+  if (readonly || !S) return;
+  try{
+    const snaps = loadSnaps();
+    const done = S.matches ? Object.values(S.matches).filter(m => m.res).length : 0;
+    const total = S.matches ? Object.keys(S.matches).length : 0;
+    const rec = { t: Date.now(), info: S.queues ? done + '/' + total + ' rezultatov' : 'brez razporeda', s: JSON.stringify(S) };
+    // posnetki, mlajši od minute, prepišejo zadnjega — obroč pokrije daljše obdobje
+    if (snaps.length && rec.t - snaps[snaps.length - 1].t < 60000) snaps[snaps.length - 1] = rec;
+    else snaps.push(rec);
+    while (snaps.length > 25) snaps.shift();
+    localStorage.setItem(SNAPKEY, JSON.stringify(snaps));
+  }catch(e){ lsWarn(); }
+}
+
+/* ---------- obnovitev: iz objave na spletu ali iz lokalnega posnetka ---------- */
+// prenese data.js — najprej relativno (živa stran), nato prek javne povezave, nazadnje raw.githubusercontent
+function fetchPublishedPub(){
+  const urls = [];
+  if (/^https?:/.test(location.protocol || '')) urls.push('data.js');
+  if (SHARE_BASE.startsWith('http')) urls.push(SHARE_BASE + (SHARE_BASE.endsWith('/') ? '' : '/') + 'data.js');
+  urls.push('https://raw.githubusercontent.com/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_PATH);
+  return urls.reduce((p, u) =>
+    p.catch(() => fetch(u + '?_=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })),
+    Promise.reject(new Error('ni naslova')))
+    .then(code => new Function(code + ';return PUB;')());
+}
+function adoptState(st){ // zamenja S; poskrbi za nextId, shrani, izriše
+  undoStack.push(JSON.stringify(S));
+  st.nextId = Math.max(5000,
+    ...Object.keys(st.breaks || {}).map(Number).filter(x => !isNaN(x)),
+    ...Object.keys(st.matches || {}).map(Number).filter(x => !isNaN(x)));
+  S = st;
+  if (S.queues) tab = 'sched';
+  save(); pushSnapshot(); renderAll();
+}
+function showRestore(){
+  let dlg = document.getElementById('restoreDlg');
+  if (!dlg){ dlg = document.createElement('dialog'); dlg.id = 'restoreDlg'; document.body.appendChild(dlg); }
+  const snaps = loadSnaps();
+  dlg.innerHTML = `<h2>Obnovi stanje</h2>
+    <p><button data-act="restorepub" class="primary">⬇ Obnovi iz zadnje objave (splet)</button><br>
+    <span class="hint">Prenese objavljeni data.js — uporabi na novi napravi, če stara odpove.</span></p>
+    <div class="eyebrow">Lokalni posnetki (ta brskalnik)</div>
+    ${snaps.length ? snaps.slice().reverse().map((s, k) => {
+      const i = snaps.length - 1 - k;
+      return `<div class="snaprow"><button class="small" data-act="restoresnap" data-i="${i}">Obnovi</button>
+        <span class="mono">${new Date(s.t).toLocaleString('sl-SI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
+        <span class="hint">${esc(s.info || '')}</span></div>`;
+    }).join('') : '<p class="hint">Ni posnetkov.</p>'}
+    <p style="margin-bottom:0"><button data-act="dlgclose">Zapri</button></p>`;
+  dlg.showModal();
+}
+function doRestorePub(btn){
+  const label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Prenašam …';
+  fetchPublishedPub()
+    .then(pub => {
+      const st = statePubApply(pub);
+      const done = Object.values(st.matches).filter(m => m.res).length;
+      if (!confirm('Najdena objava: ' + (pub.updated ? new Date(pub.updated).toLocaleString('sl-SI') : 'brez časa') +
+        ', vpisanih ' + done + ' rezultatov.\nZamenjam trenutno stanje s to objavo?')) return;
+      adoptState(st);
+      pubst.lastPushedUpdated = pub.updated || ''; // objava je zdaj "naša" -> brez lažnega konflikta
+      pubst.state = 'ok'; pubst.lastOk = Date.now();
+      const dlg = document.getElementById('restoreDlg'); if (dlg) dlg.close();
+      renderTop();
+    })
+    .catch(err => alert('Objave ni mogoče prenesti: ' + err.message))
+    .finally(() => { btn.disabled = false; btn.textContent = label; });
 }
 
 /* ---------- izvoz za Google Sheets ---------- */
@@ -766,7 +1040,28 @@ document.addEventListener('click', e => {
   if (act === 'cview'){ courtView = btn.dataset.v; save(); renderAll(); if (readonly) scrollToCurrent(); return; }
   if (act === 'generate') return doGenerate();
   if (act === 'wipe'){ if (confirm('Res izbrišem VSE (imena, razpored, rezultate)?')){ localStorage.removeItem(LSKEY); S = freshState(); undoStack = []; tab='setup'; renderAll(); } return; }
-  if (act === 'undo'){ const prev = undoStack.pop(); if (prev){ S = JSON.parse(prev); save(); renderAll(); } return; }
+  if (act === 'undo'){ const prev = undoStack.pop(); if (prev){ S = JSON.parse(prev); save(); schedulePublish(); renderAll(); } return; }
+  if (act === 'restore'){ showRestore(); return; }
+  if (act === 'restorepub'){ doRestorePub(btn); return; }
+  if (act === 'restoresnap'){
+    const snaps = loadSnaps(), s = snaps[+btn.dataset.i];
+    if (!s) return;
+    if (!confirm('Obnovim posnetek iz ' + new Date(s.t).toLocaleString('sl-SI') + ' (' + (s.info || '') + ')?\nTrenutno stanje gre na sklad Razveljavi.')) return;
+    adoptState(JSON.parse(s.s));
+    schedulePublish();
+    const dlg = document.getElementById('restoreDlg'); if (dlg) dlg.close();
+    return;
+  }
+  if (act === 'dlgclose'){ const dlg = document.getElementById('restoreDlg'); if (dlg) dlg.close(); return; }
+  if (act === 'pclear'){ playerView = -1; renderAll(); return; }
+  if (act === 'moff'){
+    const id = +btn.dataset.id, m = S.matches[id];
+    if (m.off){ mutate(()=>{ m.off = false; }); return; }
+    if (m.res) return alert('Tekma ima vpisan rezultat — najprej ga izbriši (✎), če res odpade.');
+    if (!confirm('Označim tekmo kot ODPADLO?\nNe bo štela v lestvico in ne bo več prikazana kot čakajoča. Oznako lahko kadarkoli umakneš z istim gumbom.')) return;
+    mutate(()=>{ m.off = true; });
+    return;
+  }
   if (act === 'print'){ renderPrint(); window.print(); return; }
   if (act === 'export'){
     const blob = new Blob([JSON.stringify({S}, null, 1)], {type:'application/json'});
@@ -893,12 +1188,15 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('input', e => { if (e.target.id === 'girls' || e.target.id === 'boys') setupCounts(); });
+document.addEventListener('change', e => {
+  if (e.target && e.target.id === 'psel'){ playerView = e.target.value === '' ? -1 : +e.target.value; renderAll(); }
+});
 
 /* ---------- glavni izris ---------- */
 function renderMain(){
   const m = $('#main');
   if (tab === 'setup' && !readonly) { m.innerHTML = renderSetup(); setupCounts(); }
-  else if (tab === 'board' && S.queues) m.innerHTML = renderBoard();
+  else if (tab === 'board' && S.queues) m.innerHTML = (readonly ? viewerBanner() : '') + renderBoard();
   else if (S.queues) m.innerHTML = renderSched();
   else if (readonly) m.innerHTML = viewerLoading
     ? '<div class="card">Nalagam razpored …</div>'

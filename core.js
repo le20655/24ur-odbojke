@@ -69,7 +69,7 @@
       oppG[p.g][q.g]++; oppG[q.g][p.g]++;
       oppB[p.b][q.b]++; oppB[q.b][p.b]++;
       oppX[p.g][q.b]++; oppX[q.g][p.b]++;
-      matches.push({ id: id++, round, g1: p.g, b1: p.b, g2: q.g, b2: q.b, makeup: !!makeup, res: null });
+      matches.push({ id: id++, round, g1: p.g, b1: p.b, g2: q.g, b2: q.b, makeup: !!makeup, res: null, off: false });
     };
 
     for (let r = 0; r < n; r++) {
@@ -421,7 +421,7 @@
     const per = Array.from({ length: 2 * n }, () => []);
     for (const id in state.matches) {
       const m = state.matches[id], tm = times[id];
-      if (!tm) continue;
+      if (!tm || m.off) continue; // odpadle tekme ne vežejo igralcev
       for (const p of matchPlayers(m, n)) per[p].push(tm);
     }
     let NS = null, NE = null;
@@ -460,7 +460,7 @@
     }));
     for (const id in state.matches) {
       const m = state.matches[id];
-      if (!m.res) continue;
+      if (!m.res || m.off) continue;
       const { a, b } = m.res;
       const side1 = [m.g1, n + m.b1], side2 = [m.g2, n + m.b2];
       const apply = (ps, f, ag) => {
@@ -513,7 +513,7 @@
 
   function encodeState(state) {
     const ms = Object.values(state.matches).map(m =>
-      [m.id, m.round, m.g1, m.b1, m.g2, m.b2, m.makeup ? 1 : 0, m.res ? m.res.a : -1, m.res ? m.res.b : -1]);
+      [m.id, m.round, m.g1, m.b1, m.g2, m.b2, m.makeup ? 1 : 0, m.res ? m.res.a : -1, m.res ? m.res.b : -1, m.off ? 1 : 0]);
     const qs = state.queues.map(q => q.map(it => (it.t === 'b' ? 'b' : 'm') + it.id));
     const bs = Object.values(state.breaks).map(b => [b.id, b.dur, b.label || '']);
     const payload = [1, state.cfg, ms, qs, bs];
@@ -527,7 +527,8 @@
     const matches = {};
     for (const a of ms) matches[a[0]] = {
       id: a[0], round: a[1], g1: a[2], b1: a[3], g2: a[4], b2: a[5],
-      makeup: !!a[6], res: a[7] >= 0 ? { a: a[7], b: a[8] } : null
+      makeup: !!a[6], res: a[7] >= 0 ? { a: a[7], b: a[8] } : null,
+      off: !!a[9] // starejši tokeni polja nimajo -> false
     };
     const queues = qs.map(q => q.map(s => ({ t: s[0], id: +s.slice(1) })));
     const breaks = {};

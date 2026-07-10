@@ -110,5 +110,34 @@ for (let n = 8; n <= 13; n++) {
   assert(times[firstMatch.id].start === exp, `premor zamakne čase: ${times[firstMatch.id].start} != ${exp}`);
 }
 
+// 9. tekma odpade (off) + združljivost s starimi tokeni
+{
+  const cfg = { girls: ['Ana', 'Beti'], boys: ['Cene', 'Dan'], startClock: '17:00', matchMin: 20, gapMin: 10, nightStartClock: null, nightEndClock: null };
+  const matches = {
+    0: { id: 0, round: 0, g1: 0, b1: 0, g2: 1, b2: 1, makeup: false, res: { a: 21, b: 15 }, off: false },
+    1: { id: 1, round: 1, g1: 0, b1: 1, g2: 1, b2: 0, makeup: false, res: { a: 18, b: 18 }, off: true } // odpadla
+  };
+  const state = { cfg, matches, queues: [[{ t: 'm', id: 0 }], [{ t: 'm', id: 1 }]], breaks: {} };
+  const st = Core.standings(state);
+  const ana = st.girls.find(r => r.name === 'Ana');
+  assert(ana.played === 1 && ana.mp === 2, 'odpadla tekma šteje v lestvico: ' + JSON.stringify(ana));
+  // validate: odpadla tekma ne veže igralcev (isti igralci hkrati na obeh igriščih ni napaka, če ena odpade)
+  const state2 = { cfg, matches: {
+    0: { id: 0, round: 0, g1: 0, b1: 0, g2: 1, b2: 1, makeup: false, res: null, off: false },
+    1: { id: 1, round: 1, g1: 0, b1: 1, g2: 1, b2: 0, makeup: false, res: null, off: true }
+  }, queues: [[{ t: 'm', id: 0 }], [{ t: 'm', id: 1 }]], breaks: {} };
+  const errs = Core.validate(state2).filter(w => w.lvl === 'err');
+  assert(errs.length === 0, 'odpadla tekma povzroča prekrivanje: ' + errs.map(e => e.msg).join('; '));
+  // encode/decode round-trip z off
+  const dec = Core.decodeState(Core.encodeState(state));
+  assert(dec.matches[1].off === true && dec.matches[0].off === false, 'off round-trip');
+  // star 9-elementni zapis tekme (brez off) se še vedno prebere
+  const oldPayload = [1, cfg, [[0, 0, 0, 0, 1, 1, 0, 21, 15]], [['m0'], []], []];
+  const oldTok = Buffer.from(JSON.stringify(oldPayload)).toString('base64url');
+  const oldDec = Core.decodeState(oldTok);
+  assert(oldDec.matches[0].off === false && oldDec.matches[0].res.a === 21, 'stari token brez polja off');
+  console.log('tekma odpade: lestvica/validate/round-trip OK');
+}
+
 console.log(fails === 0 ? '\nVSI TESTI OK' : `\n${fails} NAPAK`);
 process.exit(fails ? 1 : 0);

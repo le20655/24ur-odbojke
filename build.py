@@ -16,7 +16,7 @@ base = app.replace('/*__CORE__*/', core).replace('__SHARE_BASE__', share_base)
 def page(mode):
     return ('<!doctype html>\n<html lang="sl">\n<head>\n<meta charset="utf-8">\n'
             '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
-            '</head>\n<body>\n' + base.replace('__MODE__', mode) + '\n</body>\n</html>\n')
+            '</head>\n<body class="m-' + mode + '">\n' + base.replace('__MODE__', mode) + '\n</body>\n</html>\n')
 
 viewer = page('viewer')
 editor = page('editor')

@@ -38,6 +38,23 @@ V urejevalniku (`uredi.html`) sta dva načina:
 
 Javna stran je sveža v ~1 minuti po objavi.
 
+## Odpornost na nezgode
+
+- **Samodejna objava**: ko je token enkrat vpisan, gre vsaka sprememba (rezultat, zamik,
+  premor) ~8 s kasneje sama na GitHub; ob izpadu mreže poskuša znova z backoffom.
+  Indikator v glavi urejevalnika kaže: zeleno `objavljeno HH:MM` / oranžno `objavljam` /
+  rdeče `objava ne uspe`. Objava = popolna varnostna kopija celotnega turnirja.
+- **Obnovi …** (gumb v orodni vrstici): če laptop odpove, na katerikoli drugi napravi
+  odpri `uredi.html` in klikni *Obnovi iz zadnje objave* — celotno stanje (razpored +
+  rezultati) se prenese z GitHuba; nato le še vpišeš token in nadaljuješ. Isti dialog
+  ponuja tudi lokalne posnetke (zadnjih ~25 sprememb v tem brskalniku).
+- **Tekma odpade** (gumb ⊘ pri tekmi): poškodba/odstop — tekma se prečrta, ne šteje
+  v lestvico in ne blokira oznak »zdaj igrajo«; oznako lahko kadarkoli umakneš.
+- **Javna stran brez mreže**: kaže zadnje uspešno preneseno stanje s pasico o svežini.
+- **Iskalnik igralca** (javna stran): izbirnik v glavi pokaže vse tekme igralca z obeh
+  igrišč, urejene po času.
+- Pred prepisom tuje objave (ročni popravki `data.js`, druga naprava) urejevalnik vpraša.
+
 ## Testi
 
 ```sh
