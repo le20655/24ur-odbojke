@@ -124,6 +124,48 @@ const checks = [];
   );
 }
 
+// ===== fiksni razpored 11×12 (uredi.html) =====
+{
+  const { ctx } = await runPage('uredi.html');
+  vm.runInContext(`
+    S = freshState();
+    buildFixedSchedule();
+    const ms = Object.values(S.matches);
+    __nm = ms.length;
+    const seen = new Set(); let dup = false;
+    const gc = new Array(N_GIRLS).fill(0), bc = new Array(N_BOYS).fill(0);
+    for (const m of ms){
+      for (const [g,b] of [[m.g1,m.b1],[m.g2,m.b2]]){ const k=g*N_BOYS+b; if (seen.has(k)) dup=true; seen.add(k); }
+      gc[m.g1]++; gc[m.g2]++; bc[m.b1]++; bc[m.b2]++;
+    }
+    __cover = seen.size; __dup = dup;
+    __girls12 = gc.every(x=>x===12); __boys11 = bc.every(x=>x===11);
+    __errs = Core.validate(S).filter(w=>w.lvl==='err').length;
+    __stand = Core.standings(S);
+    // razmiki: indeks v vrsti = slot (obe igrišči v koraku, prazne celice tudi zavzamejo slot)
+    const sof = {};
+    S.queues.forEach(q => q.forEach((it, slot) => { if (it.t !== 'm') return; const m = S.matches[it.id];
+      for (const p of ['g'+m.g1,'b'+m.b1,'g'+m.g2,'b'+m.b2]) (sof[p] || (sof[p] = [])).push(slot); }));
+    let btb = 0;
+    for (const p in sof){ const s = sof[p].sort((a,b)=>a-b); for (let i=1;i<s.length;i++) if (s[i]-s[i-1] === 1) btb++; }
+    __btb = btb;
+    __times = S.cfg.matchMin === 35 && S.cfg.gapMin === 5;
+  `, ctx, { filename: 'fiksni.js' });
+  const nm = vm.runInContext('__nm', ctx), cover = vm.runInContext('__cover', ctx), dup = vm.runInContext('__dup', ctx);
+  const g12 = vm.runInContext('__girls12', ctx), b11 = vm.runInContext('__boys11', ctx);
+  const errs = vm.runInContext('__errs', ctx), btb = vm.runInContext('__btb', ctx), times = vm.runInContext('__times', ctx);
+  const stand = vm.runInContext('({g: __stand.girls.length, b: __stand.boys.length})', ctx);
+  checks.push(
+    ['fiksni: 66 tekem', nm === 66],
+    ['fiksni: vsa partnerstva 1×', cover === 132 && !dup],
+    ['fiksni: punce 12 tekem, fantje 11', g12 && b11],
+    ['fiksni: brez prekrivanj (err)', errs === 0],
+    ['fiksni: nihče dveh tekem zapored', btb === 0],
+    ['fiksni: časovnica 35+5', times],
+    ['fiksni: lestvica 11 punc + 12 fantov', stand.g === 11 && stand.b === 12],
+  );
+}
+
 // ===== viewer (index.html + pravi data.js) =====
 {
   const dataJs = fs.readFileSync(path.join(dir, 'data.js'), 'utf8');

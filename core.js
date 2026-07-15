@@ -413,12 +413,13 @@
 
   function validate(state) {
     const cfg = state.cfg;
-    const n = cfg.girls.length;
+    const n = cfg.girls.length;            // odmik za fante (indeks fanta = n + b)
+    const P = n + cfg.boys.length;         // skupno igralcev (punc in fantov je lahko različno)
     const { times } = computeTimes(state);
     const startMin = clockToMin(cfg.startClock);
     const warnings = [];
     // intervali po igralcih
-    const per = Array.from({ length: 2 * n }, () => []);
+    const per = Array.from({ length: P }, () => []);
     for (const id in state.matches) {
       const m = state.matches[id], tm = times[id];
       if (!tm || m.off) continue; // odpadle tekme ne vežejo igralcev
@@ -431,7 +432,7 @@
       NE = ((nec - startMin) + 1440) % 1440;
       if (NE <= NS) NE += 1440;
     }
-    for (let p = 0; p < 2 * n; p++) {
+    for (let p = 0; p < P; p++) {
       const iv = per[p].slice().sort((a, b) => a.start - b.start);
       for (let i = 1; i < iv.length; i++) {
         const rest = iv[i].start - iv[i - 1].end;
@@ -454,8 +455,9 @@
 
   function standings(state) {
     const cfg = state.cfg;
-    const n = cfg.girls.length;
-    const rows = Array.from({ length: 2 * n }, (_, p) => ({
+    const n = cfg.girls.length;            // odmik za fante
+    const P = n + cfg.boys.length;         // skupno igralcev (lahko neenako)
+    const rows = Array.from({ length: P }, (_, p) => ({
       p, name: playerName(cfg, p), played: 0, w: 0, d: 0, l: 0, mp: 0, diff: 0, pf: 0
     }));
     for (const id in state.matches) {

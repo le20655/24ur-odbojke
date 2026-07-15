@@ -65,6 +65,13 @@ h2{font-size:17px;margin:0 0 10px}
 /* nastavitev */
 .setupgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .setupgrid textarea{width:100%;min-height:230px}
+.namelist{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.namelist li{display:flex;align-items:center;gap:8px}
+.namelist .nnum{width:22px;text-align:right;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+.namelist input{flex:1;min-width:0}
+.wtag{flex:none;font-size:11.5px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums;cursor:help}
+.wtag.mid{color:#b5730a;font-weight:600}
+.wtag.hi{color:#c0392b;font-weight:700}
 .optrow{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;align-items:end}
 .optrow label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);font-weight:600}
 .optrow input{width:auto}
@@ -254,6 +261,7 @@ let viewerLoading = false;
 let tab = 'setup';
 let courtView = 'all';   // 'all' | '0' | '1' — katero igrišče kaže razpored
 let undoStack = [];
+let _waitCache = null;   // predpomnjene najdaljše pavze po indeksu (iz FIXED_1112)
 let locked = false;      // zaklenjen turnir: skrije Nastavitev + generiranje/brisanje; ostane vpisovanje in zamikanje
 let playerView = -1;     // javna stran: -1 = razpored po igriščih, sicer indeks igralca (vse njegove tekme)
 let netErr = false;      // javna stran: zadnji prenos data.js ni uspel
@@ -262,8 +270,20 @@ const PUBCACHE_KEY = 'odbojka24.pub';   // javna stran: zadnja uspešno prenesen
 const SNAPKEY = 'odbojka24.snap';       // urejevalnik: obroč lokalnih posnetkov stanja
 // samodejna objava: stanje in časovniki (debounce + ponovni poskusi z backoffom)
 const pubst = { state: 'idle', lastOk: 0, errMsg: '', timer: null, retry: null, retryMs: 15000, lastPushedUpdated: '', confirmedOverwrite: '', busy: false };
-const DEFAULT_GIRLS = ['NEŽA BERCE','NINA TOMAŽIN','ERIKA MOHORIČ','MARUŠA DOLINAR','LIZA POLJANČŠEK','LIA BERCE','LOTI GRUŠKO VANJAK','MAŠA VEGELJ','PUNCA 9','PUNCA 10','PUNCA 11','PUNCA 12'];
+const N_GIRLS = 11, N_BOYS = 12;         // turnir je fiksiran na 11 punc in 12 fantov
+const DEFAULT_GIRLS = ['NEŽA BERCE','NINA TOMAŽIN','ERIKA MOHORIČ','MARUŠA DOLINAR','LIZA POLJANČŠEK','LIA BERCE','LOTI GRUŠKO VANJAK','MAŠA VEGELJ','PUNCA 9','PUNCA 10','PUNCA 11'];
 const DEFAULT_BOYS = ['JAKA KOPAČ','ROK MROULE','MATIC ENIKO','JAN GOVEKAR','JUŠ BURJEK','DOMEN DOLENC','KRIŠTOF GANTAR','DAVID ŠENK','JAN DOLENC','URBAN JEREB','LUYGGY','JAKA ENIKO'];
+
+/* Fiksni razpored za 11 punc × 12 fantov: vsaka punca igra z vsakim fantom natanko 1× → 66 tekem
+   (punce 12 tekem, fantje 11). Indeksa g,b kažeta na mesto v seznamih imen. court0/court1 = zaporedji
+   celic igrišč; -1 = prosto igrišče (zračnica). Preverjeno: 0 tekem zapored, 0 hkratnih; 36 slotov = 24 h.
+   Nekateri indeksi imajo kje daljše čakanje (glej playerWaits) — nanje postavi tolerantne osebe. */
+const FIXED_1112 = {
+  matches: [[8,1,9,2],[0,8,1,9],[5,5,6,6],[4,4,7,7],[2,2,9,9],[1,11,0,0],[7,6,8,7],[10,11,9,10],[1,8,4,0],[3,9,6,1],[7,4,5,2],[2,11,1,6],[9,7,10,8],[4,10,5,0],[3,3,8,8],[0,6,9,4],[5,9,1,5],[10,7,2,10],[7,11,6,3],[8,5,4,1],[2,9,3,10],[9,0,5,7],[10,6,6,2],[1,3,2,4],[0,1,7,8],[5,10,8,2],[9,6,3,0],[0,11,10,5],[6,9,4,7],[5,3,3,1],[2,8,7,2],[6,10,0,4],[10,0,8,9],[9,5,7,3],[4,11,3,7],[8,10,6,8],[5,4,10,9],[3,2,1,0],[2,7,0,5],[10,1,4,6],[9,11,8,4],[7,5,1,10],[6,4,2,0],[0,7,5,1],[7,10,3,6],[4,9,9,3],[6,11,5,8],[8,0,2,5],[9,1,1,4],[10,2,0,3],[8,11,7,9],[4,8,2,6],[0,2,3,5],[1,1,10,10],[2,3,5,6],[3,4,4,5],[1,2,6,7],[8,6,0,9],[7,0,10,3],[3,11,2,1],[6,5,9,8],[4,3,0,10],[3,8,10,4],[6,0,7,1],[1,7,8,3],[5,11,4,2]],
+  rounds: [7,3,0,0,0,0,1,10,4,5,3,6,2,5,0,5,7,3,3,3,4,9,4,9,10,6,3,5,8,2,5,7,10,4,7,9,1,1,6,9,4,2,2,4,8,6,8,8,8,8,9,7,9,0,10,10,10,2,7,1,1,1,6,6,5,2],
+  court0: [0,2,4,6,7,9,11,13,14,16,-1,19,21,23,25,27,29,31,33,35,37,39,41,42,44,46,48,50,52,-1,55,57,59,61,62,64],
+  court1: [1,3,5,-1,8,10,12,-1,15,17,18,20,22,24,26,28,30,32,34,36,38,40,-1,43,45,47,49,51,53,54,56,58,60,-1,63,65]
+};
 
 /* ---------- pomožno ---------- */
 const $ = sel => document.querySelector(sel);
@@ -389,10 +409,8 @@ function freshState(){
     cfg: {
       girls: DEFAULT_GIRLS.slice(), boys: DEFAULT_BOYS.slice(), startClock: '17:00',
       startDate: new Date().toISOString().slice(0,10),
-      matchMin: 20, gapMin: 10,
-      nightStartClock: '00:00', nightEndClock: '04:00',
-      pauseOn: true, pauseClock: '01:00', pauseMin: 120,
-      seed: 1 + Math.floor(Math.random()*1e6)
+      matchMin: 35, gapMin: 5,   // tekma (15:5:15)=35 min + 5 min menjave → cikel 40 min
+      nightStartClock: '', nightEndClock: ''   // brez nočnega premora (brez nočnih opozoril)
     },
     matches: null, queues: null, breaks: {}, nextId: 5000
   };
@@ -454,87 +472,95 @@ function playerSelHtml(){
 }
 
 /* ---------- nastavitev ---------- */
+// najdaljša pavza (v "tekmah") za vsak indeks igralca — iz fiksnega razporeda (neodvisno od imen)
+function playerWaits(){
+  if (_waitCache) return _waitCache;
+  const slots = {};
+  for (const court of [FIXED_1112.court0, FIXED_1112.court1]) court.forEach((id, slot) => {
+    if (id < 0) return;
+    const [g1,b1,g2,b2] = FIXED_1112.matches[id];
+    for (const p of ['g'+g1,'b'+b1,'g'+g2,'b'+b2]) (slots[p] || (slots[p] = [])).push(slot);
+  });
+  const mx = key => { const s = (slots[key]||[]).sort((a,b)=>a-b); let m = 0; for (let i=1;i<s.length;i++) m = Math.max(m, s[i]-s[i-1]-1); return m; };
+  _waitCache = {
+    g: Array.from({length:N_GIRLS}, (_,i)=>mx('g'+i)),
+    b: Array.from({length:N_BOYS}, (_,i)=>mx('b'+i))
+  };
+  return _waitCache;
+}
 function renderSetup(){
   const c = S.cfg;
+  const w = playerWaits();
+  const wtag = p => { const cls = p >= 6 ? ' hi' : p >= 4 ? ' mid' : ''; // 4-5 dolgo, ≥6 zelo dolgo
+    return `<span class="wtag${cls}" title="Najdaljša pavza tega mesta: ${p} tekem${p>=4?' — sem postavi koga, ki mu daljše čakanje ne moti':''}">⏳${p}</span>`; };
+  const nameInputs = (arr, n, id, word, waits) => Array.from({length:n}, (_,i) =>
+    `<li><span class="nnum">${i+1}.</span><input type="text" id="${id}${i}" value="${esc(arr[i]||'')}" placeholder="${word} ${i+1}">${wtag(waits[i])}</li>`).join('');
   return `<div class="card">
     <h2>Igralci in nastavitve</h2>
-    <p class="hint">Vpiši imena — eno na vrstico. Punc in fantov mora biti enako, od 8 do 13 na spol (16–26 skupaj).
-    Vsaka punca bo igrala v paru z vsakim fantom natanko enkrat; pare in razpored sestavi računalnik tako, da so
-    soigralci popolnoma uravnoteženi, nasprotniki pa čim bolj raznoliki.</p>
+    <p class="hint">Turnir je fiksiran na <b>11 punc</b> in <b>12 fantov</b>. Vpiši vsako ime v svoje polje.
+    Vsaka punca igra z vsakim fantom natanko enkrat (punce po 12 tekem, fantje po 11). Razpored je vnaprej
+    pripravljen: <b>nihče ne igra dveh tekem zapored</b>. Znak ⏳ ob imenu pove najdaljšo pavzo tega mesta —
+    <b>oranžna (⏳4–5)</b> in <b>rdeča (⏳6+)</b> mesta imajo kje daljše čakanje, zato tja postavi koga, ki mu to ne moti.</p>
     <div class="setupgrid">
-      <div><div class="eyebrow">Punce</div><textarea id="girls" placeholder="Ana&#10;Barbara&#10;…">${esc(c.girls.join('\n'))}</textarea><div class="counts" id="gcnt"></div></div>
-      <div><div class="eyebrow">Fantje</div><textarea id="boys" placeholder="Andraž&#10;Blaž&#10;…">${esc(c.boys.join('\n'))}</textarea><div class="counts" id="bcnt"></div></div>
+      <div class="namecol"><div class="eyebrow">Punce (${N_GIRLS})</div><ol class="namelist">${nameInputs(c.girls, N_GIRLS, 'g', 'Punca', w.g)}</ol></div>
+      <div class="namecol"><div class="eyebrow">Fantje (${N_BOYS})</div><ol class="namelist">${nameInputs(c.boys, N_BOYS, 'b', 'Fant', w.b)}</ol></div>
     </div>
     <div class="optrow">
       <label>Datum starta<input type="date" id="startDate" value="${esc(c.startDate)}"></label>
       <label>Ura starta<input type="time" id="startClock" value="${esc(c.startClock)}"></label>
       <label>Tekma (min)<input type="number" id="matchMin" value="${c.matchMin}" min="5" max="60"></label>
-      <label>Menjava/ogrevanje (min)<input type="number" id="gapMin" value="${c.gapMin}" min="0" max="30"></label>
+      <label>Menjava (min)<input type="number" id="gapMin" value="${c.gapMin}" min="0" max="30"></label>
     </div>
-    <div class="optrow">
-      <label><span><input type="checkbox" id="pauseOn" ${c.pauseOn?'checked':''}> skupni nočni premor</span></label>
-      <label>začetek premora<input type="time" id="pauseClock" value="${esc(c.pauseClock)}"></label>
-      <label>trajanje (min)<input type="number" id="pauseMin" value="${c.pauseMin}" min="30" max="360" step="15"></label>
-    </div>
-    <p class="hint">Nočni premor (privzeto 01:00–03:00) vsem hkrati zagotovi vsaj 2 uri spanja v kosu.
-    Poleg tega razpored pazi, da nihče ne igra dveh tekem zapored. Med turnirjem lahko premore poljubno dodajaš,
-    krajšaš in prestavljaš na zavihku Razpored.</p>
+    <p class="hint">Tekma je (15:5:15) = 35 min + 5 min menjave (cikel 40 min). Nočnega premora ni — turnir teče
+    neprekinjeno (~24 h). Zamike, premore in "prosto igrišče" lahko med turnirjem poljubno dodajaš, krajšaš in prestavljaš na zavihku Razpored.</p>
     <div class="genrow">
-      <button class="primary" data-act="generate">${S.queues ? 'Ustvari NOV razpored (obstoječi rezultati se izbrišejo!)' : 'Ustvari razpored'}</button>
+      <button class="primary" data-act="generate">${S.queues ? 'Uporabi nova imena (rezultati se izbrišejo!)' : 'Pokaži razpored'}</button>
       ${S.queues ? '<button data-act="wipe">Izprazni vse</button>' : ''}
-      <span class="hint">Izračun traja do ~30 s.</span>
     </div>
   </div>`;
 }
-function setupCounts(){
-  const g = $('#girls'), b = $('#boys');
-  if (!g) return;
-  const gc = g.value.split('\n').map(x=>x.trim()).filter(Boolean).length;
-  const bc = b.value.split('\n').map(x=>x.trim()).filter(Boolean).length;
-  $('#gcnt').textContent = gc + ' punc';
-  $('#bcnt').textContent = bc + ' fantov';
-}
 
 function doGenerate(){
-  const girls = $('#girls').value.split('\n').map(x=>x.trim()).filter(Boolean);
-  const boys  = $('#boys').value.split('\n').map(x=>x.trim()).filter(Boolean);
-  if (girls.length !== boys.length) return alert('Punc in fantov mora biti enako (zdaj ' + girls.length + ' : ' + boys.length + ').');
-  if (girls.length < 8 || girls.length > 13) return alert('Podprtih je 8–13 igralcev na spol (16–26 skupaj).');
-  const dup = [...girls, ...boys].filter((x,i,a)=>a.indexOf(x)!==i);
-  if (dup.length) return alert('Podvojena imena: ' + dup.join(', ') + '. Dodaj priimek ali začetnico.');
+  const girls = Array.from({length:N_GIRLS}, (_,i) => ($('#g'+i).value||'').trim());
+  const boys  = Array.from({length:N_BOYS}, (_,i) => ($('#b'+i).value||'').trim());
+  const emptyG = girls.filter(x=>!x).length, emptyB = boys.filter(x=>!x).length;
+  if (emptyG || emptyB) return alert('Izpolni vsa imena: manjka ' + emptyG + ' punc in ' + emptyB + ' fantov.');
+  const all = [...girls, ...boys];
+  const dup = all.filter((x,i)=>all.indexOf(x)!==i);
+  if (dup.length) return alert('Podvojena imena: ' + [...new Set(dup)].join(', ') + '. Dodaj priimek ali začetnico.');
   if (S.queues && !confirm('Obstoječi razpored IN VSI REZULTATI se izbrišejo. Nadaljujem?')) return;
 
   const c = S.cfg;
   c.girls = girls; c.boys = boys;
   c.startDate = $('#startDate').value || c.startDate;
   c.startClock = $('#startClock').value || c.startClock;
-  c.matchMin = +$('#matchMin').value || 20;
-  c.gapMin = +$('#gapMin').value || 10;
-  c.pauseOn = $('#pauseOn').checked;
-  c.pauseClock = $('#pauseClock').value || '01:00';
-  c.pauseMin = +$('#pauseMin').value || 120;
-  c.seed = 1 + Math.floor(Math.random()*1e6);
+  c.matchMin = +$('#matchMin').value || 35;
+  c.gapMin = +$('#gapMin').value || 5;
 
-  const ov = document.createElement('div');
-  ov.className = 'overlay'; ov.textContent = 'Razporejam tekme … (do ~30 s)';
-  document.body.appendChild(ov);
-  setTimeout(()=>{
-    try {
-      const gen = Core.generate({ ...c, pauseMin: c.pauseOn ? c.pauseMin : 0 });
-      undoStack.push(JSON.stringify(S));
-      S.matches = gen.matches;
-      S.queues = gen.queues;
-      S.breaks = gen.breaks || {};
-      S.nextId = 5000;
-      if (c.pauseOn){
-        const rel = ((Core.clockToMin(c.pauseClock) - startClockMin()) + 1440) % 1440;
-        Core.insertBreakAtTime(S, 0, rel, c.pauseMin, 'Nočni premor', newId());
-        Core.insertBreakAtTime(S, 1, rel, c.pauseMin, 'Nočni premor', newId());
-      }
-      tab = 'sched';
-      save(); pushSnapshot(); schedulePublish(); renderAll();
-    } finally { ov.remove(); }
-  }, 60);
+  undoStack.push(JSON.stringify(S));
+  buildFixedSchedule();
+  tab = 'sched';
+  save(); pushSnapshot(); schedulePublish(); renderAll();
+}
+
+// zgradi stanje iz vnaprej pripravljenega razporeda FIXED_1112 (brez algoritma)
+function buildFixedSchedule(){
+  const slotDur = S.cfg.matchMin + S.cfg.gapMin;
+  const matches = {};
+  FIXED_1112.matches.forEach((a, id) => {
+    matches[id] = { id, round: FIXED_1112.rounds[id], g1: a[0], b1: a[1], g2: a[2], b2: a[3], makeup: false, res: null, off: false };
+  });
+  let bid = 4000;
+  const breaks = {};
+  const queues = [FIXED_1112.court0, FIXED_1112.court1].map(cells => cells.map(id => {
+    if (id >= 0) return { t: 'm', id };
+    breaks[bid] = { id: bid, dur: slotDur, label: 'Prosto igrišče' };
+    return { t: 'b', id: bid++ };
+  }));
+  S.matches = matches;
+  S.queues = queues;
+  S.breaks = breaks;
+  S.nextId = 5000;
 }
 
 /* ---------- razpored ---------- */
@@ -696,7 +722,11 @@ function renderPrint(){
     </table>
     <h2>Trenutna lestvica</h2>
     <table><tr><th>#</th><th>Punce</th><th>Točke/T</th><th>#</th><th>Fantje</th><th>Točke/T</th></tr>
-    ${st.girls.map((g,i)=>`<tr><td>${i+1}</td><td>${esc(g.name)}</td><td>${g.avgMp.toFixed(2)}</td><td>${i+1}</td><td>${esc(st.boys[i].name)}</td><td>${st.boys[i].avgMp.toFixed(2)}</td></tr>`).join('')}
+    ${Array.from({length: Math.max(st.girls.length, st.boys.length)}, (_,i)=>{
+      const g = st.girls[i], b = st.boys[i];
+      return `<tr><td>${g?i+1:''}</td><td>${g?esc(g.name):''}</td><td>${g?g.avgMp.toFixed(2):''}</td>`
+        + `<td>${b?i+1:''}</td><td>${b?esc(b.name):''}</td><td>${b?b.avgMp.toFixed(2):''}</td></tr>`;
+    }).join('')}
     </table>
     <div class="rules"><h2>Pravila</h2>
     Tekma traja ${S.cfg.matchMin} minut, izid ob pisku obvelja (tudi neodločen). Par sodi sam sebi; končni rezultat takoj javita organizatorski mizi.
@@ -1187,7 +1217,6 @@ document.addEventListener('click', e => {
     return;
   }
 });
-document.addEventListener('input', e => { if (e.target.id === 'girls' || e.target.id === 'boys') setupCounts(); });
 document.addEventListener('change', e => {
   if (e.target && e.target.id === 'psel'){ playerView = e.target.value === '' ? -1 : +e.target.value; renderAll(); }
 });
@@ -1195,13 +1224,13 @@ document.addEventListener('change', e => {
 /* ---------- glavni izris ---------- */
 function renderMain(){
   const m = $('#main');
-  if (tab === 'setup' && !readonly) { m.innerHTML = renderSetup(); setupCounts(); }
+  if (tab === 'setup' && !readonly) { m.innerHTML = renderSetup(); }
   else if (tab === 'board' && S.queues) m.innerHTML = (readonly ? viewerBanner() : '') + renderBoard();
   else if (S.queues) m.innerHTML = renderSched();
   else if (readonly) m.innerHTML = viewerLoading
     ? '<div class="card">Nalagam razpored …</div>'
     : '<div class="card"><h2>Razpored še ni objavljen</h2><p class="hint">Organizator ga bo kmalu objavil — poskusi znova čez nekaj minut.</p></div>';
-  else { tab = 'setup'; m.innerHTML = renderSetup(); setupCounts(); }
+  else { tab = 'setup'; m.innerHTML = renderSetup(); }
 }
 function renderAll(){ if (locked && tab === 'setup') tab = 'sched'; renderTop(); renderMain(); }
 </script>
