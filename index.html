@@ -30,35 +30,60 @@ header.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bot
 .topline{display:flex;align-items:center;gap:12px;padding:9px 16px;flex-wrap:nowrap}
 .brand{font-size:18px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
 .brand b{color:var(--accent)}
+.topstats{color:var(--muted);font-size:12.5px;white-space:nowrap}
+.topstats b{color:var(--ink)}
 .spacer{flex:1}
+@media (max-width:640px){.topstats{font-size:11.5px}}
 nav.tabs{display:flex;gap:2px;padding:0 12px;border-top:1px solid var(--line)}
 nav.tabs button{padding:8px 14px;font-weight:600;color:var(--muted);border-bottom:2.5px solid transparent;margin-bottom:-1px}
 nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent)}
 
+/* izbirnik igrisca v lepljivi glavi */
+.segbar{display:flex;justify-content:center;align-items:center;padding:7px 10px;border-top:1px solid var(--line)}
+.segbar[hidden]{display:none}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
+.seg button{background:var(--surface);padding:8px 20px;font-size:15px;font-weight:600}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button.active{background:var(--accent-bg);color:var(--accent-strong);font-weight:700}
+
 main{max-width:860px;margin:0 auto;padding:16px}
 @media (max-width:640px){main{padding:10px 8px}.topline{padding:7px 10px;gap:10px}}
 
-/* razpored */
-.krog{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);margin-bottom:12px}
-.kroghead{padding:8px 14px;background:var(--surface2);border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:10px}
-.kroghead .naslov{font-weight:800;letter-spacing:.04em}
-.kroghead .cas{font-weight:700;color:var(--accent-strong);font-variant-numeric:tabular-nums}
-.tekma{display:flex;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
-.tekma:last-child{border-bottom:none}
-.chip{flex:none;display:inline-block;font-size:10.5px;font-weight:700;border:1px solid var(--line);border-radius:99px;padding:0 7px;color:var(--muted);white-space:nowrap}
-.chip.crt0{color:var(--courtA);border-color:var(--courtA);background:var(--courtA-bg)}
-.chip.crt1{color:var(--courtB);border-color:var(--courtB);background:var(--courtB-bg)}
+/* razpored: en stolpec izbranega igrisca */
+.court{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+.courthead{padding:9px 14px;border-bottom:1px solid var(--line);font-weight:800;letter-spacing:.04em}
+.court[data-c="0"] .courthead{background:var(--courtA-bg);color:var(--courtA)}
+.court[data-c="1"] .courthead{background:var(--courtB-bg);color:var(--courtB)}
+.qrow{display:flex;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);position:relative}
+.qrow:last-child{border-bottom:none}
+.qrow .time{width:60px;flex:none;font-weight:700;font-size:15.5px;font-variant-numeric:tabular-nums}
+.qrow .time .nd{display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 .body{flex:1;min-width:0;font-size:15px;line-height:1.45}
 .pair{font-weight:600}
 .pair.zmagovalec{color:var(--ok);font-weight:800}
 .vs{color:var(--muted);font-weight:400;padding:0 4px}
 .score{font-size:16px;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
 .score.prazen{color:var(--muted);font-weight:400}
+.qrow.done{opacity:.62}
+.qrow.now{background:var(--accent-bg);box-shadow:inset 0 0 0 2px var(--accent)}
+.qrow.now::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.qrow.now .time{color:var(--accent-strong);font-size:17px}
+.qrow.now .time .nd{color:var(--accent-strong)}
+.qrow.now .pair{font-size:16px;font-weight:700}
+.chip{flex:none;display:inline-block;font-size:10.5px;font-weight:700;border:1px solid var(--line);border-radius:99px;padding:0 7px;color:var(--muted);white-space:nowrap}
+.chip.crt0{color:var(--courtA);border-color:var(--courtA);background:var(--courtA-bg)}
+.chip.crt1{color:var(--courtB);border-color:var(--courtB);background:var(--courtB-bg)}
 mark{background:var(--accent-bg);color:var(--accent-strong);border-radius:3px;padding:0 2px}
+
+/* telefon */
 @media (max-width:640px){
-  .tekma{flex-wrap:wrap;row-gap:5px;padding:8px 10px}
-  .body{min-width:calc(100% - 80px)}
+  body{font-size:16px}
+  .qrow{flex-wrap:wrap;row-gap:4px;padding:9px 10px;gap:10px}
+  .body{min-width:calc(100% - 82px)}
   .vs{display:block;padding:0;font-size:12.5px}
+  .score{margin-left:70px}
+  .qrow .chip{position:absolute;top:9px;right:10px}
+  .seg button{padding:9px 24px;font-size:16px}
 }
 
 /* lestvica */
@@ -85,6 +110,7 @@ table.board tbody tr:nth-child(3) td.nm{color:var(--bronze);font-weight:800}
 <header class="top">
   <div class="topline">
     <div class="brand">24 UR <b>ODBOJKE</b></div>
+    <div class="topstats" id="topstats"></div>
     <div class="spacer"></div>
     <select id="filter"><option value="">Vsi igralci</option></select>
   </div>
@@ -92,6 +118,12 @@ table.board tbody tr:nth-child(3) td.nm{color:var(--bronze);font-weight:800}
     <button id="zav-razpored" class="active">Razpored</button>
     <button id="zav-lestvica">Lestvica</button>
   </nav>
+  <div class="segbar" id="segbar">
+    <div class="seg">
+      <button id="seg-a" class="active">Igrišče 1</button>
+      <button id="seg-b">Igrišče 2</button>
+    </div>
+  </div>
 </header>
 
 <main>
@@ -108,6 +140,7 @@ const FANTJE = Array.from({length: 12}, (_, i) => String(i + 1));
 
 let pogled = "razpored";   // "razpored" | "lestvica"
 let izbran = "";           // oznaka filtriranega igralca ("" = vsi)
+let igrisce = "a";         // prikazano igrisce ("a" = 1, "b" = 2)
 
 const ime = o => IMENA[o] || o;
 
@@ -138,34 +171,48 @@ function parHtml(g, b, zmagal) {
        + oznaci(g) + " &amp; " + oznaci(b) + "</span>";
 }
 
+// vrstica tekme; "now" = prva tekma brez rezultata na svojem igriscu
+function vrsticaHtml(t, now, sCipom) {
+  const odigrana = t.t1 !== null;
+  const c = t.igrisce === "a" ? 0 : 1;
+  return '<div class="qrow' + (now ? " now" : "") + (odigrana ? " done" : "") + '">'
+    + '<span class="time">' + casKroga(t.krog)
+    + '<span class="nd">krog ' + t.krog + "</span></span>"
+    + (sCipom ? '<span class="chip crt' + c + '">Igrišče ' + (c + 1) + "</span>" : "")
+    + '<span class="body">'
+    + parHtml(t.g1, t.b1, odigrana && t.t1 > t.t2)
+    + '<span class="vs">proti</span>'
+    + parHtml(t.g2, t.b2, odigrana && t.t2 > t.t1)
+    + "</span>"
+    + '<span class="score' + (odigrana ? "" : " prazen") + '">'
+    + (odigrana ? t.t1 + ":" + t.t2 : "–") + "</span></div>";
+}
+
 function prikaziRazpored() {
-  const poKrogih = new Map();
-  for (const t of tekme()) {
-    if (izbran && ![t.g1, t.b1, t.g2, t.b2].includes(izbran)) continue;
-    if (!poKrogih.has(t.krog)) poKrogih.set(t.krog, []);
-    poKrogih.get(t.krog).push(t);
+  const vse = tekme();
+  // prva neodigrana tekma vsakega igrisca
+  const zdaj = {};
+  for (const igr of ["a", "b"]) {
+    const t = vse.find(t => t.igrisce === igr && t.t1 === null);
+    if (t) zdaj[igr] = t.krog;
   }
-  let html = "";
-  for (const [krog, ts] of poKrogih) {
-    html += '<div class="krog"><div class="kroghead">'
-      + '<span class="naslov">Krog ' + krog + "</span>"
-      + '<span class="cas">· ' + casKroga(krog) + "</span></div>";
-    for (const t of ts) {
-      const odigrana = t.t1 !== null;
-      const c = t.igrisce === "a" ? 0 : 1;
-      html += '<div class="tekma">'
-        + '<span class="chip crt' + c + '">Igrišče ' + (c + 1) + "</span>"
-        + '<span class="body">'
-        + parHtml(t.g1, t.b1, odigrana && t.t1 > t.t2)
-        + '<span class="vs">proti</span>'
-        + parHtml(t.g2, t.b2, odigrana && t.t2 > t.t1)
-        + "</span>"
-        + '<span class="score' + (odigrana ? "" : " prazen") + '">'
-        + (odigrana ? t.t1 + ":" + t.t2 : "–") + "</span></div>";
-    }
-    html += "</div>";
+  const jeZdaj = t => zdaj[t.igrisce] === t.krog;
+
+  let html;
+  if (izbran) {
+    // pogled igralca: vse njegove tekme z obeh igrisc, urejene po casu
+    const moje = vse.filter(t => [t.g1, t.b1, t.g2, t.b2].includes(izbran))
+                    .sort((x, y) => x.krog - y.krog);
+    html = '<div class="court"><div class="courthead">Tekme: ' + ime(izbran) + "</div>"
+         + moje.map(t => vrsticaHtml(t, jeZdaj(t), true)).join("") + "</div>";
+  } else {
+    // pogled enega igrisca
+    const c = igrisce === "a" ? 0 : 1;
+    const ts = vse.filter(t => t.igrisce === igrisce);
+    html = '<div class="court" data-c="' + c + '"><div class="courthead">IGRIŠČE '
+         + (c + 1) + "</div>"
+         + ts.map(t => vrsticaHtml(t, jeZdaj(t), false)).join("") + "</div>";
   }
-  if (!html) html = '<p class="opomba">Ni tekem.</p>';
   document.getElementById("vsebina").innerHTML = html;
 }
 
@@ -201,8 +248,15 @@ function prikaziLestvico() {
 }
 
 function prikazi() {
+  const odigranih = tekme().filter(t => t.t1 !== null).length;
+  document.getElementById("topstats").innerHTML =
+    "odigranih <b>" + odigranih + "/66</b> · konec ob <b>" + casKroga(34) + "</b>";
   document.getElementById("zav-razpored").classList.toggle("active", pogled === "razpored");
   document.getElementById("zav-lestvica").classList.toggle("active", pogled === "lestvica");
+  document.getElementById("seg-a").classList.toggle("active", igrisce === "a");
+  document.getElementById("seg-b").classList.toggle("active", igrisce === "b");
+  // izbirnik igrisca je viden le na razporedu brez filtra igralca
+  document.getElementById("segbar").hidden = pogled !== "razpored" || !!izbran;
   if (pogled === "razpored") prikaziRazpored(); else prikaziLestvico();
 }
 
@@ -221,6 +275,8 @@ for (const [skupina, oznake] of [["Punce", PUNCE], ["Fantje", FANTJE]]) {
 filter.onchange = () => { izbran = filter.value; pogled = "razpored"; prikazi(); };
 document.getElementById("zav-razpored").onclick = () => { pogled = "razpored"; prikazi(); };
 document.getElementById("zav-lestvica").onclick = () => { pogled = "lestvica"; prikazi(); };
+document.getElementById("seg-a").onclick = () => { igrisce = "a"; prikazi(); };
+document.getElementById("seg-b").onclick = () => { igrisce = "b"; prikazi(); };
 prikazi();
 </script>
 </body>
