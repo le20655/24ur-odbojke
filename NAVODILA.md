@@ -41,6 +41,31 @@ const TRAJANJE_KROGA = 40;    // 35 min igre + 5 min menjava
 Stran čase vseh 33 krogov izračuna sama. Če urnik zamuja, popravi `ZACETEK`
 (velja za cel turnir) — posamičnih krogov se ne da zamikati.
 
+## Največji premori po igralcih
+
+Premor = koliko krogov igralec čaka med dvema svojima zaporednima tekmama
+(1 krog = 40 min). Večina premorov je dolgih 1–3 kroge; spodaj je za vsakega
+igralca njegov **najdaljši** premor v turnirju.
+
+| Punca | Ime | Najdaljši premor |   | Fant | Ime | Najdaljši premor |
+|---|---|---|---|---|---|---|
+| A | NEŽA BERCE | 3 | | 1 | JAKA KOPAČ | 3 |
+| B | NINA TOMAŽIN | 3 | | 2 | ROK MROULE | 4 |
+| C | ERIKA MOHORIČ | 3 | | 3 | MATIC ENIKO | 3 |
+| D | MARUŠA DOLINAR | 3 | | 4 | JAN GOVEKAR | 4 |
+| E | LIZA POLJANČŠEK | 3 | | 5 | JUŠ BURJEK | 4 |
+| F | LIA BERCE | 4 | | 6 | DOMEN DOLENC | 4 |
+| G | LOTI GRUŠKO VANJAK | 3 | | 7 | KRIŠTOF GANTAR | 3 |
+| H | MAŠA VEGELJ | 4 | | 8 | DAVID ŠENK | 3 |
+| I | PUNCA 9 | 3 | | 9 | JAN DOLENC | 3 |
+| J | PUNCA 10 | **5** | | 10 | URBAN JEREB | 3 |
+| K | PUNCA 11 | 4 | | 11 | LUYGGY | 3 |
+| | | | | 12 | JAKA ENIKO | 3 |
+
+Edini premor dolžine 5 v celem turnirju ima punca J (PUNCA 10), vsi ostali
+čakajo največ 4 kroge. (Tabela velja za trenutni razpored; po morebitni
+regeneraciji z `razpored.py` jo je treba preračunati.)
+
 ## Za razvijalce
 
 - `razpored.py` — generator razporeda (prepiše `data.js`! rezultate prej shrani),

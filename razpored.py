@@ -29,6 +29,14 @@ import sys
 PUNCE = [chr(ord("A") + i) for i in range(11)]   # A..K
 FANTJE = [str(i + 1) for i in range(12)]          # 1..12
 
+# prava imena (iz prejsnjega razporeda); manjkajoce punce so se placeholderji
+IMENA_PUNCE = ["NEŽA BERCE", "NINA TOMAŽIN", "ERIKA MOHORIČ", "MARUŠA DOLINAR",
+               "LIZA POLJANČŠEK", "LIA BERCE", "LOTI GRUŠKO VANJAK", "MAŠA VEGELJ",
+               "PUNCA 9", "PUNCA 10", "PUNCA 11"]
+IMENA_FANTJE = ["JAKA KOPAČ", "ROK MROULE", "MATIC ENIKO", "JAN GOVEKAR",
+                "JUŠ BURJEK", "DOMEN DOLENC", "KRIŠTOF GANTAR", "DAVID ŠENK",
+                "JAN DOLENC", "URBAN JEREB", "LUYGGY", "JAKA ENIKO"]
+
 N_KROGOV = 33
 
 # utezi cenilke (trdi kriteriji morajo na 0)
@@ -141,10 +149,10 @@ def zapisi_data_js(razpored, pot="data.js"):
     vrstice.append("")
     vrstice.append("// ===== IMENA: placeholderje zamenjaj s pravimi imeni =====")
     vrstice.append("const IMENA = {")
-    for i, p in enumerate(PUNCE):
-        vrstice.append('  "%s": "Punca %s",' % (p, p))
-    for f in FANTJE:
-        vrstice.append('  "%s": "Fant %s",' % (f, f))
+    for p, ime in zip(PUNCE, IMENA_PUNCE):
+        vrstice.append('  "%s": "%s",' % (p, ime))
+    for f, ime in zip(FANTJE, IMENA_FANTJE):
+        vrstice.append('  "%s": "%s",' % (f, ime))
     vrstice.append("};")
     vrstice.append("")
     vrstice.append("// ===== URNIK: zacetek prvega kroga in trajanje kroga v minutah =====")
