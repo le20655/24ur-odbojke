@@ -34,14 +34,14 @@ const DATUM = "2026-07-17";
 const ZACETEK = "17:30";
 const TRAJANJE_KROGA = 40;
 
-// ===== REZULTATI: vpisi tocke po koncu tekme, npr. "28:24" =====
+// ===== REZULTATI: vpisi tocke po koncu tekme, npr. "" =====
 // Prva stevilka = tocke prvega para (levo), druga = drugega para.
 // Prazen niz "" pomeni, da tekma se ni odigrana.
 const REZULTATI = {
-  "1a": "28:24",  "1b": "28:24",
-  "2a": "28:24",  "2b": "28:24",
-  "3a": "28:24",  "3b": "28:24",
-  "4a": "28:24",  "4b": "28:24",
+  "1a": "",  "1b": "",
+  "2a": "",  "2b": "",
+  "3a": "",  "3b": "",
+  "4a": "",  "4b": "",
   "5a": "",  "5b": "",
   "6a": "",  "6b": "",
   "7a": "",  "7b": "",
