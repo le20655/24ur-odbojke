@@ -143,7 +143,41 @@ def faza_b(tekme, seed):
     return najboljsi, najboljsa
 
 
+def preberi_obstojece(pot="data.js"):
+    """Iz obstojece data.js preberi urnik in ze vpisane rezultate,
+    da jih regeneracija NE povozi."""
+    import os
+    import re
+    obst = {"rezultati": {}, "datum": "2026-07-17", "zacetek": "17:30", "trajanje": 40}
+    if not os.path.exists(pot):
+        return obst
+    with open(pot, encoding="utf-8") as f:
+        v = f.read()
+    m = re.search(r'const DATUM = "([^"]+)"', v)
+    if m:
+        obst["datum"] = m.group(1)
+    m = re.search(r'const ZACETEK = "([^"]+)"', v)
+    if m:
+        obst["zacetek"] = m.group(1)
+    m = re.search(r"const TRAJANJE_KROGA = (\d+)", v)
+    if m:
+        obst["trajanje"] = int(m.group(1))
+    m = re.search(r"const REZULTATI = \{(.*?)\};", v, re.S)
+    if m:
+        for k, val in re.findall(r'"(\d+[ab])":\s*"([^"]*)"', m.group(1)):
+            obst["rezultati"][k] = val
+    return obst
+
+
+def cas_kroga(krog, zacetek, trajanje):
+    """'HH:MM' zacetka kroga (za komentarje v data.js)."""
+    h, m = map(int, zacetek.split(":"))
+    skupaj = (h * 60 + m + (krog - 1) * trajanje) % 1440
+    return "%02d:%02d" % (skupaj // 60, skupaj % 60)
+
+
 def zapisi_data_js(razpored, pot="data.js"):
+    obst = preberi_obstojece(pot)
     vrstice = []
     vrstice.append("// Podatki turnirja 24 ur odbojke.")
     vrstice.append("// ROCNO UREJAJ SAMO razdelka IMENA in REZULTATI.")
@@ -158,16 +192,28 @@ def zapisi_data_js(razpored, pot="data.js"):
     vrstice.append("")
     vrstice.append("// ===== URNIK: datum in zacetek prvega kroga, trajanje kroga v minutah =====")
     vrstice.append("// Ob zamiku urnika popravi te vrednosti (stran case izracuna sama).")
-    vrstice.append('const DATUM = "2026-07-17";')
-    vrstice.append('const ZACETEK = "17:30";')
-    vrstice.append("const TRAJANJE_KROGA = 40;")
+    vrstice.append('const DATUM = "%s";' % obst["datum"])
+    vrstice.append('const ZACETEK = "%s";' % obst["zacetek"])
+    vrstice.append("const TRAJANJE_KROGA = %d;" % obst["trajanje"])
     vrstice.append("")
     vrstice.append('// ===== REZULTATI: vpisi tocke po koncu tekme, npr. "28:24" =====')
-    vrstice.append("// Prva stevilka = tocke prvega para (levo), druga = drugega para.")
+    vrstice.append("// Prva stevilka = tocke prvega para (v komentarju levo), druga = drugega.")
     vrstice.append('// Prazen niz "" pomeni, da tekma se ni odigrana.')
+    vrstice.append("// Komentarji (ura in para) so informativni; veljajo za zacetek ob %s."
+                   % obst["zacetek"])
     vrstice.append("const REZULTATI = {")
-    for krog in range(1, N_KROGOV + 1):
-        vrstice.append('  "%da": "",  "%db": "",' % (krog, krog))
+    ime_p = dict(zip(PUNCE, IMENA_PUNCE))
+    ime_f = dict(zip(FANTJE, IMENA_FANTJE))
+    for pos, (g1, b1, g2, b2) in enumerate(razpored):
+        krog = pos // 2 + 1
+        igrisce = "a" if pos % 2 == 0 else "b"
+        kljuc = "%d%s" % (krog, igrisce)
+        vpis = '  "%s": "%s",' % (kljuc, obst["rezultati"].get(kljuc, ""))
+        komentar = "// %s ig.%s | %s & %s — %s & %s" % (
+            cas_kroga(krog, obst["zacetek"], obst["trajanje"]),
+            "1" if igrisce == "a" else "2",
+            ime_p[PUNCE[g1]], ime_f[FANTJE[b1]], ime_p[PUNCE[g2]], ime_f[FANTJE[b2]])
+        vrstice.append(vpis.ljust(22) + komentar)
     vrstice.append("};")
     vrstice.append("")
     vrstice.append("// ===== RAZPORED: generiran z razpored.py - NE spreminjaj rocno =====")

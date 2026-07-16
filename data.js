@@ -34,43 +34,77 @@ const DATUM = "2026-07-17";
 const ZACETEK = "17:30";
 const TRAJANJE_KROGA = 40;
 
-// ===== REZULTATI: vpisi tocke po koncu tekme, npr. "" =====
-// Prva stevilka = tocke prvega para (levo), druga = drugega para.
+// ===== REZULTATI: vpisi tocke po koncu tekme, npr. "28:24" =====
+// Prva stevilka = tocke prvega para (v komentarju levo), druga = drugega.
 // Prazen niz "" pomeni, da tekma se ni odigrana.
+// Komentarji (ura in para) so informativni; veljajo za zacetek ob 17:30.
 const REZULTATI = {
-  "1a": "",  "1b": "",
-  "2a": "",  "2b": "",
-  "3a": "",  "3b": "",
-  "4a": "",  "4b": "",
-  "5a": "",  "5b": "",
-  "6a": "",  "6b": "",
-  "7a": "",  "7b": "",
-  "8a": "",  "8b": "",
-  "9a": "",  "9b": "",
-  "10a": "",  "10b": "",
-  "11a": "",  "11b": "",
-  "12a": "",  "12b": "",
-  "13a": "",  "13b": "",
-  "14a": "",  "14b": "",
-  "15a": "",  "15b": "",
-  "16a": "",  "16b": "",
-  "17a": "",  "17b": "",
-  "18a": "",  "18b": "",
-  "19a": "",  "19b": "",
-  "20a": "",  "20b": "",
-  "21a": "",  "21b": "",
-  "22a": "",  "22b": "",
-  "23a": "",  "23b": "",
-  "24a": "",  "24b": "",
-  "25a": "",  "25b": "",
-  "26a": "",  "26b": "",
-  "27a": "",  "27b": "",
-  "28a": "",  "28b": "",
-  "29a": "",  "29b": "",
-  "30a": "",  "30b": "",
-  "31a": "",  "31b": "",
-  "32a": "",  "32b": "",
-  "33a": "",  "33b": "",
+  "1a": "",           // 17:30 ig.1 | LIA BERCE & JAN GOVEKAR — ERIKA MOHORIČ & JAKA KOPAČ
+  "1b": "",           // 17:30 ig.2 | LIZA POLJANŠEK & BRIC KROLNIK — MAŠA VEGELJ & URBAN JEREB
+  "2a": "",           // 18:10 ig.1 | MARUŠA DOLINAR & URBAN JEREB — LOTI GRUŠKOVNJAK & ROK MROULE
+  "2b": "",           // 18:10 ig.2 | EMA KAVČIČ & MATIC ENIKO — NEŽA BERCE & JAN GOVEKAR
+  "3a": "",           // 18:50 ig.1 | TIA MOČNIK & JAN DOLENC — LIA BERCE & JAKA KOPAČ
+  "3b": "",           // 18:50 ig.2 | NEŽA BERCE & BRIC KROLNIK — EMA KAVČIČ & DOMEN DOLENC
+  "4a": "",           // 19:30 ig.1 | LIA BERCE & URBAN JEREB — MARUŠA DOLINAR & LUYGGY
+  "4b": "",           // 19:30 ig.2 | LENA KRISTAN & BRIC KROLNIK — LIZA POLJANŠEK & JUŠ BURJEK
+  "5a": "",           // 20:10 ig.1 | ERIKA MOHORIČ & JAN GOVEKAR — MARUŠA DOLINAR & ROK MROULE
+  "5b": "",           // 20:10 ig.2 | TIA MOČNIK & JUŠ BURJEK — MAŠA VEGELJ & DAVID ŠENK
+  "6a": "",           // 20:50 ig.1 | EMA KAVČIČ & JAKA KOPAČ — LOTI GRUŠKOVNJAK & MATIC ENIKO
+  "6b": "",           // 20:50 ig.2 | MAŠA VEGELJ & DOMEN DOLENC — NINA TOMAŽIN & LUYGGY
+  "7a": "",           // 21:30 ig.1 | ERIKA MOHORIČ & LUYGGY — LIZA POLJANŠEK & MATIC ENIKO
+  "7b": "",           // 21:30 ig.2 | NEŽA BERCE & JAN DOLENC — NINA TOMAŽIN & URBAN JEREB
+  "8a": "",           // 22:10 ig.1 | MARUŠA DOLINAR & BRIC KROLNIK — LIA BERCE & ROK MROULE
+  "8b": "",           // 22:10 ig.2 | TIA MOČNIK & URBAN JEREB — LENA KRISTAN & JAN GOVEKAR
+  "9a": "",           // 22:50 ig.1 | EMA KAVČIČ & DAVID ŠENK — LIA BERCE & LUYGGY
+  "9b": "",           // 22:50 ig.2 | LOTI GRUŠKOVNJAK & KRIŠTOF GANTAR — MAŠA VEGELJ & ROK MROULE
+  "10a": "",          // 23:30 ig.1 | NEŽA BERCE & JAKA KOPAČ — LENA KRISTAN & JUŠ BURJEK
+  "10b": "",          // 23:30 ig.2 | ERIKA MOHORIČ & URBAN JEREB — NINA TOMAŽIN & DOMEN DOLENC
+  "11a": "",          // 00:10 ig.1 | LIA BERCE & JAN DOLENC — MAŠA VEGELJ & MATIC ENIKO
+  "11b": "",          // 00:10 ig.2 | EMA KAVČIČ & KRIŠTOF GANTAR — LIZA POLJANŠEK & URBAN JEREB
+  "12a": "",          // 00:50 ig.1 | TIA MOČNIK & BRIC KROLNIK — MARUŠA DOLINAR & DAVID ŠENK
+  "12b": "",          // 00:50 ig.2 | NINA TOMAŽIN & ROK MROULE — EMA KAVČIČ & LUYGGY
+  "13a": "",          // 01:30 ig.1 | MAŠA VEGELJ & BRIC KROLNIK — LOTI GRUŠKOVNJAK & JAN GOVEKAR
+  "13b": "",          // 01:30 ig.2 | NEŽA BERCE & MATIC ENIKO — MARUŠA DOLINAR & DOMEN DOLENC
+  "14a": "",          // 02:10 ig.1 | LIZA POLJANŠEK & JAKA KOPAČ — NEŽA BERCE & URBAN JEREB
+  "14b": "",          // 02:10 ig.2 | LOTI GRUŠKOVNJAK & JUŠ BURJEK — LIA BERCE & KRIŠTOF GANTAR
+  "15a": "",          // 02:50 ig.1 | MAŠA VEGELJ & JUŠ BURJEK — ERIKA MOHORIČ & MATIC ENIKO
+  "15b": "",          // 02:50 ig.2 | NINA TOMAŽIN & JAN DOLENC — TIA MOČNIK & KRIŠTOF GANTAR
+  "16a": "",          // 03:30 ig.1 | EMA KAVČIČ & BRIC KROLNIK — LENA KRISTAN & LUYGGY
+  "16b": "",          // 03:30 ig.2 | NEŽA BERCE & DAVID ŠENK — ERIKA MOHORIČ & ROK MROULE
+  "17a": "",          // 04:10 ig.1 | NINA TOMAŽIN & DAVID ŠENK — LIZA POLJANŠEK & JAN GOVEKAR
+  "17b": "",          // 04:10 ig.2 | MARUŠA DOLINAR & JUŠ BURJEK — TIA MOČNIK & DOMEN DOLENC
+  "18a": "",          // 04:50 ig.1 | ERIKA MOHORIČ & DOMEN DOLENC — LOTI GRUŠKOVNJAK & JAKA KOPAČ
+  "18b": "",          // 04:50 ig.2 | LIA BERCE & MATIC ENIKO — LENA KRISTAN & URBAN JEREB
+  "19a": "",          // 05:30 ig.1 | LENA KRISTAN & KRIŠTOF GANTAR — ERIKA MOHORIČ & DAVID ŠENK
+  "19b": "",          // 05:30 ig.2 | NEŽA BERCE & ROK MROULE — MAŠA VEGELJ & JAN DOLENC
+  "20a": "",          // 06:10 ig.1 | TIA MOČNIK & JAN GOVEKAR — NEŽA BERCE & LUYGGY
+  "20b": "",          // 06:10 ig.2 | LIA BERCE & BRIC KROLNIK — NINA TOMAŽIN & JAKA KOPAČ
+  "21a": "",          // 06:50 ig.1 | ERIKA MOHORIČ & JUŠ BURJEK — EMA KAVČIČ & URBAN JEREB
+  "21b": "",          // 06:50 ig.2 | MARUŠA DOLINAR & JAN GOVEKAR — LIZA POLJANŠEK & JAN DOLENC
+  "22a": "",          // 07:30 ig.1 | LIZA POLJANŠEK & ROK MROULE — LENA KRISTAN & MATIC ENIKO
+  "22b": "",          // 07:30 ig.2 | LOTI GRUŠKOVNJAK & URBAN JEREB — TIA MOČNIK & DAVID ŠENK
+  "23a": "",          // 08:10 ig.1 | LOTI GRUŠKOVNJAK & DOMEN DOLENC — LENA KRISTAN & JAN DOLENC
+  "23b": "",          // 08:10 ig.2 | NINA TOMAŽIN & BRIC KROLNIK — NEŽA BERCE & KRIŠTOF GANTAR
+  "24a": "",          // 08:50 ig.1 | LIZA POLJANŠEK & KRIŠTOF GANTAR — LIA BERCE & DOMEN DOLENC
+  "24b": "",          // 08:50 ig.2 | MAŠA VEGELJ & LUYGGY — MARUŠA DOLINAR & JAKA KOPAČ
+  "25a": "",          // 09:30 ig.1 | LENA KRISTAN & DAVID ŠENK — EMA KAVČIČ & JAN DOLENC
+  "25b": "",          // 09:30 ig.2 | NINA TOMAŽIN & JAN GOVEKAR — LIA BERCE & JUŠ BURJEK
+  "26a": "",          // 10:10 ig.1 | ERIKA MOHORIČ & BRIC KROLNIK — TIA MOČNIK & MATIC ENIKO
+  "26b": "",          // 10:10 ig.2 | LENA KRISTAN & JAKA KOPAČ — MARUŠA DOLINAR & KRIŠTOF GANTAR
+  "27a": "",          // 10:50 ig.1 | LOTI GRUŠKOVNJAK & LUYGGY — NEŽA BERCE & JUŠ BURJEK
+  "27b": "",          // 10:50 ig.2 | LIZA POLJANŠEK & DOMEN DOLENC — TIA MOČNIK & ROK MROULE
+  "28a": "",          // 11:30 ig.1 | LIA BERCE & DAVID ŠENK — NEŽA BERCE & DOMEN DOLENC
+  "28b": "",          // 11:30 ig.2 | MAŠA VEGELJ & KRIŠTOF GANTAR — EMA KAVČIČ & JAN GOVEKAR
+  "29a": "",          // 12:10 ig.1 | LOTI GRUŠKOVNJAK & BRIC KROLNIK — ERIKA MOHORIČ & JAN DOLENC
+  "29b": "",          // 12:10 ig.2 | LENA KRISTAN & ROK MROULE — NINA TOMAŽIN & JUŠ BURJEK
+  "30a": "",          // 12:50 ig.1 | MARUŠA DOLINAR & MATIC ENIKO — NINA TOMAŽIN & KRIŠTOF GANTAR
+  "30b": "",          // 12:50 ig.2 | MAŠA VEGELJ & JAKA KOPAČ — LIZA POLJANŠEK & DAVID ŠENK
+  "31a": "",          // 13:30 ig.1 | LIZA POLJANŠEK & LUYGGY — LOTI GRUŠKOVNJAK & JAN DOLENC
+  "31b": "",          // 13:30 ig.2 | EMA KAVČIČ & ROK MROULE — TIA MOČNIK & JAKA KOPAČ
+  "32a": "",          // 14:10 ig.1 | TIA MOČNIK & LUYGGY — ERIKA MOHORIČ & KRIŠTOF GANTAR
+  "32b": "",          // 14:10 ig.2 | LENA KRISTAN & DOMEN DOLENC — MAŠA VEGELJ & JAN GOVEKAR
+  "33a": "",          // 14:50 ig.1 | NINA TOMAŽIN & MATIC ENIKO — LOTI GRUŠKOVNJAK & DAVID ŠENK
+  "33b": "",          // 14:50 ig.2 | MARUŠA DOLINAR & JAN DOLENC — EMA KAVČIČ & JUŠ BURJEK
 };
 
 // ===== RAZPORED: generiran z razpored.py - NE spreminjaj rocno =====
