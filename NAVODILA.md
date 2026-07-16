@@ -47,20 +47,41 @@ Premor = koliko krogov igralec čaka med dvema svojima zaporednima tekmama
 (1 krog = 40 min). Večina premorov je dolgih 1–3 kroge; spodaj je za vsakega
 igralca njegov **najdaljši** premor v turnirju.
 
-| Punca | Ime | Najdaljši premor |   | Fant | Ime | Najdaljši premor |
-|---|---|---|---|---|---|---|
-| A | NEŽA BERCE | 3 | | 1 | JAKA KOPAČ | 3 |
-| B | NINA TOMAŽIN | 3 | | 2 | ROK MROULE | 4 |
-| C | ERIKA MOHORIČ | 3 | | 3 | MATIC ENIKO | 3 |
-| D | MARUŠA DOLINAR | 3 | | 4 | JAN GOVEKAR | 4 |
-| E | LIZA POLJANČŠEK | 3 | | 5 | JUŠ BURJEK | 4 |
-| F | LIA BERCE | 4 | | 6 | DOMEN DOLENC | 4 |
-| G | LOTI GRUŠKO VANJAK | 3 | | 7 | KRIŠTOF GANTAR | 3 |
-| H | MAŠA VEGELJ | 4 | | 8 | DAVID ŠENK | 3 |
-| I | PUNCA 9 | 3 | | 9 | JAN DOLENC | 3 |
-| J | PUNCA 10 | **5** | | 10 | URBAN JEREB | 3 |
-| K | PUNCA 11 | 4 | | 11 | LUYGGY | 3 |
-| | | | | 12 | JAKA ENIKO | 3 |
+Prva/zadnja tekma = krog, v katerem igralec igra prvič oz. zadnjič
+(krog 1 = 17:30, vsak naslednji +40 min).
+
+**Punce**
+
+| Punca | Ime | Prva tekma (krog) | Zadnja tekma (krog) | Najdaljši premor |
+|---|---|---|---|---|
+| A | NEŽA BERCE | 2 | 28 | 3 |
+| B | NINA TOMAŽIN | 6 | 33 | 3 |
+| C | ERIKA MOHORIČ | 1 | 28 | 3 |
+| D | MARUŠA DOLINAR | 2 | 33 | 3 |
+| E | LIZA POLJANČŠEK | 3 | 32 | 3 |
+| F | LIA BERCE | 1 | 32 | 4 |
+| G | LOTI GRUŠKO VANJAK | 2 | 33 | 3 |
+| H | MAŠA VEGELJ | 1 | 32 | 4 |
+| I | PUNCA 9 | 1 | 31 | 3 |
+| J | PUNCA 10 | 4 | 32 | **5** |
+| K | PUNCA 11 | 2 | 33 | 4 |
+
+**Fantje**
+
+| Fant | Ime | Prva tekma (krog) | Zadnja tekma (krog) | Najdaljši premor |
+|---|---|---|---|---|
+| 1 | JAKA KOPAČ | 9 | 32 | 3 |
+| 2 | ROK MROULE | 2 | 31 | 4 |
+| 3 | MATIC ENIKO | 2 | 33 | 3 |
+| 4 | JAN GOVEKAR | 1 | 32 | 4 |
+| 5 | JUŠ BURJEK | 4 | 33 | 4 |
+| 6 | DOMEN DOLENC | 3 | 32 | 4 |
+| 7 | KRIŠTOF GANTAR | 1 | 31 | 3 |
+| 8 | DAVID ŠENK | 5 | 33 | 3 |
+| 9 | JAN DOLENC | 3 | 33 | 3 |
+| 10 | URBAN JEREB | 1 | 22 | 3 |
+| 11 | LUYGGY | 4 | 32 | 3 |
+| 12 | JAKA ENIKO | 1 | 29 | 3 |
 
 Edini premor dolžine 5 v celem turnirju ima punca J (PUNCA 10), vsi ostali
 čakajo največ 4 kroge. (Tabela velja za trenutni razpored; po morebitni
