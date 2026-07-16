@@ -230,6 +230,9 @@ function casKroga(krog) {
 // tudi cez polnoc). Vrne 1..33 med turnirjem, sicer null (pred/po njem).
 // Parameter zdaj je za teste; privzeto trenutni cas.
 function krogPoUri(zdaj = new Date()) {
+  // ce v data.js (se) ni DATUM (stara predpomnjena verzija), ne highlightaj
+  // po uri, ampak tiho padi nazaj na "prva tekma brez rezultata"
+  if (typeof DATUM === "undefined") return null;
   const zacetek = new Date(DATUM + "T" + ZACETEK + ":00");
   const minut = (zdaj - zacetek) / 60000;          // pretecene minute od 1. kroga
   if (minut < 0) return null;                       // turnir se se ni zacel
