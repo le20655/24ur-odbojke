@@ -1,83 +1,144 @@
-// 24 UR ODBOJKE — podatki javne strani (index.html na GitHub Pages).
-// Rezultat vpiši kot [točke levo, točke desno]; null = tekma še ni igrana.
-// Objava: git add data.js && git commit -m "rezultati" && git push  (stran je sveža v ~1 min)
-// Nov token (po spremembi razporeda) naredi gumb "Kopiraj za objavo" v uredi.html.
-PUB = {
-updated: "2026-07-10T14:38:04.588Z",
-token: // zakodiran razpored — ne urejaj ročno
-"WzEseyJnaXJscyI6WyJORcW9QSBCRVJDRSIsIk5JTkEgVE9NQcW9SU4iLCJFUklLQSBNT0hPUknEjCIsIk1BUlXFoEEgRE9MSU5BUiIsIkxJWkEgUE9MSkFOxIzFoEVLIiwiTElBIEJFUkNFIiwiTE9USSBHUlXFoEtPIFZBTkpBSyIsIk1BxaBBIFZFR0VMSiIsIlBVTkNBIDkiLCJQVU5DQSAxMCIsIlBVTkNBIDExIiwiUFVOQ0EgMTIiXSwiYm95cyI6WyJKQUtBIEtPUEHEjCIsIlJPSyBNUk9VTEUiLCJNQVRJQyBFTklLTyIsIkpBTiBHT1ZFS0FSIiwiSlXFoCBCVVJKRUsiLCJET01FTiBET0xFTkMiLCJLUknFoFRPRiBHQU5UQVIiLCJEQVZJRCDFoEVOSyIsIkpBTiBET0xFTkMiLCJVUkJBTiBKRVJFQiIsIkxVWUdHWSIsIkpBS0EgRU5JS08iXSwic3RhcnRDbG9jayI6IjE4OjAwIiwic3RhcnREYXRlIjoiMjAyNi0wNy0xNyIsIm1hdGNoTWluIjoyMCwiZ2FwTWluIjoxMCwibmlnaHRTdGFydENsb2NrIjoiMDA6MDAiLCJuaWdodEVuZENsb2NrIjoiMDQ6MDAiLCJwYXVzZU9uIjp0cnVlLCJwYXVzZUNsb2NrIjoiMDE6MDAiLCJwYXVzZU1pbiI6NDIwLCJzZWVkIjo0MzEyNjV9LFtbMCwwLDAsMCw4LDgsMCwtMSwtMV0sWzEsMCwxLDEsNSw1LDAsLTEsLTFdLFsyLDAsMiwyLDksOSwwLC0xLC0xXSxbMywwLDMsMywxMSwxMSwwLC0xLC0xXSxbNCwwLDQsNCw2LDYsMCwtMSwtMV0sWzUsMCw3LDcsMTAsMTAsMCwtMSwtMV0sWzYsMSwwLDEsMTAsMTEsMCwtMSwtMV0sWzcsMSwxLDIsNiw3LDAsLTEsLTFdLFs4LDEsMiwzLDQsNSwwLC0xLC0xXSxbOSwxLDMsNCw4LDksMCwtMSwtMV0sWzEwLDEsNSw2LDcsOCwwLC0xLC0xXSxbMTEsMSw5LDEwLDExLDAsMCwtMSwtMV0sWzEyLDIsMCwyLDExLDEsMCwtMSwtMV0sWzEzLDIsMSwzLDgsMTAsMCwtMSwtMV0sWzE0LDIsMiw0LDEwLDAsMCwtMSwtMV0sWzE1LDIsMyw1LDUsNywwLC0xLC0xXSxbMTYsMiw0LDYsOSwxMSwwLC0xLC0xXSxbMTcsMiw2LDgsNyw5LDAsLTEsLTFdLFsxOCwzLDAsMyw5LDAsMCwtMSwtMV0sWzE5LDMsMSw0LDExLDIsMCwtMSwtMV0sWzIwLDMsMiw1LDMsNiwwLC0xLC0xXSxbMjEsMyw0LDcsNSw4LDAsLTEsLTFdLFsyMiwzLDYsOSwxMCwxLDAsLTEsLTFdLFsyMywzLDcsMTAsOCwxMSwwLC0xLC0xXSxbMjQsNCwwLDQsNywxMSwwLC0xLC0xXSxbMjUsNCwxLDUsNCw4LDAsLTEsLTFdLFsyNiw0LDIsNiw2LDEwLDAsLTEsLTFdLFsyNyw0LDMsNyw5LDEsMCwtMSwtMV0sWzI4LDQsNSw5LDExLDMsMCwtMSwtMV0sWzI5LDQsOCwwLDEwLDIsMCwtMSwtMV0sWzMwLDUsMCw1LDQsOSwwLC0xLC0xXSxbMzEsNSwxLDYsMTAsMywwLC0xLC0xXSxbMzIsNSwyLDcsNywwLDAsLTEsLTFdLFszMyw1LDMsOCw2LDExLDAsLTEsLTFdLFszNCw1LDUsMTAsOSwyLDAsLTEsLTFdLFszNSw1LDgsMSwxMSw0LDAsLTEsLTFdLFszNiw2LDAsNiwxLDcsMCwtMSwtMV0sWzM3LDYsMiw4LDgsMiwwLC0xLC0xXSxbMzgsNiwzLDksNCwxMCwwLC0xLC0xXSxbMzksNiw1LDExLDYsMCwwLC0xLC0xXSxbNDAsNiw3LDEsOSwzLDAsLTEsLTFdLFs0MSw2LDEwLDQsMTEsNSwwLC0xLC0xXSxbNDIsNywwLDcsMiw5LDAsLTEsLTFdLFs0Myw3LDEsOCw5LDQsMCwtMSwtMV0sWzQ0LDcsMywxMCwxMCw1LDAsLTEsLTFdLFs0NSw3LDQsMTEsNywyLDAsLTEsLTFdLFs0Niw3LDUsMCwxMSw2LDAsLTEsLTFdLFs0Nyw3LDYsMSw4LDMsMCwtMSwtMV0sWzQ4LDgsMCw4LDIsMTAsMCwtMSwtMV0sWzQ5LDgsMSw5LDMsMTEsMCwtMSwtMV0sWzUwLDgsNCwwLDgsNCwwLC0xLC0xXSxbNTEsOCw1LDEsMTAsNiwwLC0xLC0xXSxbNTIsOCw2LDIsOSw1LDAsLTEsLTFdLFs1Myw4LDcsMywxMSw3LDAsLTEsLTFdLFs1NCw5LDAsOSw1LDIsMCwtMSwtMV0sWzU1LDksMSwxMCw3LDQsMCwtMSwtMV0sWzU2LDksMiwxMSwxMCw3LDAsLTEsLTFdLFs1Nyw5LDMsMCw2LDMsMCwtMSwtMV0sWzU4LDksNCwxLDExLDgsMCwtMSwtMV0sWzU5LDksOCw1LDksNiwwLC0xLC0xXSxbNjAsMTAsMCwxMCwzLDEsMCwtMSwtMV0sWzYxLDEwLDEsMTEsMiwwLDAsLTEsLTFdLFs2MiwxMCw0LDIsOCw2LDAsLTEsLTFdLFs2MywxMCw1LDMsMTAsOCwwLC0xLC0xXSxbNjQsMTAsNiw0LDksNywwLC0xLC0xXSxbNjUsMTAsNyw1LDExLDksMCwtMSwtMV0sWzY2LDExLDAsMTEsNiw1LDAsLTEsLTFdLFs2NywxMSwxLDAsMiwxLDAsLTEsLTFdLFs2OCwxMSwzLDIsNyw2LDAsLTEsLTFdLFs2OSwxMSw0LDMsNSw0LDAsLTEsLTFdLFs3MCwxMSw4LDcsMTEsMTAsMCwtMSwtMV0sWzcxLDExLDksOCwxMCw5LDAsLTEsLTFdXSxbWyJiNTAwMyIsIm0wIiwibTQiLCJtNTMiLCJtOSIsIm04IiwibTciLCJtMTQiLCJtMTMiLCJtMTciLCJtMTgiLCJtMjIiLCJtMjEiLCJtMjQiLCJtMjYiLCJiNTAwMSIsIm0zIiwibTM0IiwibTMwIiwibTM5IiwibTM3IiwibTM2IiwibTMzIiwibTQyIiwibTQzIiwibTQ3IiwibTQ4IiwibTUxIiwibTQ5IiwibTUiLCJtNTkiLCJtNTciLCJtNjMiLCJtNjAiLCJtMjgiLCJtNjciLCJtNzEiLCJtNjkiXSxbImI1MDA0IiwibTU2IiwibTEiLCJtMiIsIm02IiwibTExIiwibTEwIiwibTEyIiwibTE2IiwibTE1IiwibTE5IiwibTIzIiwibTIwIiwibTI5IiwibTI3IiwiYjUwMDIiLCJtMjUiLCJtMzIiLCJtMzUiLCJtMzEiLCJtMzgiLCJtNDEiLCJtNDAiLCJtNDYiLCJtNDQiLCJtNDUiLCJtNjUiLCJtNTAiLCJtNTIiLCJtNTgiLCJtNTQiLCJtNTUiLCJtNjIiLCJtNjEiLCJtNjQiLCJtNjgiLCJtNjYiLCJtNzAiXV0sW1s1MDAxLDQyMCwiTm_EjW5pIHByZW1vciJdLFs1MDAyLDQyMCwiTm_EjW5pIHByZW1vciJdLFs1MDAzLDMwLCJQcmVtb3IiXSxbNTAwNCwzMCwiUHJlbW9yIl1dXQ",
-rezultati: {
- 0: null,  // 18:30 · 1 · NEŽA BERCE & JAKA KOPAČ — PUNCA 9 & JAN DOLENC
- 4: null,  // 19:00 · 1 · LIZA POLJANČŠEK & JUŠ BURJEK — LOTI GRUŠKO VANJAK & KRIŠTOF GANTAR
- 53: null,  // 19:30 · 1 · MAŠA VEGELJ & JAN GOVEKAR — PUNCA 12 & DAVID ŠENK
- 9: null,  // 20:00 · 1 · MARUŠA DOLINAR & JUŠ BURJEK — PUNCA 9 & URBAN JEREB
- 8: null,  // 20:30 · 1 · ERIKA MOHORIČ & JAN GOVEKAR — LIZA POLJANČŠEK & DOMEN DOLENC
- 7: null,  // 21:00 · 1 · NINA TOMAŽIN & MATIC ENIKO — LOTI GRUŠKO VANJAK & DAVID ŠENK
- 14: null,  // 21:30 · 1 · ERIKA MOHORIČ & JUŠ BURJEK — PUNCA 11 & JAKA KOPAČ
- 13: null,  // 22:00 · 1 · NINA TOMAŽIN & JAN GOVEKAR — PUNCA 9 & LUYGGY
- 17: null,  // 22:30 · 1 · LOTI GRUŠKO VANJAK & JAN DOLENC — MAŠA VEGELJ & URBAN JEREB
- 18: null,  // 23:00 · 1 · NEŽA BERCE & JAN GOVEKAR — PUNCA 10 & JAKA KOPAČ
- 22: null,  // 23:30 · 1 · LOTI GRUŠKO VANJAK & URBAN JEREB — PUNCA 11 & ROK MROULE
- 21: null,  // 00:00 · 1 · LIZA POLJANČŠEK & DAVID ŠENK — LIA BERCE & JAN DOLENC
- 24: null,  // 00:30 · 1 · NEŽA BERCE & JUŠ BURJEK — MAŠA VEGELJ & JAKA ENIKO
- 26: null,  // 01:00 · 1 · ERIKA MOHORIČ & KRIŠTOF GANTAR — LOTI GRUŠKO VANJAK & LUYGGY
- 3: null,  // 08:30 · 1 · MARUŠA DOLINAR & JAN GOVEKAR — PUNCA 12 & JAKA ENIKO
- 34: null,  // 09:00 · 1 · LIA BERCE & LUYGGY — PUNCA 10 & MATIC ENIKO
- 30: null,  // 09:30 · 1 · NEŽA BERCE & DOMEN DOLENC — LIZA POLJANČŠEK & URBAN JEREB
- 39: null,  // 10:00 · 1 · LIA BERCE & JAKA ENIKO — LOTI GRUŠKO VANJAK & JAKA KOPAČ
- 37: null,  // 10:30 · 1 · ERIKA MOHORIČ & JAN DOLENC — PUNCA 9 & MATIC ENIKO
- 36: null,  // 11:00 · 1 · NEŽA BERCE & KRIŠTOF GANTAR — NINA TOMAŽIN & DAVID ŠENK
- 33: null,  // 11:30 · 1 · MARUŠA DOLINAR & JAN DOLENC — LOTI GRUŠKO VANJAK & JAKA ENIKO
- 42: null,  // 12:00 · 1 · NEŽA BERCE & DAVID ŠENK — ERIKA MOHORIČ & URBAN JEREB
- 43: null,  // 12:30 · 1 · NINA TOMAŽIN & JAN DOLENC — PUNCA 10 & JUŠ BURJEK
- 47: null,  // 13:00 · 1 · LOTI GRUŠKO VANJAK & ROK MROULE — PUNCA 9 & JAN GOVEKAR
- 48: null,  // 13:30 · 1 · NEŽA BERCE & JAN DOLENC — ERIKA MOHORIČ & LUYGGY
- 51: null,  // 14:00 · 1 · LIA BERCE & ROK MROULE — PUNCA 11 & KRIŠTOF GANTAR
- 49: null,  // 14:30 · 1 · NINA TOMAŽIN & URBAN JEREB — MARUŠA DOLINAR & JAKA ENIKO
- 5: null,  // 15:00 · 1 · MAŠA VEGELJ & DAVID ŠENK — PUNCA 11 & LUYGGY
- 59: null,  // 15:30 · 1 · PUNCA 9 & DOMEN DOLENC — PUNCA 10 & KRIŠTOF GANTAR
- 57: null,  // 16:00 · 1 · MARUŠA DOLINAR & JAKA KOPAČ — LOTI GRUŠKO VANJAK & JAN GOVEKAR
- 63: null,  // 16:30 · 1 · LIA BERCE & JAN GOVEKAR — PUNCA 11 & JAN DOLENC
- 60: null,  // 17:00 · 1 · NEŽA BERCE & LUYGGY — MARUŠA DOLINAR & ROK MROULE
- 28: null,  // 17:30 · 1 · LIA BERCE & URBAN JEREB — PUNCA 12 & JAN GOVEKAR
- 67: null,  // 18:00 · 1 · NINA TOMAŽIN & JAKA KOPAČ — ERIKA MOHORIČ & ROK MROULE
- 71: null,  // 18:30 · 1 · PUNCA 10 & JAN DOLENC — PUNCA 11 & URBAN JEREB
- 69: null,  // 19:00 · 1 · LIZA POLJANČŠEK & JAN GOVEKAR — LIA BERCE & JUŠ BURJEK
- 56: null,  // 18:30 · 2 · ERIKA MOHORIČ & JAKA ENIKO — PUNCA 11 & DAVID ŠENK
- 1: null,  // 19:00 · 2 · NINA TOMAŽIN & ROK MROULE — LIA BERCE & DOMEN DOLENC
- 2: null,  // 19:30 · 2 · ERIKA MOHORIČ & MATIC ENIKO — PUNCA 10 & URBAN JEREB
- 6: null,  // 20:00 · 2 · NEŽA BERCE & ROK MROULE — PUNCA 11 & JAKA ENIKO
- 11: null,  // 20:30 · 2 · PUNCA 10 & LUYGGY — PUNCA 12 & JAKA KOPAČ
- 10: null,  // 21:00 · 2 · LIA BERCE & KRIŠTOF GANTAR — MAŠA VEGELJ & JAN DOLENC
- 12: null,  // 21:30 · 2 · NEŽA BERCE & MATIC ENIKO — PUNCA 12 & ROK MROULE
- 16: null,  // 22:00 · 2 · LIZA POLJANČŠEK & KRIŠTOF GANTAR — PUNCA 10 & JAKA ENIKO
- 15: null,  // 22:30 · 2 · MARUŠA DOLINAR & DOMEN DOLENC — LIA BERCE & DAVID ŠENK
- 19: null,  // 23:00 · 2 · NINA TOMAŽIN & JUŠ BURJEK — PUNCA 12 & MATIC ENIKO
- 23: null,  // 23:30 · 2 · MAŠA VEGELJ & LUYGGY — PUNCA 9 & JAKA ENIKO
- 20: null,  // 00:00 · 2 · ERIKA MOHORIČ & DOMEN DOLENC — MARUŠA DOLINAR & KRIŠTOF GANTAR
- 29: null,  // 00:30 · 2 · PUNCA 9 & JAKA KOPAČ — PUNCA 11 & MATIC ENIKO
- 27: null,  // 01:00 · 2 · MARUŠA DOLINAR & DAVID ŠENK — PUNCA 10 & ROK MROULE
- 25: null,  // 08:30 · 2 · NINA TOMAŽIN & DOMEN DOLENC — LIZA POLJANČŠEK & JAN DOLENC
- 32: null,  // 09:00 · 2 · ERIKA MOHORIČ & DAVID ŠENK — MAŠA VEGELJ & JAKA KOPAČ
- 35: null,  // 09:30 · 2 · PUNCA 9 & ROK MROULE — PUNCA 12 & JUŠ BURJEK
- 31: null,  // 10:00 · 2 · NINA TOMAŽIN & KRIŠTOF GANTAR — PUNCA 11 & JAN GOVEKAR
- 38: null,  // 10:30 · 2 · MARUŠA DOLINAR & URBAN JEREB — LIZA POLJANČŠEK & LUYGGY
- 41: null,  // 11:00 · 2 · PUNCA 11 & JUŠ BURJEK — PUNCA 12 & DOMEN DOLENC
- 40: null,  // 11:30 · 2 · MAŠA VEGELJ & ROK MROULE — PUNCA 10 & JAN GOVEKAR
- 46: null,  // 12:00 · 2 · LIA BERCE & JAKA KOPAČ — PUNCA 12 & KRIŠTOF GANTAR
- 44: null,  // 12:30 · 2 · MARUŠA DOLINAR & LUYGGY — PUNCA 11 & DOMEN DOLENC
- 45: null,  // 13:00 · 2 · LIZA POLJANČŠEK & JAKA ENIKO — MAŠA VEGELJ & MATIC ENIKO
- 65: null,  // 13:30 · 2 · MAŠA VEGELJ & DOMEN DOLENC — PUNCA 12 & URBAN JEREB
- 50: null,  // 14:00 · 2 · LIZA POLJANČŠEK & JAKA KOPAČ — PUNCA 9 & JUŠ BURJEK
- 52: null,  // 14:30 · 2 · LOTI GRUŠKO VANJAK & MATIC ENIKO — PUNCA 10 & DOMEN DOLENC
- 58: null,  // 15:00 · 2 · LIZA POLJANČŠEK & ROK MROULE — PUNCA 12 & JAN DOLENC
- 54: null,  // 15:30 · 2 · NEŽA BERCE & URBAN JEREB — LIA BERCE & MATIC ENIKO
- 55: null,  // 16:00 · 2 · NINA TOMAŽIN & LUYGGY — MAŠA VEGELJ & JUŠ BURJEK
- 62: null,  // 16:30 · 2 · LIZA POLJANČŠEK & MATIC ENIKO — PUNCA 9 & KRIŠTOF GANTAR
- 61: null,  // 17:00 · 2 · NINA TOMAŽIN & JAKA ENIKO — ERIKA MOHORIČ & JAKA KOPAČ
- 64: null,  // 17:30 · 2 · LOTI GRUŠKO VANJAK & JUŠ BURJEK — PUNCA 10 & DAVID ŠENK
- 68: null,  // 18:00 · 2 · MARUŠA DOLINAR & MATIC ENIKO — MAŠA VEGELJ & KRIŠTOF GANTAR
- 66: null,  // 18:30 · 2 · NEŽA BERCE & JAKA ENIKO — LOTI GRUŠKO VANJAK & DOMEN DOLENC
- 70: null,  // 19:00 · 2 · PUNCA 9 & DAVID ŠENK — PUNCA 12 & LUYGGY
-}
+// Podatki turnirja 24 ur odbojke.
+// ROCNO UREJAJ SAMO razdelka IMENA in REZULTATI.
+
+// ===== IMENA: placeholderje zamenjaj s pravimi imeni =====
+const IMENA = {
+  "A": "Punca A",
+  "B": "Punca B",
+  "C": "Punca C",
+  "D": "Punca D",
+  "E": "Punca E",
+  "F": "Punca F",
+  "G": "Punca G",
+  "H": "Punca H",
+  "I": "Punca I",
+  "J": "Punca J",
+  "K": "Punca K",
+  "1": "Fant 1",
+  "2": "Fant 2",
+  "3": "Fant 3",
+  "4": "Fant 4",
+  "5": "Fant 5",
+  "6": "Fant 6",
+  "7": "Fant 7",
+  "8": "Fant 8",
+  "9": "Fant 9",
+  "10": "Fant 10",
+  "11": "Fant 11",
+  "12": "Fant 12",
 };
+
+// ===== URNIK: zacetek prvega kroga in trajanje kroga v minutah =====
+// Ob zamiku urnika popravi ti dve vrednosti (stran case izracuna sama).
+const ZACETEK = "17:30";
+const TRAJANJE_KROGA = 40;
+
+// ===== REZULTATI: vpisi tocke po koncu tekme, npr. "28:24" =====
+// Prva stevilka = tocke prvega para (levo), druga = drugega para.
+// Prazen niz "" pomeni, da tekma se ni odigrana.
+const REZULTATI = {
+  "1a": "",  "1b": "",
+  "2a": "",  "2b": "",
+  "3a": "",  "3b": "",
+  "4a": "",  "4b": "",
+  "5a": "",  "5b": "",
+  "6a": "",  "6b": "",
+  "7a": "",  "7b": "",
+  "8a": "",  "8b": "",
+  "9a": "",  "9b": "",
+  "10a": "",  "10b": "",
+  "11a": "",  "11b": "",
+  "12a": "",  "12b": "",
+  "13a": "",  "13b": "",
+  "14a": "",  "14b": "",
+  "15a": "",  "15b": "",
+  "16a": "",  "16b": "",
+  "17a": "",  "17b": "",
+  "18a": "",  "18b": "",
+  "19a": "",  "19b": "",
+  "20a": "",  "20b": "",
+  "21a": "",  "21b": "",
+  "22a": "",  "22b": "",
+  "23a": "",  "23b": "",
+  "24a": "",  "24b": "",
+  "25a": "",  "25b": "",
+  "26a": "",  "26b": "",
+  "27a": "",  "27b": "",
+  "28a": "",  "28b": "",
+  "29a": "",  "29b": "",
+  "30a": "",  "30b": "",
+  "31a": "",  "31b": "",
+  "32a": "",  "32b": "",
+  "33a": "",  "33b": "",
+};
+
+// ===== RAZPORED: generiran z razpored.py - NE spreminjaj rocno =====
+// [krog, igrisce, punca1, fant1, punca2, fant2]
+const RAZPORED = [
+  [1, "a", "C", "4", "F", "7"],
+  [1, "b", "I", "12", "H", "10"],
+  [2, "a", "D", "10", "G", "2"],
+  [2, "b", "K", "3", "A", "4"],
+  [3, "a", "E", "9", "C", "7"],
+  [3, "b", "A", "12", "K", "6"],
+  [4, "a", "C", "10", "D", "11"],
+  [4, "b", "J", "12", "I", "5"],
+  [5, "a", "F", "4", "D", "2"],
+  [5, "b", "E", "5", "H", "8"],
+  [6, "a", "K", "7", "G", "3"],
+  [6, "b", "H", "6", "B", "11"],
+  [7, "a", "F", "11", "I", "3"],
+  [7, "b", "A", "9", "B", "10"],
+  [8, "a", "D", "12", "C", "2"],
+  [8, "b", "E", "10", "J", "4"],
+  [9, "a", "K", "8", "C", "11"],
+  [9, "b", "G", "1", "H", "2"],
+  [10, "a", "A", "7", "J", "5"],
+  [10, "b", "F", "10", "B", "6"],
+  [11, "a", "C", "9", "H", "3"],
+  [11, "b", "K", "1", "I", "10"],
+  [12, "a", "E", "12", "D", "8"],
+  [12, "b", "B", "2", "K", "11"],
+  [13, "a", "H", "12", "G", "4"],
+  [13, "b", "A", "3", "D", "6"],
+  [14, "a", "I", "7", "A", "10"],
+  [14, "b", "G", "5", "C", "1"],
+  [15, "a", "H", "5", "F", "3"],
+  [15, "b", "B", "9", "E", "1"],
+  [16, "a", "K", "12", "J", "11"],
+  [16, "b", "A", "8", "F", "2"],
+  [17, "a", "B", "8", "I", "4"],
+  [17, "b", "D", "5", "E", "6"],
+  [18, "a", "F", "6", "G", "7"],
+  [18, "b", "C", "3", "J", "10"],
+  [19, "a", "J", "1", "F", "8"],
+  [19, "b", "A", "2", "H", "9"],
+  [20, "a", "E", "4", "A", "11"],
+  [20, "b", "C", "12", "B", "7"],
+  [21, "a", "F", "5", "K", "10"],
+  [21, "b", "D", "4", "I", "9"],
+  [22, "a", "I", "2", "J", "3"],
+  [22, "b", "G", "10", "E", "8"],
+  [23, "a", "G", "6", "J", "9"],
+  [23, "b", "B", "12", "A", "1"],
+  [24, "a", "I", "1", "C", "6"],
+  [24, "b", "H", "11", "D", "7"],
+  [25, "a", "J", "8", "K", "9"],
+  [25, "b", "B", "4", "C", "5"],
+  [26, "a", "F", "12", "E", "3"],
+  [26, "b", "J", "7", "D", "1"],
+  [27, "a", "G", "11", "A", "5"],
+  [27, "b", "I", "6", "E", "2"],
+  [28, "a", "C", "8", "A", "6"],
+  [28, "b", "H", "1", "K", "4"],
+  [29, "a", "G", "12", "F", "9"],
+  [29, "b", "J", "2", "B", "5"],
+  [30, "a", "D", "3", "B", "1"],
+  [30, "b", "H", "7", "I", "8"],
+  [31, "a", "I", "11", "G", "9"],
+  [31, "b", "K", "2", "E", "7"],
+  [32, "a", "E", "11", "F", "1"],
+  [32, "b", "J", "6", "H", "4"],
+  [33, "a", "B", "3", "G", "8"],
+  [33, "b", "D", "9", "K", "5"],
+];

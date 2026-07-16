@@ -1,1760 +1,204 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="sl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
-<body class="m-viewer">
 <title>24 ur odbojke</title>
 <style>
-:root{
-  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#1e2026; --muted:#5c5f69;
-  --line:#dedbce; --accent:#a86f0a; --accent-bg:#f5e3bc; --accent-strong:#8a5c08;
-  --courtA:#a86f0a; --courtA-bg:#f8ecd2; --courtB:#35609f; --courtB-bg:#dfe8f5;
-  --ok:#2f7d4f; --err:#b0433c; --err-bg:#f6dedc; --warn-bg:#f5e3bc; --night:#5d4fa8;
-  --gold:#b8860b; --silver:#7a7f8a; --bronze:#9a6039;
-  --shadow:0 1px 3px rgba(35,37,44,.08);
-}
-@media (prefers-color-scheme: dark){:root{
-  --bg:#14161d; --surface:#1d2029; --surface2:#252935; --ink:#e9eaee; --muted:#9a9daa;
-  --line:#2e3341; --accent:#e8a020; --accent-bg:#3a2f14; --accent-strong:#f2b747;
-  --courtA:#e8a020; --courtA-bg:#33290f; --courtB:#7fa8e0; --courtB-bg:#1c2637;
-  --ok:#58b380; --err:#e07b74; --err-bg:#3d1f1d; --warn-bg:#3a2f14; --night:#a294e0;
-  --gold:#e8b53a; --silver:#a8aeba; --bronze:#c98a5e;
-  --shadow:0 1px 4px rgba(0,0,0,.4);
-}}
-:root[data-theme="light"]{
-  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#1e2026; --muted:#5c5f69;
-  --line:#dedbce; --accent:#a86f0a; --accent-bg:#f5e3bc; --accent-strong:#8a5c08;
-  --courtA:#a86f0a; --courtA-bg:#f8ecd2; --courtB:#35609f; --courtB-bg:#dfe8f5;
-  --ok:#2f7d4f; --err:#b0433c; --err-bg:#f6dedc; --warn-bg:#f5e3bc; --night:#5d4fa8;
-  --gold:#b8860b; --silver:#7a7f8a; --bronze:#9a6039;
-  --shadow:0 1px 3px rgba(35,37,44,.08);
-}
-:root[data-theme="dark"]{
-  --bg:#14161d; --surface:#1d2029; --surface2:#252935; --ink:#e9eaee; --muted:#9a9daa;
-  --line:#2e3341; --accent:#e8a020; --accent-bg:#3a2f14; --accent-strong:#f2b747;
-  --courtA:#e8a020; --courtA-bg:#33290f; --courtB:#7fa8e0; --courtB-bg:#1c2637;
-  --ok:#58b380; --err:#e07b74; --err-bg:#3d1f1d; --warn-bg:#3a2f14; --night:#a294e0;
-  --gold:#e8b53a; --silver:#a8aeba; --bronze:#c98a5e;
-  --shadow:0 1px 4px rgba(0,0,0,.4);
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,"Segoe UI",Roboto,sans-serif}
-button{font:inherit;color:inherit;background:var(--surface2);border:1px solid var(--line);border-radius:8px;padding:4px 10px;cursor:pointer}
-button:hover{border-color:var(--muted)}
-button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-button.primary{background:var(--accent);border-color:var(--accent);color:var(--bg);font-weight:700}
-button.small{padding:1px 7px;font-size:12.5px}
-input,textarea,select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
-textarea{resize:vertical}
-.mono{font-family:ui-monospace,Consolas,"Liberation Mono",monospace;font-variant-numeric:tabular-nums}
-.eyebrow{text-transform:uppercase;letter-spacing:.09em;font-size:11.5px;font-weight:700;color:var(--muted)}
-
-header.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:2px solid var(--accent);box-shadow:var(--shadow)}
-.topline{display:flex;align-items:center;gap:16px;padding:9px 16px;flex-wrap:wrap}
-.brand{font-size:21px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
-.brand b{color:var(--accent)}
-.topstats{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;color:var(--muted);font-size:13.5px}
-.topstats .clock{font-size:17px;font-weight:700;color:var(--ink)}
-.spacer{flex:1}
-.toolbar{display:flex;gap:7px;flex-wrap:wrap}
-nav.tabs{display:flex;gap:2px;padding:0 12px;border-top:1px solid var(--line)}
-nav.tabs button{border:none;background:none;border-radius:0;padding:8px 14px;font-weight:600;color:var(--muted);border-bottom:2.5px solid transparent;margin-bottom:-1px}
-nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent)}
-
-main{max-width:1180px;margin:0 auto;padding:16px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
-h2{font-size:17px;margin:0 0 10px}
-.hint{color:var(--muted);font-size:13.5px}
-
-/* nastavitev */
-.setupgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.setupgrid textarea{width:100%;min-height:230px}
-.optrow{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;align-items:end}
-.optrow label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted);font-weight:600}
-.optrow input{width:auto}
-.optrow input[type=number]{width:70px}
-.genrow{margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-.counts{font-size:13px;color:var(--muted);margin-top:4px}
-
-/* razpored */
-.courts{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
-@media (max-width:860px){.courts{grid-template-columns:1fr}.setupgrid{grid-template-columns:1fr}}
-.court{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
-.courthead{padding:9px 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
-.court[data-c="0"] .courthead{background:var(--courtA-bg)}
-.court[data-c="1"] .courthead{background:var(--courtB-bg)}
-.courtname{font-weight:800;letter-spacing:.04em}
-.court[data-c="0"] .courtname{color:var(--courtA)}
-.court[data-c="1"] .courtname{color:var(--courtB)}
-.courthead .end{font-size:12.5px;color:var(--muted);margin-left:auto}
-.courtbtns{display:flex;gap:5px;flex-wrap:wrap;padding:7px 12px;border-bottom:1px solid var(--line);background:var(--surface2)}
-.qrow{display:flex;gap:10px;align-items:center;padding:7px 12px;border-bottom:1px solid var(--line);position:relative}
-.qrow:last-child{border-bottom:none}
-.qrow .time{width:52px;flex:none;font-weight:700}
-.qrow .time .nd{display:block;font-size:10px;color:var(--night);font-weight:700}
-.qrow .body{flex:1;min-width:0}
-.qrow .pair{font-weight:600}
-.qrow .vs{color:var(--muted);font-weight:400;padding:0 4px}
-.qrow .meta{font-size:12px;color:var(--muted)}
-.qrow.done{opacity:.62}
-.qrow.now{background:var(--accent-bg)}
-.qrow.now::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
-.qrow.now .time{color:var(--accent-strong)}
-.qrow.next::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--line)}
-.qrow.brk{background:var(--surface2);color:var(--muted)}
-.qrow.brk.night{background:color-mix(in srgb,var(--night) 12%,var(--surface));color:var(--night)}
-.qrow .score{font-size:16px;font-weight:800;white-space:nowrap}
-.qrow .ctl{display:flex;gap:3px;flex-none}
-.qrow .ctl button{padding:0 6px;font-size:12px;line-height:22px}
-.qrow input.sc{width:46px;text-align:center;padding:2px 4px}
-.chip{display:inline-block;font-size:10.5px;font-weight:700;border:1px solid var(--line);border-radius:99px;padding:0 7px;color:var(--muted);vertical-align:1px}
-.statusline{display:flex;gap:10px;align-items:center;margin:0 0 12px;flex-wrap:wrap}
-.warnbox{border:1px solid var(--line);border-left:4px solid var(--err);border-radius:8px;background:var(--surface);padding:8px 14px;margin-bottom:14px;font-size:13.5px}
-.warnbox ul{margin:6px 0 2px;padding-left:18px}
-.warnbox .w-night{color:var(--night)}
-.warnbox .w-err{color:var(--err);font-weight:700}
-.legend{font-size:12.5px;color:var(--muted);margin-top:10px}
-/* javna stran: kompaktna glava v eni vrstici */
-.mode-viewer{flex-wrap:nowrap}
-.mode-viewer .brand{font-size:16px}
-.mode-viewer .topstats{flex-wrap:nowrap;font-size:12px;gap:8px;white-space:nowrap;overflow:hidden}
-.mode-viewer .toolbar{display:none}
-
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
-/* javna stran: izbirnik igrišča v lepljivi glavi, vedno viden */
-.segbar{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 10px;border-top:1px solid var(--line)}
-.segbar:empty{display:none}
-.seg button{border:none;border-radius:0;background:var(--surface);padding:4px 13px}
-.seg button+button{border-left:1px solid var(--line)}
-.seg button.active{background:var(--accent-bg);color:var(--accent-strong);font-weight:700}
-.courts.single{grid-template-columns:1fr}
-
-/* telefon */
-@media (max-width:640px){
-  main{padding:10px 8px}
-  .topline{padding:7px 10px;gap:10px}
-  .brand{font-size:18px}
-  .topstats{font-size:12.5px;gap:10px}
-  nav.tabs{padding:0 4px}
-  .card{padding:12px}
-  .qrow{flex-wrap:wrap;row-gap:5px;padding:8px 10px}
-  .qrow .body{min-width:calc(100% - 66px)}
-  .qrow .vs{display:block;padding:0;font-size:12.5px}
-  .qrow .scorebox{margin-left:62px}
-  .qrow .ctl{margin-left:auto}
-  .qrow .ctl button{line-height:26px;padding:0 9px;font-size:13px}
-  .qrow input.sc{width:52px;padding:4px}
-}
-
-/* lestvica */
-.boards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media (max-width:860px){.boards{grid-template-columns:1fr}}
-.boards>.card,.courts>.court{min-width:0} /* tabela ne sme razširiti strani čez zaslon */
-table.board{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-table.board th{text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:4px 7px;border-bottom:2px solid var(--line)}
-table.board th.nm,table.board td.nm{text-align:left}
-table.board td{padding:5px 7px;border-bottom:1px solid var(--line);text-align:right}
-table.board tbody tr:nth-child(1) td.nm{color:var(--gold);font-weight:800}
-table.board tbody tr:nth-child(2) td.nm{color:var(--silver);font-weight:800}
-table.board tbody tr:nth-child(3) td.nm{color:var(--bronze);font-weight:800}
-.tablewrap{overflow-x:auto}
-
-.banner-ro{background:var(--accent-bg);border:1px solid var(--accent);border-radius:8px;padding:8px 14px;margin-bottom:14px;font-size:14px}
-dialog{border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
-dialog::backdrop{background:rgba(0,0,0,.45)}
-.overlay{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 80%,transparent);display:flex;align-items:center;justify-content:center;z-index:50;font-size:17px;font-weight:700}
-@media (prefers-reduced-motion: no-preference){
-  .qrow.now{transition:background .3s}
-}
-
-/* indikator objave (urejevalnik) */
-.pub{font-size:12.5px;font-weight:700;white-space:nowrap}
-.pub.ok{color:var(--ok)} .pub.warn{color:var(--accent-strong)} .pub.err{color:var(--err)} .pub.mut{color:var(--muted)}
-
-/* tekma odpade */
-.qrow.offm .pair{text-decoration:line-through;opacity:.6}
-.qrow.offm .time{opacity:.6}
-.chip.offc{color:var(--err);border-color:var(--err);font-size:11.5px}
-
-/* dialog Obnovi */
-#restoreDlg{max-width:460px;width:92vw;padding:16px}
-#restoreDlg h2{margin-top:0}
-#restoreDlg .eyebrow{margin:14px 0 4px}
-#restoreDlg .snaprow{display:flex;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:13.5px}
-#restoreDlg .snaprow:last-of-type{border-bottom:none}
-
-/* iskalnik igralca + oznaki igrišč (javna stran) */
-#psel{max-width:52vw}
-.chip.crt0{color:var(--courtA);border-color:var(--courtA)}
-.chip.crt1{color:var(--courtB);border-color:var(--courtB)}
-.pcard{padding:0;overflow:hidden}
-.pcard h2{padding:12px 14px;margin:0;border-bottom:1px solid var(--line)}
-
-/* javna stran: večje, čitljivejše (telefon, sonce, noč) */
-body.m-viewer main{max-width:860px}
-body.m-viewer .qrow{padding:10px 14px;gap:12px}
-body.m-viewer .qrow .time{font-size:15.5px;width:58px}
-body.m-viewer .qrow .pair{font-size:15px;line-height:1.45}
-body.m-viewer .qrow.now{box-shadow:inset 0 0 0 2px var(--accent)}
-body.m-viewer .qrow.now .pair{font-size:16.5px;font-weight:700}
-body.m-viewer .qrow.now .time{font-size:17px}
-body.m-viewer .seg button{padding:8px 20px;font-size:15px}
-body.m-viewer #psel{padding:7px 10px;border-radius:8px}
-@media (max-width:640px){
-  body.m-viewer{font-size:16px}
-  body.m-viewer .qrow .body{min-width:calc(100% - 72px)}
-  body.m-viewer .qrow .scorebox{margin-left:70px}
-  body.m-viewer table.board th:nth-child(4),body.m-viewer table.board td:nth-child(4),
-  body.m-viewer table.board th:nth-child(5),body.m-viewer table.board td:nth-child(5),
-  body.m-viewer table.board th:nth-child(6),body.m-viewer table.board td:nth-child(6),
-  body.m-viewer table.board th:nth-child(9),body.m-viewer table.board td:nth-child(9){display:none}
-  body.m-viewer table.board td{padding:8px 7px;font-size:15px}
-}
-
-/* tisk */
-#printArea{display:none}
-@media print{
-  header.top,main,.overlay{display:none !important}
-  #printArea{display:block;font:11.5px/1.45 system-ui,sans-serif;color:#000}
-  #printArea h1{font-size:19px;margin:0 0 2px}
-  #printArea h2{font-size:14px;margin:14px 0 5px}
-  #printArea table{width:100%;border-collapse:collapse}
-  #printArea th,#printArea td{border:1px solid #999;padding:3px 6px;text-align:left}
-  #printArea .res{width:70px}
-  #printArea .rules{margin-top:10px}
-}
+  :root {
+    --ozadje: #f5f6f8; --kartica: #ffffff; --crta: #e2e5ea;
+    --besedilo: #1c2330; --sivo: #6b7484; --poudarek: #2563eb;
+    --zmaga: #157347; --oznaka: #fff3bf;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ozadje: #14181f; --kartica: #1d232d; --crta: #2c3442;
+      --besedilo: #e8ebf0; --sivo: #97a0b0; --poudarek: #60a5fa;
+      --zmaga: #4ade80; --oznaka: #4a4420;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--ozadje); color: var(--besedilo);
+    max-width: 760px; margin: 0 auto; padding: 12px 12px 60px;
+  }
+  h1 { font-size: 1.5rem; margin: 8px 0 14px; text-align: center; }
+  .vrstica-orodij {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .zavihek {
+    padding: 8px 18px; border: 1px solid var(--crta); border-radius: 20px;
+    background: var(--kartica); color: var(--besedilo); font-size: 0.95rem;
+    cursor: pointer;
+  }
+  .zavihek.aktiven { background: var(--poudarek); border-color: var(--poudarek); color: #fff; }
+  select {
+    padding: 8px 12px; border: 1px solid var(--crta); border-radius: 20px;
+    background: var(--kartica); color: var(--besedilo); font-size: 0.95rem;
+  }
+  .krog {
+    background: var(--kartica); border: 1px solid var(--crta);
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;
+  }
+  .krog h2 { font-size: 0.85rem; color: var(--sivo); text-transform: uppercase;
+             letter-spacing: 0.04em; margin-bottom: 6px; }
+  .tekma {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0; border-top: 1px solid var(--crta); font-size: 0.98rem;
+  }
+  .tekma:first-of-type { border-top: none; }
+  .igrisce { color: var(--sivo); font-size: 0.8rem; min-width: 62px; }
+  .par { flex: 1; }
+  .par.zmagovalec { font-weight: 700; color: var(--zmaga); }
+  .proti { color: var(--sivo); font-size: 0.85rem; }
+  .rezultat { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 54px; text-align: right; }
+  .rezultat.prazen { color: var(--sivo); font-weight: 400; }
+  mark { background: var(--oznaka); color: inherit; border-radius: 3px; padding: 0 2px; }
+  table { width: 100%; border-collapse: collapse; background: var(--kartica);
+          border: 1px solid var(--crta); border-radius: 10px; overflow: hidden; }
+  .tabela-ovoj { overflow-x: auto; margin-bottom: 20px; }
+  th, td { padding: 8px 10px; text-align: right; font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; }
+  th { background: none; color: var(--sivo); font-size: 0.8rem; text-transform: uppercase;
+       letter-spacing: 0.04em; border-bottom: 1px solid var(--crta); }
+  tr + tr td { border-top: 1px solid var(--crta); }
+  h3 { margin: 18px 0 8px; font-size: 1.1rem; }
+  .opomba { color: var(--sivo); font-size: 0.85rem; text-align: center; margin-top: 24px; }
+  .opomba a { color: var(--poudarek); }
 </style>
+</head>
+<body>
+<h1>🏐 24 ur odbojke</h1>
 
-<header class="top">
-  <div class="topline mode-viewer">
-    <div class="brand">24 UR <b>ODBOJKE</b></div>
-    <div class="topstats" id="topstats"></div>
-    <div class="spacer"></div>
-    <div class="toolbar" id="toolbar"></div>
-  </div>
-  <nav class="tabs" id="tabs"></nav>
-  <div class="segbar" id="segbar"></div>
-</header>
-<main id="main"></main>
-<div id="printArea"></div>
+<div class="vrstica-orodij">
+  <button class="zavihek aktiven" id="zav-razpored">Razpored</button>
+  <button class="zavihek" id="zav-lestvica">Lestvica</button>
+  <select id="filter"><option value="">Vsi igralci</option></select>
+</div>
 
+<div id="vsebina"></div>
+
+<p class="opomba">Rezultati se vpisujejo v <code>data.js</code> na GitHubu —
+navodila v <a href="https://github.com/le20655/24ur-odbojke/blob/main/NAVODILA.md">NAVODILA.md</a>.</p>
+
+<script src="data.js"></script>
 <script>
-/* core.js — logika turnirja "24 ur odbojke" (čisti JS, brez DOM; deluje v node in brskalniku) */
-(function (root, factory) {
-  if (typeof module !== 'undefined' && module.exports) module.exports = factory();
-  else root.Core = factory();
-})(typeof self !== 'undefined' ? self : this, function () {
-  'use strict';
+"use strict";
+const PUNCE = "ABCDEFGHIJK".split("");
+const FANTJE = Array.from({length: 12}, (_, i) => String(i + 1));
 
-  // ---------- pomožno ----------
-  function mulberry32(seed) {
-    let a = seed >>> 0;
-    return function () {
-      a |= 0; a = (a + 0x6D2B79F5) | 0;
-      let t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
+let pogled = "razpored";   // "razpored" | "lestvica"
+let izbran = "";           // oznaka filtriranega igralca ("" = vsi)
+
+const ime = o => IMENA[o] || o;
+
+// cas zacetka kroga: ZACETEK + (krog-1) * TRAJANJE_KROGA minut (cez polnoc se prelije)
+function casKroga(krog) {
+  const [h, m] = ZACETEK.split(":").map(Number);
+  const skupaj = (h * 60 + m + (krog - 1) * TRAJANJE_KROGA) % 1440;
+  return String(Math.floor(skupaj / 60)).padStart(2, "0") + ":"
+       + String(skupaj % 60).padStart(2, "0");
+}
+
+// tekma = {krog, igrisce, g1, b1, g2, b2, t1, t2}; t1/t2 = null, ce ni rezultata
+function tekme() {
+  const sez = [];
+  for (const [krog, igrisce, g1, b1, g2, b2] of RAZPORED) {
+    const rez = (REZULTATI[krog + igrisce] || "").trim();
+    let t1 = null, t2 = null;
+    const m = rez.match(/^(\d+)\s*:\s*(\d+)$/);
+    if (m) { t1 = +m[1]; t2 = +m[2]; }
+    sez.push({krog, igrisce, g1, b1, g2, b2, t1, t2});
   }
-  function clockToMin(str) { // "17:00" -> 1020
-    const m = /^(\d{1,2}):(\d{2})$/.exec((str || '').trim());
-    if (!m) return null;
-    return (+m[1] % 24) * 60 + (+m[2] % 60);
+  return sez;
+}
+
+function parHtml(g, b, zmagal) {
+  const oznaci = o => o === izbran ? "<mark>" + ime(o) + "</mark>" : ime(o);
+  return '<span class="par' + (zmagal ? " zmagovalec" : "") + '">'
+       + oznaci(g) + " &amp; " + oznaci(b) + "</span>";
+}
+
+function prikaziRazpored() {
+  const poKrogih = new Map();
+  for (const t of tekme()) {
+    if (izbran && ![t.g1, t.b1, t.g2, t.b2].includes(izbran)) continue;
+    if (!poKrogih.has(t.krog)) poKrogih.set(t.krog, []);
+    poKrogih.get(t.krog).push(t);
   }
-  function minToClock(min) { // minute v dnevu -> "HH:MM"
-    const t = ((min % 1440) + 1440) % 1440;
-    const h = Math.floor(t / 60), mm = t % 60;
-    return String(h).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
+  let html = "";
+  for (const [krog, ts] of poKrogih) {
+    html += '<div class="krog"><h2>Krog ' + krog + " · " + casKroga(krog) + "</h2>";
+    for (const t of ts) {
+      const odigrana = t.t1 !== null;
+      html += '<div class="tekma">'
+        + '<span class="igrisce">Igrišče ' + (t.igrisce === "a" ? 1 : 2) + "</span>"
+        + parHtml(t.g1, t.b1, odigrana && t.t1 > t.t2)
+        + '<span class="proti">proti</span>'
+        + parHtml(t.g2, t.b2, odigrana && t.t2 > t.t1)
+        + '<span class="rezultat' + (odigrana ? "" : " prazen") + '">'
+        + (odigrana ? t.t1 + ":" + t.t2 : "–") + "</span></div>";
+    }
+    html += "</div>";
   }
+  if (!html) html = '<p class="opomba">Ni tekem.</p>';
+  document.getElementById("vsebina").innerHTML = html;
+}
 
-  // ---------- generator: partnerstva + nasprotniki ----------
-  // n punc (0..n-1), n fantov (0..n-1). Krog r: punca i + fant (i+r) mod n.
-  // Tekma: {id, round, g1,b1,g2,b2, makeup} — par1 (g1,b1) proti par2 (g2,b2).
-
-  function minCostMatching(items, cost) {
-    const m = items.length;
-    const used = new Array(m).fill(false);
-    let best = null, bestCost = Infinity;
-    const cur = [];
-    (function dfs(acc) {
-      if (acc >= bestCost) return;
-      const i = used.indexOf(false);
-      if (i === -1) { bestCost = acc; best = cur.slice(); return; }
-      used[i] = true;
-      for (let j = i + 1; j < m; j++) {
-        if (used[j]) continue;
-        used[j] = true; cur.push([i, j]);
-        dfs(acc + cost(items[i], items[j]));
-        cur.pop(); used[j] = false;
-      }
-      used[i] = false;
-    })(0);
-    return best.map(([i, j]) => [items[i], items[j]]);
+function prikaziLestvico() {
+  const st = {};  // oznaka -> {tekme, zmage, tocke, razlika}
+  for (const o of [...PUNCE, ...FANTJE]) st[o] = {tekme: 0, zmage: 0, tocke: 0, razlika: 0};
+  for (const t of tekme()) {
+    if (t.t1 === null) continue;
+    for (const [o, moje, tuje] of [[t.g1, t.t1, t.t2], [t.b1, t.t1, t.t2],
+                                   [t.g2, t.t2, t.t1], [t.b2, t.t2, t.t1]]) {
+      st[o].tekme++;
+      st[o].tocke += moje;
+      st[o].razlika += moje - tuje;
+      if (moje > tuje) st[o].zmage++;
+    }
   }
-
-  function generateMatches(n, rng) {
-    const oppG = Array.from({ length: n }, () => new Array(n).fill(0)); // punca-punca nasprotnici
-    const oppB = Array.from({ length: n }, () => new Array(n).fill(0)); // fant-fant
-    const oppX = Array.from({ length: n }, () => new Array(n).fill(0)); // punca-fant (nasproti)
-    const matches = [];
-    const byePairs = [];
-    let id = 0;
-
-    const cost = (p, q) => {
-      let c = oppG[p.g][q.g] * oppG[p.g][q.g] * 10
-            + oppB[p.b][q.b] * oppB[p.b][q.b] * 10
-            + (oppX[p.g][q.b] ** 2 + oppX[q.g][p.b] ** 2) * 3;
-      return c + rng() * 0.5;
-    };
-    const record = (p, q, round, makeup) => {
-      oppG[p.g][q.g]++; oppG[q.g][p.g]++;
-      oppB[p.b][q.b]++; oppB[q.b][p.b]++;
-      oppX[p.g][q.b]++; oppX[q.g][p.b]++;
-      matches.push({ id: id++, round, g1: p.g, b1: p.b, g2: q.g, b2: q.b, makeup: !!makeup, res: null, off: false });
-    };
-
-    for (let r = 0; r < n; r++) {
-      let pairs = Array.from({ length: n }, (_, i) => ({ g: i, b: (i + r) % n }));
-      if (n % 2 === 1) {
-        byePairs.push(pairs[r]); // punca r počiva 1x, fant (2r mod n) 1x
-        pairs = pairs.filter((_, i) => i !== r);
-      }
-      for (const [p, q] of minCostMatching(pairs, cost)) record(p, q, r, false);
+  const tabela = (naslov, oznake) => {
+    const vrstice = oznake
+      .map(o => ({o, ...st[o]}))
+      .sort((a, b) => b.tocke - a.tocke || b.razlika - a.razlika || b.zmage - a.zmage);
+    let h = "<h3>" + naslov + '</h3><div class="tabela-ovoj"><table>'
+      + "<tr><th>Ime</th><th>Tekme</th><th>Zmage</th><th>Točke</th><th>+/−</th></tr>";
+    for (const v of vrstice) {
+      h += "<tr><td>" + ime(v.o) + "</td><td>" + v.tekme + "</td><td>" + v.zmage
+         + "</td><td><b>" + v.tocke + "</b></td><td>"
+         + (v.razlika > 0 ? "+" : "") + v.razlika + "</td></tr>";
     }
-
-    // nadomestne tekme za "bye" pare (lihi n): min-cost razporeditev, en par ostane
-    if (n % 2 === 1) {
-      let bestPlan = null, bestC = Infinity;
-      for (let skip = 0; skip < byePairs.length; skip++) {
-        const rest = byePairs.filter((_, i) => i !== skip);
-        let tot = 0;
-        const plan = minCostMatching(rest, (p, q) => { const c = cost(p, q); return c; });
-        for (const [p, q] of plan) tot += cost(p, q);
-        if (tot < bestC) { bestC = tot; bestPlan = { plan, leftover: byePairs[skip] }; }
-      }
-      for (const [p, q] of bestPlan.plan) record(p, q, n, true);
-      // preostali bye par dobi nasprotnika iz obstoječih partnerstev (ta dva igralca igrata n+1 tekem)
-      const L = bestPlan.leftover;
-      let bo = null, boc = Infinity;
-      for (let g = 0; g < n; g++) {
-        if (g === L.g) continue;
-        for (let b = 0; b < n; b++) {
-          if (b === L.b) continue;
-          const c = cost({ g, b }, L);
-          if (c < boc) { boc = c; bo = { g, b }; }
-        }
-      }
-      record(bo, L, n, true);
-    }
-    return { matches, oppG, oppB };
-  }
-
-  // ---------- razporejanje v slote ----------
-  // grid[s][c] = indeks tekme ali -1; sloti gosti (prazna celica le v zadnjem slotu).
-  // Trde omejitve: igralec 2x v istem slotu; mehke/kaznovane: sosednja slota,
-  // nočni počitek < 120 min v kosu, slaba razpršenost.
-
-  function matchPlayers(m, n) { return [m.g1, n + m.b1, m.g2, n + m.b2]; }
-
-  function assignSlots(matches, opts, rng) {
-    const n = opts.n;
-    const M = matches.length;
-    const cells = M + (opts.extraCells || 0);
-    const S = Math.ceil(cells / 2);
-    const P = 2 * n;
-    const eveSlots = opts.eveningSlots || 0; // reže pred nočno pavzo (vrhunec) — tam prazna igrišča kaznujemo
-    const emptyW = opts.emptyW || 0;         // teža: prazno igrišče čez večer naj se raje preseli v jutro
-
-    // začetni razpored: po vrsti (krogi skupaj), prazne celice na koncu
-    const grid = [];
-    for (let s = 0; s < S; s++) grid.push([2 * s < M ? 2 * s : -1, 2 * s + 1 < M ? 2 * s + 1 : -1]);
-
-    const players = matches.map(m => matchPlayers(m, n)); // matchIdx -> [p1..p4]
-    const pslots = Array.from({ length: P }, () => []);
-    for (let s = 0; s < S; s++) for (let c = 0; c < 2; c++) {
-      const mi = grid[s][c];
-      if (mi >= 0) for (const p of players[mi]) pslots[p].push(s);
-    }
-
-    // kazni: isti slot 1e6, sosednja slota 4000, razmik 2 slota → 1 (mehko)
-    function penPlayer(p) {
-      const sl = pslots[p].slice().sort((a, b) => a - b);
-      let pen = 0;
-      for (let i = 1; i < sl.length; i++) {
-        const g = sl[i] - sl[i - 1];
-        if (g === 0) pen += 1e6;
-        else if (g === 1) pen += 4000;
-        else if (g === 2) pen += 1;
-      }
-      return pen;
-    }
-
-    // pozicijska kazen praznih rež: prazno igrišče v slotu pred nočno pavzo je (rahlo) nezaželeno
-    const emptyPen = s => (emptyW && s < eveSlots) ? emptyW : 0;
-    function gridEmptyPen() {
-      let e = 0;
-      for (let s = 0; s < S; s++) { if (grid[s][0] < 0) e += emptyPen(s); if (grid[s][1] < 0) e += emptyPen(s); }
-      return e;
-    }
-
-    const pens = new Array(P);
-    let total = 0;
-    for (let p = 0; p < P; p++) { pens[p] = penPlayer(p); total += pens[p]; }
-    total += gridEmptyPen();
-
-    function replaceSlot(p, from, to) {
-      const arr = pslots[p];
-      arr[arr.indexOf(from)] = to;
-    }
-
-    const iters = opts.iters || 150000;
-    let best = { total, grid: grid.map(r => r.slice()) };
-    let T = 2500;
-    const cool = Math.pow(1 / 2500, 1 / iters);
-    let badPlayers = [];
-
-    // poskusi zamenjavo tekem v celicah (s1,c1) <-> (s2,c2); prazna celica je dovoljena na eni strani
-    function trySwap(s1, c1, s2, c2) {
-      const m1 = grid[s1][c1], m2 = grid[s2][c2];
-      if (m1 < 0 && m2 < 0) return false;
-      const aff = new Set();
-      if (m1 >= 0) for (const p of players[m1]) aff.add(p);
-      if (m2 >= 0) for (const p of players[m2]) aff.add(p);
-      let delta = 0;
-      for (const p of aff) delta -= pens[p];
-      if (emptyW && s1 !== s2) { // premik prazne reže proti jutru/repu
-        const be = (m1 < 0 ? emptyPen(s1) : 0) + (m2 < 0 ? emptyPen(s2) : 0);
-        const af = (m2 < 0 ? emptyPen(s1) : 0) + (m1 < 0 ? emptyPen(s2) : 0);
-        delta += af - be;
-      }
-      if (m1 >= 0) for (const p of players[m1]) replaceSlot(p, s1, s2);
-      if (m2 >= 0) for (const p of players[m2]) replaceSlot(p, s2, s1);
-      const newPens = {};
-      for (const p of aff) { newPens[p] = penPlayer(p); delta += newPens[p]; }
-      if (delta <= 0 || rng() < Math.exp(-delta / T)) {
-        grid[s1][c1] = m2; grid[s2][c2] = m1;
-        for (const p of aff) pens[p] = newPens[p];
-        total += delta;
-        if (total < best.total) best = { total, grid: grid.map(r => r.slice()) };
-        return true;
-      }
-      if (m1 >= 0) for (const p of players[m1]) replaceSlot(p, s2, s1);
-      if (m2 >= 0) for (const p of players[m2]) replaceSlot(p, s1, s2);
-      return false;
-    }
-
-    // hitra ocena konfliktov tekme mi v okolici slota s (za predizbor kandidatk)
-    function conflictScore(mi, s, ignoreSlot) {
-      let c = 0;
-      for (const p of players[mi]) {
-        for (const q of pslots[p]) {
-          if (q === ignoreSlot) continue;
-          if (q === s) c += 100;
-          else if (q === s - 1 || q === s + 1) c++;
-        }
-      }
-      return c;
-    }
-
-    let sinceImprove = 0, lastBest = total;
-    for (let it = 0; it < iters; it++) {
-      T *= cool;
-      if (it % 500 === 0) {
-        badPlayers = [];
-        for (let p = 0; p < P; p++) if (pens[p] >= 4000) badPlayers.push(p);
-        if (!badPlayers.length && total < 4000) break; // ni trdih kršitev
-        if (best.total < lastBest) { lastBest = best.total; sinceImprove = 0; } else sinceImprove += 500;
-        if (sinceImprove > 20000) { T = Math.max(T, 900); sinceImprove = 0; } // ponovno segrevanje
-      }
-      if (rng() < 0.15) {
-        // zamenjava celih slotov (obe igrišči hkrati)
-        const s1 = (rng() * S) | 0, s2 = (rng() * S) | 0;
-        if (s1 === s2) continue;
-        trySwap(s1, 0, s2, 0);
-        trySwap(s1, 1, s2, 1);
-        continue;
-      }
-      if (badPlayers.length && rng() < 0.5) {
-        // popravljalna poteza: tekmo kršitelja preseli na najmanj konflikten cilj
-        const p = badPlayers[(rng() * badPlayers.length) | 0];
-        const sl = pslots[p].slice().sort((a, b) => a - b);
-        let s1 = -1;
-        for (let i = 1; i < sl.length; i++) if (sl[i] - sl[i - 1] <= 1) { s1 = sl[i]; break; }
-        if (s1 < 0) s1 = sl[(rng() * sl.length) | 0];
-        const c1 = grid[s1][0] >= 0 && players[grid[s1][0]].includes(p) ? 0 : 1;
-        const m1 = grid[s1][c1];
-        if (m1 < 0) continue;
-        let bs = -1, bc = 0, bscore = Infinity;
-        for (let k = 0; k < 20; k++) {
-          const s2 = (rng() * S) | 0, c2 = (rng() * 2) | 0;
-          if (s2 === s1) continue;
-          const m2 = grid[s2][c2];
-          const sc = conflictScore(m1, s2, s1) + (m2 >= 0 ? conflictScore(m2, s1, s2) : 0);
-          if (sc < bscore) { bscore = sc; bs = s2; bc = c2; }
-        }
-        if (bs >= 0) trySwap(s1, c1, bs, bc);
-        continue;
-      }
-      // naključna zamenjava
-      const s1 = (rng() * S) | 0, c1 = (rng() * 2) | 0;
-      const s2 = (rng() * S) | 0, c2 = (rng() * 2) | 0;
-      if (s1 === s2) continue;
-      trySwap(s1, c1, s2, c2);
-    }
-
-    // zaključno glajenje: obnovi najboljšo rešitev in izčrpno išči izboljšave za kršitelje
-    for (let s = 0; s < S; s++) { grid[s][0] = best.grid[s][0]; grid[s][1] = best.grid[s][1]; }
-    for (let p = 0; p < P; p++) pslots[p].length = 0;
-    for (let s = 0; s < S; s++) for (let c = 0; c < 2; c++) {
-      const mi = grid[s][c];
-      if (mi >= 0) for (const p of players[mi]) pslots[p].push(s);
-    }
-    total = 0;
-    for (let p = 0; p < P; p++) { pens[p] = penPlayer(p); total += pens[p]; }
-    total += gridEmptyPen();
-    T = 1e-9; // sprejmi le stroge izboljšave
-    let guard = 0, improvedAny = true;
-    while (improvedAny && guard++ < 30) {
-      improvedAny = false;
-      for (let s1 = 0; s1 < S && !improvedAny; s1++) for (let c1 = 0; c1 < 2 && !improvedAny; c1++) {
-        const m1 = grid[s1][c1];
-        if (m1 < 0) continue;
-        if (!players[m1].some(p => pens[p] >= 4000)) continue;
-        for (let s2 = 0; s2 < S && !improvedAny; s2++) {
-          if (s2 === s1) continue;
-          for (let c2 = 0; c2 < 2 && !improvedAny; c2++) {
-            const before = total;
-            trySwap(s1, c1, s2, c2);
-            if (total < before) improvedAny = true;
-          }
-        }
-      }
-    }
-    if (total < best.total) best = { total, grid: grid.map(r => r.slice()) };
-    return best;
-  }
-
-  // generate: glavni vstop. cfg: {girls, boys, matchMin, gapMin, startClock, seed}
-  // Prazne celice ("prosto igrišče") zrahljajo razpored, da so premori izvedljivi;
-  // koliko jih je, omejuje časovni proračun (privzeto 23,5 h minus nočni premor).
-  function generate(cfg) {
-    const n = cfg.girls.length;
-    const slotMin = cfg.matchMin + cfg.gapMin;
-    const restarts = cfg.restarts || 4;
-    const budgetMin = cfg.budgetMin || 1410;
-    const pauseMin = cfg.pauseMin != null ? cfg.pauseMin : 120;
-    // prazne reže (prosto igrišče) naj se raje selijo v jutro po nočni pavzi, ne v večerni vrhunec
-    const emptyW = cfg.emptyW != null ? cfg.emptyW : 50;
-    let eveningSlots = 0;
-    if (cfg.pauseOn && cfg.pauseClock) {
-      const relNight = ((clockToMin(cfg.pauseClock) - clockToMin(cfg.startClock)) + 1440) % 1440;
-      eveningSlots = Math.round(relNight / slotMin);
-    }
-    let bestAll = null;
-    let extraCells = 0;
-    for (let r = 0; r < restarts; r++) {
-      const rng = mulberry32((cfg.seed || 1) + r * 7919);
-      const { matches } = generateMatches(n, rng);
-      const maxCells = 2 * Math.floor((budgetMin - pauseMin) / slotMin);
-      extraCells = Math.max(0, Math.min(Math.max(4, 16 - n), maxCells - matches.length));
-      const sol = assignSlots(matches, { n, iters: cfg.iters, extraCells, eveningSlots, emptyW }, rng);
-      if (!bestAll || sol.total < bestAll.total) bestAll = { total: sol.total, grid: sol.grid, matches };
-      if (bestAll.total < 4000) break; // brez trdih kršitev
-    }
-    // trmasti primeri: še dva poskusa z 3x več iteracijami
-    if (bestAll.total >= 8000) {
-      for (let r = restarts; r < restarts + 2; r++) {
-        const rng = mulberry32((cfg.seed || 1) + r * 7919);
-        const { matches } = generateMatches(n, rng);
-        const sol = assignSlots(matches, { n, iters: (cfg.iters || 150000) * 3, extraCells, eveningSlots, emptyW }, rng);
-        if (sol.total < bestAll.total) bestAll = { total: sol.total, grid: sol.grid, matches };
-        if (bestAll.total < 8000) break;
-      }
-    }
-    // preostale sosednje tekme razreši z vstavljanjem praznega slota med njiju (če čas dopušča)
-    const grid = bestAll.grid.map(row => row.slice());
-    for (let guard = 0; guard < 12; guard++) {
-      const ps = Array.from({ length: 2 * n }, () => []);
-      for (let s = 0; s < grid.length; s++) for (let c = 0; c < 2; c++) {
-        const mi = grid[s][c];
-        if (mi >= 0) for (const p of matchPlayers(bestAll.matches[mi], n)) ps[p].push(s);
-      }
-      let boundary = -1;
-      for (let p = 0; p < 2 * n && boundary < 0; p++) {
-        const sl = ps[p].sort((a, b) => a - b);
-        for (let i = 1; i < sl.length; i++) if (sl[i] - sl[i - 1] === 1) { boundary = sl[i - 1]; break; }
-      }
-      if (boundary < 0) break;
-      if ((grid.length + 1) * slotMin + pauseMin > budgetMin) break;
-      grid.splice(boundary + 1, 0, [-1, -1]);
-    }
-    // v vrsti (queues): [igrišče0, igrišče1]; prazna celica -> premor "Prosto igrišče"
-    const queues = [[], []];
-    const breaks = {};
-    let bid = 1000;
-    // prazne celice na repu odrežemo (ne podaljšujejo razporeda)
-    const lastUsed = [0, 1].map(c => {
-      for (let s = grid.length - 1; s >= 0; s--) if (grid[s][c] >= 0) return s;
-      return -1;
-    });
-    for (let s = 0; s < grid.length; s++) for (let c = 0; c < 2; c++) {
-      const mi = grid[s][c];
-      if (mi >= 0) queues[c].push({ t: 'm', id: bestAll.matches[mi].id });
-      else if (s < lastUsed[c]) {
-        breaks[bid] = { id: bid, dur: slotMin, label: 'Prosto igrišče' };
-        queues[c].push({ t: 'b', id: bid++ });
-      }
-    }
-    const matchesById = {};
-    for (const m of bestAll.matches) matchesById[m.id] = m;
-    return { matches: matchesById, queues, breaks, quality: bestAll.total };
-  }
-
-  // vstavi premor v vrsto igrišča `court` pred prvi element, ki se začne ob/po timeMin
-  function insertBreakAtTime(state, court, timeMin, dur, label, id) {
-    const { matchMin, gapMin } = state.cfg;
-    const q = state.queues[court];
-    let t = 0, idx = q.length;
-    for (let i = 0; i < q.length; i++) {
-      if (t >= timeMin) { idx = i; break; }
-      t += q[i].t === 'b' ? state.breaks[q[i].id].dur : matchMin + gapMin;
-    }
-    state.breaks[id] = { id, dur, label: label || '' };
-    q.splice(idx, 0, { t: 'b', id });
-    return id;
-  }
-
-  // ---------- časi, preverjanje, lestvica ----------
-  // state: {cfg, matches:{id:m}, queues:[[item]], breaks:{id:{id,dur,label}}}
-  function computeTimes(state) {
-    const { matchMin, gapMin } = state.cfg;
-    const times = {}, breakTimes = {};
-    const courtEnd = [0, 0];
-    for (let c = 0; c < 2; c++) {
-      let t = 0;
-      for (const it of state.queues[c]) {
-        if (it.t === 'b') {
-          const br = state.breaks[it.id];
-          breakTimes[it.id] = { start: t, end: t + br.dur, court: c };
-          t += br.dur;
-        } else {
-          times[it.id] = { start: t, end: t + matchMin, court: c };
-          t += matchMin + gapMin;
-        }
-      }
-      courtEnd[c] = t;
-    }
-    return { times, breakTimes, courtEnd };
-  }
-
-  function playerName(cfg, p) { // p: 0..n-1 punce, n..2n-1 fantje
-    const n = cfg.girls.length;
-    return p < n ? cfg.girls[p] : cfg.boys[p - n];
-  }
-
-  function validate(state) {
-    const cfg = state.cfg;
-    const n = cfg.girls.length;
-    const { times } = computeTimes(state);
-    const startMin = clockToMin(cfg.startClock);
-    const warnings = [];
-    // intervali po igralcih
-    const per = Array.from({ length: 2 * n }, () => []);
-    for (const id in state.matches) {
-      const m = state.matches[id], tm = times[id];
-      if (!tm || m.off) continue; // odpadle tekme ne vežejo igralcev
-      for (const p of matchPlayers(m, n)) per[p].push(tm);
-    }
-    let NS = null, NE = null;
-    const nsc = clockToMin(cfg.nightStartClock), nec = clockToMin(cfg.nightEndClock);
-    if (nsc != null && nec != null) {
-      NS = ((nsc - startMin) + 1440) % 1440;
-      NE = ((nec - startMin) + 1440) % 1440;
-      if (NE <= NS) NE += 1440;
-    }
-    for (let p = 0; p < 2 * n; p++) {
-      const iv = per[p].slice().sort((a, b) => a.start - b.start);
-      for (let i = 1; i < iv.length; i++) {
-        const rest = iv[i].start - iv[i - 1].end;
-        const at = minToClock(startMin + iv[i].start);
-        if (rest < 0) warnings.push({ lvl: 'err', msg: playerName(cfg, p) + ' igra dve tekmi hkrati (ob ' + at + ')' });
-        else if (rest < 25) warnings.push({ lvl: 'warn', msg: playerName(cfg, p) + ' ima le ' + rest + ' min premora pred tekmo ob ' + at });
-      }
-      if (NS != null) {
-        const busy = iv.filter(t => t.end > NS && t.start < NE);
-        if (busy.length) {
-          let maxFree = busy[0].start - NS, prevEnd = busy[0].end;
-          for (let i = 1; i < busy.length; i++) { maxFree = Math.max(maxFree, busy[i].start - prevEnd); prevEnd = Math.max(prevEnd, busy[i].end); }
-          maxFree = Math.max(maxFree, NE - prevEnd);
-          if (maxFree < 120) warnings.push({ lvl: 'night', msg: playerName(cfg, p) + ' ponoči nima 2 h počitka v kosu (najdaljši ' + Math.max(0, Math.round(maxFree)) + ' min)' });
-        }
-      }
-    }
-    return warnings;
-  }
-
-  function standings(state) {
-    const cfg = state.cfg;
-    const n = cfg.girls.length;
-    const rows = Array.from({ length: 2 * n }, (_, p) => ({
-      p, name: playerName(cfg, p), played: 0, w: 0, d: 0, l: 0, mp: 0, diff: 0, pf: 0
-    }));
-    for (const id in state.matches) {
-      const m = state.matches[id];
-      if (!m.res || m.off) continue;
-      const { a, b } = m.res;
-      const side1 = [m.g1, n + m.b1], side2 = [m.g2, n + m.b2];
-      const apply = (ps, f, ag) => {
-        for (const p of ps) {
-          const r = rows[p];
-          r.played++; r.pf += f; r.diff += f - ag;
-          if (f > ag) { r.w++; r.mp += 2; } else if (f === ag) { r.d++; r.mp += 1; } else r.l++;
-        }
-      };
-      apply(side1, a, b); apply(side2, b, a);
-    }
-    const enrich = r => ({
-      ...r,
-      avgMp: r.played ? r.mp / r.played : 0,
-      avgDiff: r.played ? r.diff / r.played : 0,
-      avgPf: r.played ? r.pf / r.played : 0
-    });
-    const cmp = (x, y) => (y.avgMp - x.avgMp) || (y.avgDiff - x.avgDiff) || (y.avgPf - x.avgPf) || x.name.localeCompare(y.name, 'sl');
-    return {
-      girls: rows.slice(0, n).map(enrich).sort(cmp),
-      boys: rows.slice(n).map(enrich).sort(cmp)
-    };
-  }
-
-  // ---------- kodiranje stanja za deljenje (URL hash) ----------
-  function b64urlEncode(bytes) {
-    const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-    let out = '';
-    for (let i = 0; i < bytes.length; i += 3) {
-      const b0 = bytes[i], b1 = i + 1 < bytes.length ? bytes[i + 1] : 0, b2 = i + 2 < bytes.length ? bytes[i + 2] : 0;
-      out += A[b0 >> 2] + A[((b0 & 3) << 4) | (b1 >> 4)];
-      if (i + 1 < bytes.length) out += A[((b1 & 15) << 2) | (b2 >> 6)];
-      if (i + 2 < bytes.length) out += A[b2 & 63];
-    }
-    return out;
-  }
-  function b64urlDecode(str) {
-    const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
-    const idx = {};
-    for (let i = 0; i < A.length; i++) idx[A[i]] = i;
-    const out = [];
-    for (let i = 0; i < str.length; i += 4) {
-      const c = [idx[str[i]], idx[str[i + 1]], i + 2 < str.length ? idx[str[i + 2]] : 0, i + 3 < str.length ? idx[str[i + 3]] : 0];
-      out.push((c[0] << 2) | (c[1] >> 4));
-      if (i + 2 < str.length) out.push(((c[1] & 15) << 4) | (c[2] >> 2));
-      if (i + 3 < str.length) out.push(((c[2] & 3) << 6) | c[3]);
-    }
-    return new Uint8Array(out);
-  }
-
-  function encodeState(state) {
-    const ms = Object.values(state.matches).map(m =>
-      [m.id, m.round, m.g1, m.b1, m.g2, m.b2, m.makeup ? 1 : 0, m.res ? m.res.a : -1, m.res ? m.res.b : -1, m.off ? 1 : 0]);
-    const qs = state.queues.map(q => q.map(it => (it.t === 'b' ? 'b' : 'm') + it.id));
-    const bs = Object.values(state.breaks).map(b => [b.id, b.dur, b.label || '']);
-    const payload = [1, state.cfg, ms, qs, bs];
-    const bytes = new TextEncoder().encode(JSON.stringify(payload));
-    return b64urlEncode(bytes);
-  }
-  function decodeState(token) {
-    const json = new TextDecoder().decode(b64urlDecode(token));
-    const [v, cfg, ms, qs, bs] = JSON.parse(json);
-    if (v !== 1) throw new Error('Neznana različica podatkov');
-    const matches = {};
-    for (const a of ms) matches[a[0]] = {
-      id: a[0], round: a[1], g1: a[2], b1: a[3], g2: a[4], b2: a[5],
-      makeup: !!a[6], res: a[7] >= 0 ? { a: a[7], b: a[8] } : null,
-      off: !!a[9] // starejši tokeni polja nimajo -> false
-    };
-    const queues = qs.map(q => q.map(s => ({ t: s[0], id: +s.slice(1) })));
-    const breaks = {};
-    for (const b of bs) breaks[b[0]] = { id: b[0], dur: b[1], label: b[2] };
-    return { cfg, matches, queues, breaks };
-  }
-
-  return {
-    mulberry32, clockToMin, minToClock, matchPlayers, playerName,
-    generate, insertBreakAtTime, computeTimes, validate, standings, encodeState, decodeState
+    return h + "</table></div>";
   };
-});
+  document.getElementById("vsebina").innerHTML =
+    tabela("Punce", PUNCE) + tabela("Fantje", FANTJE);
+}
 
+function prikazi() {
+  document.getElementById("zav-razpored").classList.toggle("aktiven", pogled === "razpored");
+  document.getElementById("zav-lestvica").classList.toggle("aktiven", pogled === "lestvica");
+  if (pogled === "razpored") prikaziRazpored(); else prikaziLestvico();
+}
+
+const filter = document.getElementById("filter");
+for (const [skupina, oznake] of [["Punce", PUNCE], ["Fantje", FANTJE]]) {
+  const og = document.createElement("optgroup");
+  og.label = skupina;
+  for (const o of oznake) {
+    const opt = document.createElement("option");
+    opt.value = o;
+    opt.textContent = ime(o);
+    og.appendChild(opt);
+  }
+  filter.appendChild(og);
+}
+filter.onchange = () => { izbran = filter.value; pogled = "razpored"; prikazi(); };
+document.getElementById("zav-razpored").onclick = () => { pogled = "razpored"; prikazi(); };
+document.getElementById("zav-lestvica").onclick = () => { pogled = "lestvica"; prikazi(); };
+prikazi();
 </script>
-<script>
-'use strict';
-/* ===== aplikacija "24 ur odbojke" ===== */
-const LSKEY = 'odbojka24.v1';
-const SHARE_BASE = 'https://le20655.github.io/24ur-odbojke/'; // javna povezava (GitHub Pages); nastavi build
-const MODE = 'viewer';             // 'viewer' = javna stran (bere data.js), sicer urejevalnik; nastavi build
-const GH_REPO = 'le20655/24ur-odbojke'; // repo za objavo prek GitHub API (gumb "Objavi na splet")
-const GH_PATH = 'data.js';           // datoteka, ki jo bere javna stran
-const GH_BRANCH = 'main';            // privzeta veja repozitorija
-const GHTOKEN_KEY = 'odbojka24.ghtoken'; // GitHub token — shranjen lokalno v ta brskalnik
-let S = null;            // stanje turnirja
-let readonly = false;    // bralni pogled (prek #d= ali javna stran)
-let publishedAt = '';    // ISO čas zadnje objave (javna stran)
-let viewerLoading = false;
-let tab = 'setup';
-let courtView = 'all';   // 'all' | '0' | '1' — katero igrišče kaže razpored
-let undoStack = [];
-let locked = false;      // zaklenjen turnir: skrije Nastavitev + generiranje/brisanje; ostane vpisovanje in zamikanje
-let playerView = -1;     // javna stran: -1 = razpored po igriščih, sicer indeks igralca (vse njegove tekme)
-let netErr = false;      // javna stran: zadnji prenos data.js ni uspel
-let lsWarned = false;    // enkratno opozorilo, če localStorage ne dela
-const PUBCACHE_KEY = 'odbojka24.pub';   // javna stran: zadnja uspešno prenesena data.js
-const SNAPKEY = 'odbojka24.snap';       // urejevalnik: obroč lokalnih posnetkov stanja
-// samodejna objava: stanje in časovniki (debounce + ponovni poskusi z backoffom)
-const pubst = { state: 'idle', lastOk: 0, errMsg: '', timer: null, retry: null, retryMs: 15000, lastPushedUpdated: '', confirmedOverwrite: '', busy: false };
-const DEFAULT_GIRLS = ['NEŽA BERCE','NINA TOMAŽIN','ERIKA MOHORIČ','MARUŠA DOLINAR','LIZA POLJANČŠEK','LIA BERCE','LOTI GRUŠKO VANJAK','MAŠA VEGELJ','PUNCA 9','PUNCA 10','PUNCA 11','PUNCA 12'];
-const DEFAULT_BOYS = ['JAKA KOPAČ','ROK MROULE','MATIC ENIKO','JAN GOVEKAR','JUŠ BURJEK','DOMEN DOLENC','KRIŠTOF GANTAR','DAVID ŠENK','JAN DOLENC','URBAN JEREB','LUYGGY','JAKA ENIKO'];
-
-/* ---------- pomožno ---------- */
-const $ = sel => document.querySelector(sel);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function startClockMin(){ return Core.clockToMin(S.cfg.startClock) ?? 1020; }
-function startEpoch(){
-  const [y,mo,d] = (S.cfg.startDate || new Date().toISOString().slice(0,10)).split('-').map(Number);
-  const sm = startClockMin();
-  return new Date(y, mo-1, d, Math.floor(sm/60), sm%60).getTime();
-}
-function nowMin(){ return (Date.now() - startEpoch())/60000; }
-function fmtT(rel){ // relativne minute -> ura (+ oznaka naslednjega dne)
-  const abs = startClockMin() + rel;
-  return Core.minToClock(abs) + (abs >= 1440 ? '<span class="nd">+1 dan</span>' : '');
-}
-function save(){ if (readonly) return; try{ localStorage.setItem(LSKEY, JSON.stringify({S, tab, courtView, locked})); }catch(e){ lsWarn(); } }
-function lsWarn(){
-  if (lsWarned) return; lsWarned = true;
-  alert('Opozorilo: brskalnik ne more shranjevati (poln ali blokiran localStorage).\nStanje se ohranja samo prek objave na splet — spremljaj indikator objave v glavi.');
-}
-function mutate(fn){
-  undoStack.push(JSON.stringify(S));
-  if (undoStack.length > 25) undoStack.shift();
-  fn();
-  save(); pushSnapshot(); schedulePublish(); renderAll();
-}
-function newId(){ return S.nextId = (S.nextId || 5000) + 1; }
-function pairStr(g,b){ return esc(S.cfg.girls[g]) + ' & ' + esc(S.cfg.boys[b]); }
-function roundChip(m){ return m.makeup ? 'dod.' : 'krog ' + (m.round+1); }
-
-/* ---------- zagon ---------- */
-(function boot(){
-  const h = /^#d=([A-Za-z0-9_-]+)(?:&t=(\w+))?$/.exec(location.hash);
-  if (h){
-    try { S = Core.decodeState(h[1]); readonly = true; tab = h[2] === 'board' ? 'board' : 'sched'; }
-    catch(e){ document.body.innerHTML = '<main><div class="card">Povezava je poškodovana ali prekratka.</div></main>'; return; }
-  } else if (MODE === 'viewer'){
-    readonly = true; tab = 'sched'; viewerLoading = true;
-    courtView = '0'; // javna stran kaže eno igrišče naenkrat
-    loadPublished();
-    setInterval(loadPublished, 60000);
-  } else {
-    try {
-      const raw = localStorage.getItem(LSKEY);
-      if (raw){ const o = JSON.parse(raw); S = o.S; tab = o.tab || 'setup'; if (o.courtView === '0' || o.courtView === '1') courtView = o.courtView; locked = !!o.locked; }
-    } catch(e){}
-  }
-  if (!S) S = freshState();
-  // starejše shranjeno stanje brez imen: napolni privzeti seznam
-  if (!S.queues && S.cfg && (!S.cfg.girls || !S.cfg.girls.length)){
-    S.cfg.girls = DEFAULT_GIRLS.slice();
-    S.cfg.boys = DEFAULT_BOYS.slice();
-  }
-  if (!S.queues && !readonly) tab = 'setup';
-  renderAll();
-  setInterval(()=>{
-    renderTop();
-    // ne osvežuj, če organizator ravno tipka rezultat
-    const ae = document.activeElement;
-    if (tab === 'sched' && !(ae && ae.classList && ae.classList.contains('sc'))) renderMain();
-  }, 30000);
-  window.addEventListener('hashchange', ()=>location.reload());
-})();
-
-// iz vsebine data.js sestavi stanje (token + rezultati)
-function statePubApply(pub){
-  const st = Core.decodeState(pub.token);
-  for (const id in (pub.rezultati || {})){
-    const m = st.matches[id];
-    if (m) m.res = pub.rezultati[id] ? { a: +pub.rezultati[id][0], b: +pub.rezultati[id][1] } : null;
-  }
-  return st;
-}
-// javna stran: prenese data.js (razpored kot token + ročno vzdrževani rezultati) in ga uveljavi
-function applyPubCode(code){
-  const pub = new Function(code + ';return PUB;')();
-  const first = !S || !S.queues;
-  S = statePubApply(pub); publishedAt = pub.updated || '';
-  viewerLoading = false; renderAll();
-  if (first) scrollToCurrent();
-}
-function loadPublished(){
-  fetch('data.js?_=' + Date.now(), { cache: 'no-store' })
-    .then(r => r.text())
-    .then(code => {
-      applyPubCode(code); // vrže ob pokvarjeni datoteki -> catch spodaj obdrži zadnje dobro stanje
-      netErr = false;
-      try{ localStorage.setItem(PUBCACHE_KEY, code); }catch(e){}
-    })
-    .catch(() => {
-      netErr = true;
-      // brez mreže ali pokvarjeni podatki: pokaži zadnjo dobro kopijo iz tega brskalnika
-      if (!S || !S.queues){
-        try{ const c = localStorage.getItem(PUBCACHE_KEY); if (c) applyPubCode(c); }catch(e){}
-      }
-      viewerLoading = false; renderAll();
-    });
-}
-// pasica javne strani: svežina objave + morebitna izguba povezave
-function agoStr(iso){
-  const min = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
-  if (!isFinite(min) || min < 1) return '';
-  return ' (pred ' + (min < 60 ? min + ' min' : Math.round(min / 60) + ' h') + ')';
-}
-function viewerBanner(){
-  let h = '';
-  if (netErr) h += '<div class="warnbox">⚠ Ni povezave — prikazano je zadnje znano stanje.</div>';
-  h += `<div class="banner-ro">${publishedAt
-    ? 'Zadnja objava: <b>' + new Date(publishedAt).toLocaleString('sl-SI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'}) + '</b>' + agoStr(publishedAt) + ' — stran se osvežuje sama. Ure so ocenjene.'
-    : 'Bralni pogled — razpored ureja organizator. Ure so ocenjene in se lahko spremenijo.'}</div>`;
-  return h;
-}
-
-// postavi pogled na zadnjo tekmo z vnesenim rezultatom (dogajanje je tik pod njo)
-function scrollToCurrent(){
-  const rows = document.querySelectorAll('.qrow.done');
-  const last = rows[rows.length - 1];
-  if (last && last.scrollIntoView) last.scrollIntoView({ block: 'center' });
-}
-
-function freshState(){
-  return {
-    cfg: {
-      girls: DEFAULT_GIRLS.slice(), boys: DEFAULT_BOYS.slice(), startClock: '17:00',
-      startDate: new Date().toISOString().slice(0,10),
-      matchMin: 20, gapMin: 10,
-      nightStartClock: '00:00', nightEndClock: '04:00',
-      pauseOn: true, pauseClock: '01:00', pauseMin: 120,
-      seed: 1 + Math.floor(Math.random()*1e6)
-    },
-    matches: null, queues: null, breaks: {}, nextId: 5000
-  };
-}
-
-/* ---------- glava ---------- */
-function segHtml(){
-  const opts = MODE === 'viewer'
-    ? [['0','Igrišče 1'],['1','Igrišče 2']]
-    : [['all','Obe igrišči'],['0','Igrišče 1'],['1','Igrišče 2']];
-  return '<span class="seg">' + opts
-    .map(([v,l]) => `<button data-act="cview" data-v="${v}" class="${courtView===v?'active':''}">${l}</button>`).join('') + '</span>';
-}
-function renderTop(){
-  const st = $('#topstats');
-  const viewer = MODE === 'viewer';
-  let html = viewer ? '' : '<span class="clock mono">' + new Date().toLocaleTimeString('sl-SI',{hour:'2-digit',minute:'2-digit'}) + '</span>';
-  if (S && S.queues){
-    const ms = Object.values(S.matches);
-    const done = ms.filter(m=>m.res).length;
-    const { courtEnd } = Core.computeTimes(S);
-    html += `<span>odigranih <b>${done}/${ms.length}</b></span>`;
-    html += `<span>${viewer ? 'konec ob' : 'predviden konec'} <b class="mono">${fmtT(Math.max(...courtEnd))}</b></span>`;
-  }
-  html += pubStatusHtml();
-  st.innerHTML = html;
-
-  const tb = $('#toolbar');
-  if (readonly) tb.innerHTML = '';
-  else tb.innerHTML = `
-    ${S.queues ? '<button data-act="ghpublish" class="small primary">Objavi na splet</button><button data-act="publish" class="small">Kopiraj za objavo</button><button data-act="sheets" class="small">Izvoz v Sheets</button><button data-act="share" class="small">Deli razpored</button><button data-act="print" class="small">Natisni</button>' : ''}
-    <button data-act="export" class="small">Izvoz</button>
-    ${locked ? '' : '<button data-act="import" class="small">Uvoz</button>'}
-    <button data-act="restore" class="small">Obnovi …</button>
-    ${undoStack.length ? '<button data-act="undo" class="small">↶ Razveljavi</button>' : ''}
-    ${S.queues ? `<button data-act="togglelock" class="small">${locked ? '🔓 Odkleni turnir' : '🔒 Zakleni turnir'}</button>` : ''}`;
-
-  const tabs = $('#tabs');
-  const items = (readonly || locked)
-    ? [['sched','Razpored'],['board','Lestvica']]
-    : [['setup','Nastavitev'],['sched','Razpored'],['board','Lestvica']];
-  tabs.innerHTML = items.map(([id,l]) =>
-    `<button data-tab="${id}" class="${tab===id?'active':''}" ${id!=='setup'&&!S.queues?'disabled':''}>${l}</button>`).join('');
-
-  // javna stran: izbirnik igrišča + iskalnik igralca v lepljivi glavi (vidna tudi med drsenjem)
-  $('#segbar').innerHTML = (MODE === 'viewer' && S && S.queues && tab === 'sched')
-    ? (playerView < 0 ? segHtml() : '') + playerSelHtml()
-    : '';
-}
-
-// javna stran: izbirnik igralca — pokaže vse njegove tekme z obeh igrišč
-function playerSelHtml(){
-  const c = S.cfg;
-  const opt = (name, p) => `<option value="${p}" ${playerView === p ? 'selected' : ''}>${esc(name)}</option>`;
-  return `<select id="psel" title="Poišči igralca"><option value="">🔍 Poišči igralca …</option>
-    <optgroup label="Punce">${c.girls.map((g,i)=>opt(g,i)).join('')}</optgroup>
-    <optgroup label="Fantje">${c.boys.map((b,i)=>opt(b,i+c.girls.length)).join('')}</optgroup></select>` +
-    (playerView >= 0 ? '<button data-act="pclear" title="nazaj na razpored">✕</button>' : '');
-}
-
-/* ---------- nastavitev ---------- */
-function renderSetup(){
-  const c = S.cfg;
-  return `<div class="card">
-    <h2>Igralci in nastavitve</h2>
-    <p class="hint">Vpiši imena — eno na vrstico. Punc in fantov mora biti enako, od 8 do 13 na spol (16–26 skupaj).
-    Vsaka punca bo igrala v paru z vsakim fantom natanko enkrat; pare in razpored sestavi računalnik tako, da so
-    soigralci popolnoma uravnoteženi, nasprotniki pa čim bolj raznoliki.</p>
-    <div class="setupgrid">
-      <div><div class="eyebrow">Punce</div><textarea id="girls" placeholder="Ana&#10;Barbara&#10;…">${esc(c.girls.join('\n'))}</textarea><div class="counts" id="gcnt"></div></div>
-      <div><div class="eyebrow">Fantje</div><textarea id="boys" placeholder="Andraž&#10;Blaž&#10;…">${esc(c.boys.join('\n'))}</textarea><div class="counts" id="bcnt"></div></div>
-    </div>
-    <div class="optrow">
-      <label>Datum starta<input type="date" id="startDate" value="${esc(c.startDate)}"></label>
-      <label>Ura starta<input type="time" id="startClock" value="${esc(c.startClock)}"></label>
-      <label>Tekma (min)<input type="number" id="matchMin" value="${c.matchMin}" min="5" max="60"></label>
-      <label>Menjava/ogrevanje (min)<input type="number" id="gapMin" value="${c.gapMin}" min="0" max="30"></label>
-    </div>
-    <div class="optrow">
-      <label><span><input type="checkbox" id="pauseOn" ${c.pauseOn?'checked':''}> skupni nočni premor</span></label>
-      <label>začetek premora<input type="time" id="pauseClock" value="${esc(c.pauseClock)}"></label>
-      <label>trajanje (min)<input type="number" id="pauseMin" value="${c.pauseMin}" min="30" max="360" step="15"></label>
-    </div>
-    <p class="hint">Nočni premor (privzeto 01:00–03:00) vsem hkrati zagotovi vsaj 2 uri spanja v kosu.
-    Poleg tega razpored pazi, da nihče ne igra dveh tekem zapored. Med turnirjem lahko premore poljubno dodajaš,
-    krajšaš in prestavljaš na zavihku Razpored.</p>
-    <div class="genrow">
-      <button class="primary" data-act="generate">${S.queues ? 'Ustvari NOV razpored (obstoječi rezultati se izbrišejo!)' : 'Ustvari razpored'}</button>
-      ${S.queues ? '<button data-act="wipe">Izprazni vse</button>' : ''}
-      <span class="hint">Izračun traja do ~30 s.</span>
-    </div>
-  </div>`;
-}
-function setupCounts(){
-  const g = $('#girls'), b = $('#boys');
-  if (!g) return;
-  const gc = g.value.split('\n').map(x=>x.trim()).filter(Boolean).length;
-  const bc = b.value.split('\n').map(x=>x.trim()).filter(Boolean).length;
-  $('#gcnt').textContent = gc + ' punc';
-  $('#bcnt').textContent = bc + ' fantov';
-}
-
-function doGenerate(){
-  const girls = $('#girls').value.split('\n').map(x=>x.trim()).filter(Boolean);
-  const boys  = $('#boys').value.split('\n').map(x=>x.trim()).filter(Boolean);
-  if (girls.length !== boys.length) return alert('Punc in fantov mora biti enako (zdaj ' + girls.length + ' : ' + boys.length + ').');
-  if (girls.length < 8 || girls.length > 13) return alert('Podprtih je 8–13 igralcev na spol (16–26 skupaj).');
-  const dup = [...girls, ...boys].filter((x,i,a)=>a.indexOf(x)!==i);
-  if (dup.length) return alert('Podvojena imena: ' + dup.join(', ') + '. Dodaj priimek ali začetnico.');
-  if (S.queues && !confirm('Obstoječi razpored IN VSI REZULTATI se izbrišejo. Nadaljujem?')) return;
-
-  const c = S.cfg;
-  c.girls = girls; c.boys = boys;
-  c.startDate = $('#startDate').value || c.startDate;
-  c.startClock = $('#startClock').value || c.startClock;
-  c.matchMin = +$('#matchMin').value || 20;
-  c.gapMin = +$('#gapMin').value || 10;
-  c.pauseOn = $('#pauseOn').checked;
-  c.pauseClock = $('#pauseClock').value || '01:00';
-  c.pauseMin = +$('#pauseMin').value || 120;
-  c.seed = 1 + Math.floor(Math.random()*1e6);
-
-  const ov = document.createElement('div');
-  ov.className = 'overlay'; ov.textContent = 'Razporejam tekme … (do ~30 s)';
-  document.body.appendChild(ov);
-  setTimeout(()=>{
-    try {
-      const gen = Core.generate({ ...c, pauseMin: c.pauseOn ? c.pauseMin : 0 });
-      undoStack.push(JSON.stringify(S));
-      S.matches = gen.matches;
-      S.queues = gen.queues;
-      S.breaks = gen.breaks || {};
-      S.nextId = 5000;
-      if (c.pauseOn){
-        const rel = ((Core.clockToMin(c.pauseClock) - startClockMin()) + 1440) % 1440;
-        Core.insertBreakAtTime(S, 0, rel, c.pauseMin, 'Nočni premor', newId());
-        Core.insertBreakAtTime(S, 1, rel, c.pauseMin, 'Nočni premor', newId());
-      }
-      tab = 'sched';
-      save(); pushSnapshot(); schedulePublish(); renderAll();
-    } finally { ov.remove(); }
-  }, 60);
-}
-
-/* ---------- razpored ---------- */
-function pendingIdx(c){ // indeks prve neodigrane (in ne odpadle) tekme v vrsti igrišča
-  const q = S.queues[c];
-  for (let i = 0; i < q.length; i++){
-    if (q[i].t !== 'm') continue;
-    const m = S.matches[q[i].id];
-    if (!m.res && !m.off) return i;
-  }
-  return -1;
-}
-// javna stran: vse tekme izbranega igralca z OBEH igrišč, urejene po času
-function renderPlayerSched(){
-  const n = S.cfg.girls.length;
-  const { times } = Core.computeTimes(S);
-  const now = nowMin();
-  const items = [];
-  for (let c = 0; c < 2; c++) for (const it of S.queues[c]){
-    if (it.t !== 'm') continue;
-    const m = S.matches[it.id];
-    if (!Core.matchPlayers(m, n).includes(playerView)) continue;
-    items.push({ m, c, t: times[m.id].start });
-  }
-  items.sort((a,b) => a.t - b.t);
-  let mark = -1; // prva neodigrana tekma igralca -> "zdaj" ali "naslednja"
-  for (let i = 0; i < items.length; i++) if (!items[i].m.res && !items[i].m.off){ mark = i; break; }
-  let html = viewerBanner();
-  html += `<div class="card pcard"><h2>Vse tekme — ${esc(Core.playerName(S.cfg, playerView))} <span class="chip">${items.length} tekem</span></h2>`;
-  html += items.map((x, i) => {
-    const isNow = i === mark && x.t <= now;
-    const isNext = i === mark && x.t > now;
-    return `<div class="qrow ${x.m.res ? 'done' : ''} ${x.m.off ? 'offm' : ''} ${isNow ? 'now' : ''} ${isNext ? 'next' : ''}">
-      <div class="time mono">${fmtT(x.t)}</div>
-      <div class="body">
-        <div class="pair">${pairStr(x.m.g1, x.m.b1)}<span class="vs">proti</span>${pairStr(x.m.g2, x.m.b2)}</div>
-        <div class="meta"><span class="chip crt${x.c}">Igrišče ${x.c + 1}</span> <span class="chip">${roundChip(x.m)}</span>${x.m.off ? ' &nbsp;· odpade' : ''}${isNow ? ' &nbsp;· zdaj igrajo' : ''}${isNext ? ' &nbsp;· naslednja' : ''}</div>
-      </div>
-      <div class="scorebox">${x.m.off ? '<span class="chip offc">ODPADE</span>' : x.m.res ? `<span class="score mono">${x.m.res.a} : ${x.m.res.b}</span>` : '<span class="hint">—</span>'}</div>
-    </div>`;
-  }).join('');
-  html += '</div><p class="legend">Pogled zapreš s ✕ v glavi. Pazi: tekme so na obeh igriščih — glej oznako Igrišče 1/2.</p>';
-  return html;
-}
-function renderSched(){
-  if (MODE === 'viewer' && playerView >= 0 && S.queues) return renderPlayerSched();
-  const { times, breakTimes } = Core.computeTimes(S);
-  const warns = Core.validate(S);
-  const now = nowMin();
-  let html = '';
-  if (readonly) html += viewerBanner();
-  if (warns.length && !readonly){
-    const shown = warns.slice(0, 10);
-    html += `<div class="warnbox"><b>Opozorila (${warns.length})</b><ul>` +
-      shown.map(w=>`<li class="w-${w.lvl}">${esc(w.msg)}</li>`).join('') +
-      (warns.length > 10 ? `<li>… še ${warns.length-10}</li>` : '') + '</ul></div>';
-  }
-  if (MODE !== 'viewer') html += `<div class="statusline">${segHtml()}
-    ${readonly ? '' : `<button data-act="gbreak">+ Premor za obe igrišči</button>
-    <span class="hint">Zamik posameznega igrišča in premori: gumbi pri igrišču. Puščice premikajo tekmo po vrstnem redu, ⇄ jo prestavi na drugo igrišče.</span>`}
-  </div>`;
-  const { courtEnd } = Core.computeTimes(S);
-  html += `<div class="courts${courtView === 'all' ? '' : ' single'}">`;
-  for (let c = 0; c < 2; c++){
-    if (courtView !== 'all' && c !== +courtView) continue;
-    const q = S.queues[c];
-    const pend = pendingIdx(c);
-    const endT = courtEnd[c];
-    html += `<section class="court" data-c="${c}">
-      <div class="courthead"><span class="courtname">IGRIŠČE ${c ? '2' : '1'}</span>
-        <span class="chip">${q.filter(i=>i.t==='m').length} tekem</span>
-        <span class="end">konec ob <b class="mono">${fmtT(endT)}</b></span></div>`;
-    if (!readonly){
-      html += `<div class="courtbtns">
-        <button class="small" data-act="delay" data-c="${c}" data-min="10">+10 min</button>
-        <button class="small" data-act="delay" data-c="${c}" data-min="30">+30 min</button>
-        <button class="small" data-act="delayx" data-c="${c}">± po meri</button>
-        <button class="small" data-act="cbreak" data-c="${c}">+ premor</button>
-        <button class="small" data-act="align" data-c="${c}">poravnaj z zdaj</button>
-      </div>`;
-    }
-    q.forEach((it, i) => {
-      if (it.t === 'b'){
-        const br = S.breaks[it.id], bt = breakTimes[it.id];
-        const night = /noč/i.test(br.label);
-        html += `<div class="qrow brk ${night?'night':''}">
-          <div class="time mono">${fmtT(bt.start)}</div>
-          <div class="body">⏸ ${esc(br.label || 'Premor')} — ${br.dur} min</div>
-          ${readonly ? '' : `<div class="ctl">
-            <button title="premakni gor" data-act="mv" data-c="${c}" data-i="${i}" data-d="-1">↑</button>
-            <button title="premakni dol" data-act="mv" data-c="${c}" data-i="${i}" data-d="1">↓</button>
-            <button title="spremeni trajanje" data-act="bedit" data-c="${c}" data-i="${i}">✎</button>
-            <button title="izbriši premor" data-act="bdel" data-c="${c}" data-i="${i}">×</button></div>`}
-        </div>`;
-        return;
-      }
-      const m = S.matches[it.id], tm = times[it.id];
-      const isNow = !m.res && !m.off && tm.start <= now && i <= (pend<0?1e9:pend+1);
-      const isNext = !isNow && !m.off && i === pend && tm.start > now;
-      let score;
-      if (m.off) score = '<span class="chip offc">ODPADE</span>';
-      else if (m.res) score = `<span class="score mono">${m.res.a} : ${m.res.b}</span>${readonly?'':`<button class="small" title="popravi rezultat" data-act="redit" data-id="${m.id}">✎</button>`}`;
-      else if (readonly) score = '<span class="hint">—</span>';
-      else score = `<input class="sc mono" type="number" min="0" id="sa${m.id}" placeholder="0"> : <input class="sc mono" type="number" min="0" id="sb${m.id}" placeholder="0"> <button class="small primary" data-act="rsave" data-id="${m.id}">OK</button>`;
-      html += `<div class="qrow ${m.res?'done':''} ${m.off?'offm':''} ${isNow?'now':''} ${isNext?'next':''}">
-        <div class="time mono">${fmtT(tm.start)}</div>
-        <div class="body">
-          <div class="pair">${pairStr(m.g1,m.b1)}<span class="vs">proti</span>${pairStr(m.g2,m.b2)}</div>
-          <div class="meta"><span class="chip">${roundChip(m)}</span>${isNow?' &nbsp;· zdaj igrajo':''}${isNext?' &nbsp;· naslednji':''}</div>
-        </div>
-        <div class="scorebox">${score}</div>
-        ${readonly ? '' : `<div class="ctl">
-          <button title="premakni gor" data-act="mv" data-c="${c}" data-i="${i}" data-d="-1">↑</button>
-          <button title="premakni dol" data-act="mv" data-c="${c}" data-i="${i}" data-d="1">↓</button>
-          <button title="na drugo igrišče" data-act="xcourt" data-c="${c}" data-i="${i}">⇄</button>
-          <button title="${m.off ? 'tekma se vseeno igra' : 'tekma odpade'}" data-act="moff" data-id="${m.id}">⊘</button></div>`}
-      </div>`;
-    });
-    html += '</section>';
-  }
-  html += '</div>';
-  html += `<p class="legend">⏸ "Prosto igrišče" so vgrajene zračnice — če zamujate, jih izbriši (×) in razpored se stisne.
-  Ure so ocenjene: vsako igrišče je vrsta, časi se preračunajo ob vsakem vpisu ali zamiku.
-  ${readonly ? '' : 'Namig: gumb "Izvoz v Sheets" prenese turnir v Google preglednico — rezultate potem vpisuje kdorkoli s telefona, igralci pa gledajo eno samo, vedno ažurno povezavo.'}</p>`;
-  return html;
-}
-
-/* ---------- lestvica ---------- */
-function renderBoard(){
-  const st = Core.standings(S);
-  const tbl = (rows, title) => `<div class="card"><h2>${title}</h2><div class="tablewrap"><table class="board">
-    <thead><tr><th>#</th><th class="nm">Ime</th><th>T</th><th>Z</th><th>N</th><th>P</th><th>Točke/T</th><th>+/−/T</th><th>Dane/T</th></tr></thead>
-    <tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td class="nm">${esc(r.name)}</td><td>${r.played}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td>
-      <td><b>${r.avgMp.toFixed(2)}</b></td><td>${r.avgDiff>=0?'+':''}${r.avgDiff.toFixed(1)}</td><td>${r.avgPf.toFixed(1)}</td></tr>`).join('')}</tbody>
-  </table></div></div>`;
-  return `<div class="boards">${tbl(st.girls,'🏐 Punce')}${tbl(st.boys,'🏐 Fantje')}</div>
-  <p class="legend">Točke/T = povprečje tekmovalnih točk na tekmo (zmaga 2, neodločeno 1, poraz 0). Ob enakosti odloča povprečna razlika v točkah, nato povprečje danih točk.
-  Ker vsaka punca igra z vsakim fantom (in obratno), so soigralci za vse popolnoma enaki — lestvica meri posameznika.</p>`;
-}
-
-/* ---------- tisk ---------- */
-function renderPrint(){
-  const { times, breakTimes } = Core.computeTimes(S);
-  const rows = [];
-  for (let c = 0; c < 2; c++) for (const it of S.queues[c]){
-    if (it.t === 'm'){ const m = S.matches[it.id]; rows.push({ t: times[it.id].start, c, m }); }
-    else { const b = S.breaks[it.id]; rows.push({ t: breakTimes[it.id].start, c, b }); }
-  }
-  rows.sort((a,b)=>a.t-b.t || a.c-b.c);
-  const st = Core.standings(S);
-  $('#printArea').innerHTML = `
-    <h1>24 ur odbojke — razpored</h1>
-    <div>Start: ${esc(S.cfg.startDate)} ob ${esc(S.cfg.startClock)} · ${S.cfg.girls.length}+${S.cfg.boys.length} igralcev · tekma ${S.cfg.matchMin} min + ${S.cfg.gapMin} min menjave</div>
-    <h2>Razpored</h2>
-    <table><tr><th>Ura</th><th>Igr.</th><th>Tekma</th><th class="res">Rezultat</th></tr>
-    ${rows.map(r => r.m
-      ? `<tr><td>${Core.minToClock(startClockMin()+r.t)}${startClockMin()+r.t>=1440?' (+1)':''}</td><td>${r.c?'2':'1'}</td><td>${pairStr(r.m.g1,r.m.b1)} — ${pairStr(r.m.g2,r.m.b2)}</td><td class="res">${r.m.res?`${r.m.res.a} : ${r.m.res.b}`:''}</td></tr>`
-      : `<tr><td>${Core.minToClock(startClockMin()+r.t)}${startClockMin()+r.t>=1440?' (+1)':''}</td><td>${r.c?'2':'1'}</td><td>⏸ ${esc(r.b.label||'Premor')} (${r.b.dur} min)</td><td class="res"></td></tr>`).join('')}
-    </table>
-    <h2>Trenutna lestvica</h2>
-    <table><tr><th>#</th><th>Punce</th><th>Točke/T</th><th>#</th><th>Fantje</th><th>Točke/T</th></tr>
-    ${st.girls.map((g,i)=>`<tr><td>${i+1}</td><td>${esc(g.name)}</td><td>${g.avgMp.toFixed(2)}</td><td>${i+1}</td><td>${esc(st.boys[i].name)}</td><td>${st.boys[i].avgMp.toFixed(2)}</td></tr>`).join('')}
-    </table>
-    <div class="rules"><h2>Pravila</h2>
-    Tekma traja ${S.cfg.matchMin} minut, izid ob pisku obvelja (tudi neodločen). Par sodi sam sebi; končni rezultat takoj javita organizatorski mizi.
-    Točkovanje posameznika: zmaga 2, neodločeno 1, poraz 0 — šteje povprečje na tekmo, nato povprečna razlika v točkah.</div>`;
-}
-
-/* ---------- objava na javno stran (data.js) ---------- */
-// Vrne celotno vsebino datoteke data.js: zakodiran razpored (token) + rezultati,
-// ki jih organizator lahko ročno ureja v kodi (vsaka tekma ima komentar kdo/kdaj).
-function publishText(){
-  const { times } = Core.computeTimes(S);
-  const L = [];
-  L.push('// 24 UR ODBOJKE — podatki javne strani (index.html na GitHub Pages).');
-  L.push('// Rezultat vpiši kot [točke levo, točke desno]; null = tekma še ni igrana.');
-  L.push('// Objava: git add data.js && git commit -m "rezultati" && git push  (stran je sveža v ~1 min)');
-  L.push('// Nov token (po spremembi razporeda) naredi gumb "Kopiraj za objavo" v uredi.html.');
-  L.push('PUB = {');
-  L.push('updated: "' + new Date().toISOString() + '",');
-  L.push('token: // zakodiran razpored — ne urejaj ročno');
-  L.push('"' + Core.encodeState(S) + '",');
-  L.push('rezultati: {');
-  for (let c = 0; c < 2; c++) for (const it of S.queues[c]){
-    if (it.t !== 'm') continue;
-    const m = S.matches[it.id];
-    L.push(' ' + m.id + ': ' + (m.res ? '[' + m.res.a + ', ' + m.res.b + ']' : 'null') + ','
-      + '  // ' + Core.minToClock(startClockMin() + times[m.id].start) + ' · ' + (c ? '2' : '1') + ' · '
-      + S.cfg.girls[m.g1] + ' & ' + S.cfg.boys[m.b1] + ' — ' + S.cfg.girls[m.g2] + ' & ' + S.cfg.boys[m.b2]
-      + (m.off ? ' · ODPADE' : ''));
-  }
-  L.push('}');
-  L.push('};');
-  return L.join('\n');
-}
-function downloadText(name, txt, type){
-  const blob = new Blob([txt], { type: type || 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = name;
-  a.click(); URL.revokeObjectURL(a.href);
-}
-
-/* ---------- objava na splet z enim klikom (GitHub API) ---------- */
-// Potisne data.js naravnost v repo prek GitHub Contents API. Token (fine-grained,
-// Contents: write za GH_REPO) se shrani samo v localStorage tega brskalnika.
-function ghToken(){
-  let t = (localStorage.getItem(GHTOKEN_KEY) || '').trim();
-  if (!t){
-    t = (prompt('Prilepi GitHub token za objavo (fine-grained, dovoljenje "Contents: write" za repo ' + GH_REPO + ').\n\nShrani se SAMO v ta brskalnik in nikamor drugam.') || '').trim();
-    if (t) localStorage.setItem(GHTOKEN_KEY, t);
-  }
-  return t;
-}
-function ghHasToken(){ return !!(localStorage.getItem(GHTOKEN_KEY) || '').trim(); }
-function badToken(){ localStorage.removeItem(GHTOKEN_KEY); alert('Token ni veljaven ali nima pravice "Contents: write". Ob naslednji objavi vpiši novega.'); }
-function b64utf8(str){ // UTF-8 -> standardni base64 (kot zahteva GitHub)
-  const bytes = new TextEncoder().encode(str);
-  let bin = '';
-  for (const b of bytes) bin += String.fromCharCode(b);
-  return btoa(bin);
-}
-function b64d(b64){ // GitHubov base64 (z novimi vrsticami) -> UTF-8 niz
-  const bin = atob((b64 || '').replace(/\s+/g, ''));
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  return new TextDecoder().decode(bytes);
-}
-// potisne data.js v repo; interactive=true sme ob konfliktu vprašati s confirm
-async function ghPush(token, interactive){
-  const api = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_PATH;
-  const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json' };
-  // 1) trenutni sha + čas oddaljene objave (za posodobitev in zaznavo konflikta)
-  let sha = null, remoteUpdated = '';
-  const g = await fetch(api + '?ref=' + GH_BRANCH, { headers, cache: 'no-store' });
-  if (g.status === 401 || g.status === 403) return { auth: false };
-  if (g.ok){
-    const j = await g.json();
-    sha = j.sha;
-    try{ remoteUpdated = (/updated: "([^"]+)"/.exec(b64d(j.content)) || [])[1] || ''; }catch(e){}
-  }
-  // 2) zaščita: ne povozi tiho objave, ki je ni naredil ta brskalnik (ročni popravki, druga naprava)
-  if (remoteUpdated && remoteUpdated !== pubst.lastPushedUpdated && remoteUpdated !== pubst.confirmedOverwrite){
-    if (!interactive) return { ok: false, blocked: true };
-    if (!confirm('Na spletu je objava iz ' + new Date(remoteUpdated).toLocaleString('sl-SI') +
-      ', ki je ni naredil ta brskalnik.\nPrepišem s trenutnim stanjem tega urejevalnika?\n\n(Če dvomiš, prekliči in najprej poglej "Obnovi …".)')) return { ok: false, blocked: true };
-    pubst.confirmedOverwrite = remoteUpdated;
-  }
-  // 3) potisni novo vsebino
-  const text = publishText();
-  const myUpdated = (/updated: "([^"]+)"/.exec(text) || [])[1] || '';
-  const body = { message: 'rezultati — ' + new Date().toLocaleString('sl-SI'), content: b64utf8(text), branch: GH_BRANCH };
-  if (sha) body.sha = sha;
-  const p = await fetch(api, { method: 'PUT', headers, body: JSON.stringify(body) });
-  if (p.status === 401 || p.status === 403) return { auth: false };
-  if (p.ok){ pubst.lastPushedUpdated = myUpdated; return { ok: true }; }
-  const e = await p.json().catch(() => ({}));
-  return { ok: false, msg: e.message || String(p.status) };
-}
-async function ghPublish(btn){
-  const token = ghToken();
-  if (!token) return;
-  const label = btn && btn.textContent;
-  if (btn){ btn.disabled = true; btn.textContent = 'Objavljam …'; }
-  let r;
-  try{ r = await ghPush(token, true); }
-  catch (err){ r = { ok: false, msg: err.message }; }
-  if (btn){ btn.disabled = false; btn.textContent = label; }
-  if (r.auth === false){ badToken(); pubst.state = 'err'; pubst.errMsg = 'neveljaven token'; }
-  else if (r.ok){ pubst.state = 'ok'; pubst.lastOk = Date.now(); pubst.retryMs = 15000; alert('Objavljeno! Javna stran bo sveža v ~1 minuti.'); }
-  else if (r.blocked){ pubst.state = 'blocked'; }
-  else { pubst.state = 'err'; pubst.errMsg = r.msg || ''; alert('Napaka pri objavi: ' + (r.msg || 'neznana')); }
-  renderTop();
-}
-
-/* ---------- samodejna objava: vsaka sprememba gre (debounced) na GitHub ---------- */
-function schedulePublish(){
-  if (MODE === 'viewer' || readonly || !S || !S.queues || !ghHasToken()) return;
-  clearTimeout(pubst.timer); clearTimeout(pubst.retry);
-  pubst.state = 'pending';
-  pubst.timer = setTimeout(autoPublish, 8000);
-}
-async function autoPublish(){
-  if (pubst.busy){ pubst.timer = setTimeout(autoPublish, 3000); return; }
-  const token = (localStorage.getItem(GHTOKEN_KEY) || '').trim();
-  if (!token || !S || !S.queues) return;
-  pubst.busy = true;
-  let r;
-  try{ r = await ghPush(token, false); }
-  catch (err){ r = { ok: false, msg: err.message }; }
-  pubst.busy = false;
-  if (r.ok){ pubst.state = 'ok'; pubst.lastOk = Date.now(); pubst.retryMs = 15000; }
-  else if (r.auth === false){ pubst.state = 'err'; pubst.errMsg = 'neveljaven token — klikni Objavi na splet'; }
-  else if (r.blocked){ pubst.state = 'blocked'; }
-  else {
-    pubst.state = 'err'; pubst.errMsg = r.msg || 'ni povezave';
-    pubst.retry = setTimeout(autoPublish, pubst.retryMs);
-    pubst.retryMs = Math.min(pubst.retryMs * 2, 60000);
-  }
-  renderTop();
-}
-function pubStatusHtml(){
-  if (MODE === 'viewer' || readonly || !S || !S.queues) return '';
-  if (!ghHasToken()) return '<span class="pub mut" title="Za samodejno varnostno kopijo enkrat klikni Objavi na splet in vpiši token.">● samodejna objava izklopljena</span>';
-  if (pubst.state === 'ok') return '<span class="pub ok">● objavljeno ' + new Date(pubst.lastOk).toLocaleTimeString('sl-SI',{hour:'2-digit',minute:'2-digit'}) + '</span>';
-  if (pubst.state === 'pending') return '<span class="pub warn">● objavljam …</span>';
-  if (pubst.state === 'err') return '<span class="pub err" title="' + esc(pubst.errMsg) + '">● objava ne uspe — poskušam znova</span>';
-  if (pubst.state === 'blocked') return '<span class="pub err">● na spletu je tuja objava — klikni Objavi na splet</span>';
-  return '<span class="pub mut">● še neobjavljeno v tej seji</span>';
-}
-
-/* ---------- lokalni posnetki stanja (obroč v localStorage; preživijo tudi "Izprazni vse") ---------- */
-function loadSnaps(){ try{ return JSON.parse(localStorage.getItem(SNAPKEY)) || []; }catch(e){ return []; } }
-function pushSnapshot(){
-  if (readonly || !S) return;
-  try{
-    const snaps = loadSnaps();
-    const done = S.matches ? Object.values(S.matches).filter(m => m.res).length : 0;
-    const total = S.matches ? Object.keys(S.matches).length : 0;
-    const rec = { t: Date.now(), info: S.queues ? done + '/' + total + ' rezultatov' : 'brez razporeda', s: JSON.stringify(S) };
-    // posnetki, mlajši od minute, prepišejo zadnjega — obroč pokrije daljše obdobje
-    if (snaps.length && rec.t - snaps[snaps.length - 1].t < 60000) snaps[snaps.length - 1] = rec;
-    else snaps.push(rec);
-    while (snaps.length > 25) snaps.shift();
-    localStorage.setItem(SNAPKEY, JSON.stringify(snaps));
-  }catch(e){ lsWarn(); }
-}
-
-/* ---------- obnovitev: iz objave na spletu ali iz lokalnega posnetka ---------- */
-// prenese data.js — najprej relativno (živa stran), nato prek javne povezave, nazadnje raw.githubusercontent
-function fetchPublishedPub(){
-  const urls = [];
-  if (/^https?:/.test(location.protocol || '')) urls.push('data.js');
-  if (SHARE_BASE.startsWith('http')) urls.push(SHARE_BASE + (SHARE_BASE.endsWith('/') ? '' : '/') + 'data.js');
-  urls.push('https://raw.githubusercontent.com/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_PATH);
-  return urls.reduce((p, u) =>
-    p.catch(() => fetch(u + '?_=' + Date.now(), { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })),
-    Promise.reject(new Error('ni naslova')))
-    .then(code => new Function(code + ';return PUB;')());
-}
-function adoptState(st){ // zamenja S; poskrbi za nextId, shrani, izriše
-  undoStack.push(JSON.stringify(S));
-  st.nextId = Math.max(5000,
-    ...Object.keys(st.breaks || {}).map(Number).filter(x => !isNaN(x)),
-    ...Object.keys(st.matches || {}).map(Number).filter(x => !isNaN(x)));
-  S = st;
-  if (S.queues) tab = 'sched';
-  save(); pushSnapshot(); renderAll();
-}
-function showRestore(){
-  let dlg = document.getElementById('restoreDlg');
-  if (!dlg){ dlg = document.createElement('dialog'); dlg.id = 'restoreDlg'; document.body.appendChild(dlg); }
-  const snaps = loadSnaps();
-  dlg.innerHTML = `<h2>Obnovi stanje</h2>
-    <p><button data-act="restorepub" class="primary">⬇ Obnovi iz zadnje objave (splet)</button><br>
-    <span class="hint">Prenese objavljeni data.js — uporabi na novi napravi, če stara odpove.</span></p>
-    <div class="eyebrow">Lokalni posnetki (ta brskalnik)</div>
-    ${snaps.length ? snaps.slice().reverse().map((s, k) => {
-      const i = snaps.length - 1 - k;
-      return `<div class="snaprow"><button class="small" data-act="restoresnap" data-i="${i}">Obnovi</button>
-        <span class="mono">${new Date(s.t).toLocaleString('sl-SI',{day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
-        <span class="hint">${esc(s.info || '')}</span></div>`;
-    }).join('') : '<p class="hint">Ni posnetkov.</p>'}
-    <p style="margin-bottom:0"><button data-act="dlgclose">Zapri</button></p>`;
-  dlg.showModal();
-}
-function doRestorePub(btn){
-  const label = btn.textContent;
-  btn.disabled = true; btn.textContent = 'Prenašam …';
-  fetchPublishedPub()
-    .then(pub => {
-      const st = statePubApply(pub);
-      const done = Object.values(st.matches).filter(m => m.res).length;
-      if (!confirm('Najdena objava: ' + (pub.updated ? new Date(pub.updated).toLocaleString('sl-SI') : 'brez časa') +
-        ', vpisanih ' + done + ' rezultatov.\nZamenjam trenutno stanje s to objavo?')) return;
-      adoptState(st);
-      pubst.lastPushedUpdated = pub.updated || ''; // objava je zdaj "naša" -> brez lažnega konflikta
-      pubst.state = 'ok'; pubst.lastOk = Date.now();
-      const dlg = document.getElementById('restoreDlg'); if (dlg) dlg.close();
-      renderTop();
-    })
-    .catch(err => alert('Objave ni mogoče prenesti: ' + err.message))
-    .finally(() => { btn.disabled = false; btn.textContent = label; });
-}
-
-/* ---------- izvoz za Google Sheets ---------- */
-// TSV z vgrajenimi formulami: ure se verižno preračunavajo iz Trajanja,
-// lestvici se polnita sami iz rezultatov. Formule so brez ločil argumentov
-// (samo SUMPRODUCT + aritmetika), da delujejo v SL in EN locale ter v Excelu.
-function sheetsExport(){
-  const c = S.cfg;
-  const slotDur = c.matchMin + c.gapMin;
-  const lines = [];
-  const push = (...cells) => lines.push(cells);
-
-  push('24 UR ODBOJKE — razpored in rezultati');
-  push('Vpisuj samo Rez 1 in Rez 2 (ter Trajanje za zamike/premore). Ure se preračunajo same; ure čez polnoč pomenijo naslednji dan.');
-  push('Povezavo deli enkrat: Share → "Anyone with the link: Viewer" — igralci potem vedno vidijo sveže stanje.');
-  push('');
-
-  const blocks = []; // podatkovne vrstice blokov igrišč (1-indeksirano kot v preglednici)
-  for (let court = 0; court < 2; court++){
-    push('IGRIŠČE ' + (court ? '2' : '1'));
-    push('Ura','Trajanje (min)','Oznaka','Punca 1','Fant 1','Punca 2','Fant 2','Rez 1','Rez 2');
-    const r1 = lines.length + 1;
-    S.queues[court].forEach((it, i) => {
-      const r = lines.length + 1;
-      const ura = i === 0 ? c.startClock : '=A' + (r-1) + '+B' + (r-1) + '/1440';
-      if (it.t === 'b'){
-        const br = S.breaks[it.id];
-        push(ura, br.dur, 'PREMOR — ' + (br.label || ''));
-      } else {
-        const m = S.matches[it.id];
-        push(ura, slotDur, m.makeup ? 'dodatna' : 'krog ' + (m.round+1),
-          c.girls[m.g1], c.boys[m.b1], c.girls[m.g2], c.boys[m.b2],
-          m.res ? m.res.a : '', m.res ? m.res.b : '');
-      }
-    });
-    blocks.push({ r1, r2: lines.length });
-    push('');
-  }
-
-  // formule lestvice: 4 členi (2 igrišči x 2 strani tekme)
-  function sumTerms(nameRef, pair, kind){
-    const parts = [];
-    for (const b of blocks){
-      const H = 'H$' + b.r1 + ':H$' + b.r2, I = 'I$' + b.r1 + ':I$' + b.r2;
-      const G = '(' + H + '<>"")*(' + I + '<>"")';
-      for (const [nc, own, opp] of [[pair[0], H, I], [pair[1], I, H]]){
-        const N = '(' + nc + '$' + b.r1 + ':' + nc + '$' + b.r2 + '=' + nameRef + ')';
-        if (kind === 'played') parts.push('SUMPRODUCT(' + N + '*' + G + ')');
-        else if (kind === 'points') parts.push('SUMPRODUCT(' + N + '*' + G + '*((' + own + '>' + opp + ')*2+(' + own + '=' + opp + ')))');
-        else parts.push('SUMPRODUCT(' + N + '*' + G + '*(' + own + '-' + opp + '))');
-      }
-    }
-    return '=' + parts.join('+');
-  }
-  const board = (title, names, pair) => {
-    push(title);
-    push('Ime','Odigrane','Točke','Točke/T','+/− skupaj','+/−/T');
-    for (const name of names){
-      const r = lines.length + 1;
-      push(name,
-        sumTerms('$A' + r, pair, 'played'),
-        sumTerms('$A' + r, pair, 'points'),
-        '=C' + r + '/(B' + r + '+(B' + r + '=0))',
-        sumTerms('$A' + r, pair, 'diff'),
-        '=E' + r + '/(B' + r + '+(B' + r + '=0))');
-    }
-    push('');
-  };
-  board('LESTVICA — PUNCE', c.girls, ['D','F']);
-  board('LESTVICA — FANTJE', c.boys, ['E','G']);
-  push('Zmaga 2, neodločeno 1, poraz 0. Odloča Točke/T, nato +/−/T. Lestvica se posodablja sama ob vpisu rezultatov.');
-
-  return lines.map(cells => cells.join('\t')).join('\n');
-}
-function downloadTsv(tsv){
-  const blob = new Blob([tsv], { type: 'text/tab-separated-values' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = '24ur-odbojke-sheets.tsv';
-  a.click(); URL.revokeObjectURL(a.href);
-  alert('Prenesena je datoteka 24ur-odbojke-sheets.tsv.\nV Google Sheets: File → Import → Upload → izberi datoteko.');
-}
-self.__test = { sheetsExport };
-
-/* ---------- akcije ---------- */
-function insertCourtDelay(c, min){
-  // zamik igrišča: podaljšaj/vstavi premor pred prvo neodigrano tekmo; negativni zamik krajša premore
-  const q = S.queues[c];
-  let idx = pendingIdx(c); if (idx < 0) idx = q.length;
-  if (min > 0){
-    const prev = q[idx-1];
-    if (prev && prev.t === 'b'){ S.breaks[prev.id].dur += min; }
-    else { const id = newId(); S.breaks[id] = { id, dur: min, label: 'Zamik' }; q.splice(idx, 0, { t:'b', id }); }
-    return true;
-  }
-  let need = -min;
-  for (let i = idx-1; i >= 0 && need > 0; i--){
-    if (q[i].t !== 'b') continue;
-    const br = S.breaks[q[i].id];
-    const cut = Math.min(br.dur, need);
-    br.dur -= cut; need -= cut;
-    if (br.dur <= 0){ delete S.breaks[br.id]; q.splice(i,1); }
-  }
-  if (need > 0) alert('Pred naslednjo tekmo ni dovolj premorov — igrišča ni mogoče pohitriti za celoten čas.');
-  return true;
-}
-
-document.addEventListener('click', e => {
-  const btn = e.target.closest('button'); if (!btn) return;
-  const tb = btn.dataset.tab;
-  if (tb){ tab = tb; save(); renderAll(); return; }
-  const act = btn.dataset.act; if (!act) return;
-  const c = +btn.dataset.c, i = +btn.dataset.i;
-
-  if (act === 'togglelock'){
-    if (locked){ if (!confirm('Odkleni turnir? Znova bosta na voljo zavihek Nastavitev z generiranjem razporeda in brisanjem — pazi, da ne izbrišeš rezultatov.')) return; locked = false; }
-    else { locked = true; if (tab === 'setup') tab = 'sched'; }
-    save(); renderAll(); return;
-  }
-  if (act === 'cview'){ courtView = btn.dataset.v; save(); renderAll(); if (readonly) scrollToCurrent(); return; }
-  if (act === 'generate') return doGenerate();
-  if (act === 'wipe'){ if (confirm('Res izbrišem VSE (imena, razpored, rezultate)?')){ localStorage.removeItem(LSKEY); S = freshState(); undoStack = []; tab='setup'; renderAll(); } return; }
-  if (act === 'undo'){ const prev = undoStack.pop(); if (prev){ S = JSON.parse(prev); save(); schedulePublish(); renderAll(); } return; }
-  if (act === 'restore'){ showRestore(); return; }
-  if (act === 'restorepub'){ doRestorePub(btn); return; }
-  if (act === 'restoresnap'){
-    const snaps = loadSnaps(), s = snaps[+btn.dataset.i];
-    if (!s) return;
-    if (!confirm('Obnovim posnetek iz ' + new Date(s.t).toLocaleString('sl-SI') + ' (' + (s.info || '') + ')?\nTrenutno stanje gre na sklad Razveljavi.')) return;
-    adoptState(JSON.parse(s.s));
-    schedulePublish();
-    const dlg = document.getElementById('restoreDlg'); if (dlg) dlg.close();
-    return;
-  }
-  if (act === 'dlgclose'){ const dlg = document.getElementById('restoreDlg'); if (dlg) dlg.close(); return; }
-  if (act === 'pclear'){ playerView = -1; renderAll(); return; }
-  if (act === 'moff'){
-    const id = +btn.dataset.id, m = S.matches[id];
-    if (m.off){ mutate(()=>{ m.off = false; }); return; }
-    if (m.res) return alert('Tekma ima vpisan rezultat — najprej ga izbriši (✎), če res odpade.');
-    if (!confirm('Označim tekmo kot ODPADLO?\nNe bo štela v lestvico in ne bo več prikazana kot čakajoča. Oznako lahko kadarkoli umakneš z istim gumbom.')) return;
-    mutate(()=>{ m.off = true; });
-    return;
-  }
-  if (act === 'print'){ renderPrint(); window.print(); return; }
-  if (act === 'export'){
-    const blob = new Blob([JSON.stringify({S}, null, 1)], {type:'application/json'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = '24ur-odbojke-' + new Date().toISOString().slice(0,16).replace(/[T:]/g,'-') + '.json';
-    a.click(); URL.revokeObjectURL(a.href); return;
-  }
-  if (act === 'import'){
-    const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json';
-    inp.onchange = () => {
-      const f = inp.files[0]; if (!f) return;
-      f.text().then(txt => {
-        try { const o = JSON.parse(txt); if (!o.S || !o.S.cfg) throw 0; mutate(()=>{ S = o.S; }); }
-        catch(_){ alert('Datoteke ni mogoče prebrati — ni izvoz te strani.'); }
-      });
-    };
-    inp.click(); return;
-  }
-  if (act === 'publish'){
-    const txt = publishText();
-    const done = () => alert('Vsebina datoteke data.js je skopirana v odložišče.\n\n1) V repozitoriju odpri data.js, označi vse in prilepi.\n2) git add data.js && git commit -m "rezultati" && git push\n\nJavna stran se osveži v ~1 minuti. Posamezne rezultate lahko vmes urejaš tudi ročno kar v datoteki.');
-    if (navigator.clipboard && navigator.clipboard.writeText)
-      navigator.clipboard.writeText(txt).then(done, () => downloadText('data.js', txt));
-    else downloadText('data.js', txt);
-    return;
-  }
-  if (act === 'ghpublish') return ghPublish(btn);
-  if (act === 'sheets'){
-    const tsv = sheetsExport();
-    const done = () => alert('Skopirano v odložišče!\n\n1) Odpri sheets.new\n2) Klikni celico A1 in prilepi (Ctrl+V)\n3) Share → "Anyone with the link: Viewer" → povezavo pošlji igralcem enkrat.\n\nRezultate nato vpisuješ kar v preglednico — s katerekoli naprave, tudi več ljudi hkrati; ure in lestvica se preračunajo same.');
-    if (navigator.clipboard && navigator.clipboard.writeText)
-      navigator.clipboard.writeText(tsv).then(done, () => downloadTsv(tsv));
-    else downloadTsv(tsv);
-    return;
-  }
-  if (act === 'share'){
-    const base = SHARE_BASE.startsWith('http') ? SHARE_BASE : location.href.split('#')[0];
-    const url = base + '#d=' + Core.encodeState(S);
-    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(
-      () => alert('Povezava je skopirana. Pošlji jo igralcem (skupina, QR …).\nPo vsaki spremembi razporeda deli svežo povezavo.'),
-      () => prompt('Kopiraj povezavo:', url));
-    return;
-  }
-  if (act === 'delay') return mutate(()=>insertCourtDelay(c, +btn.dataset.min));
-  if (act === 'delayx'){
-    const v = parseInt(prompt('Zamik igrišča v minutah (negativno = pohitri):', '15'), 10);
-    if (v) mutate(()=>insertCourtDelay(c, v));
-    return;
-  }
-  if (act === 'cbreak' || act === 'gbreak'){
-    const v = parseInt(prompt('Trajanje premora v minutah:', '30'), 10);
-    if (!v || v < 1) return;
-    const lbl = prompt('Oznaka premora:', 'Premor') || 'Premor';
-    mutate(()=>{
-      const courts = act === 'gbreak' ? [0,1] : [c];
-      for (const cc of courts){
-        const q = S.queues[cc];
-        let idx = pendingIdx(cc); if (idx < 0) idx = q.length;
-        const id = newId(); S.breaks[id] = { id, dur: v, label: lbl };
-        q.splice(idx, 0, { t:'b', id });
-      }
-    });
-    return;
-  }
-  if (act === 'align'){
-    const { times } = Core.computeTimes(S);
-    const idx = pendingIdx(c);
-    if (idx < 0) return alert('Na tem igrišču ni več čakajočih tekem.');
-    const q = S.queues[c];
-    const next = q[idx];
-    const diff = Math.round(nowMin() - times[next.id].start);
-    if (Math.abs(diff) < 3) return alert('Igrišče je že poravnano (razlika ' + diff + ' min).');
-    if (!confirm((diff > 0 ? 'Zamik igrišča za +' : 'Pohitritev igrišča za ') + diff + ' min, da se naslednja tekma začne zdaj?')) return;
-    mutate(()=>insertCourtDelay(c, diff));
-    return;
-  }
-  if (act === 'mv'){
-    const d = +btn.dataset.d;
-    mutate(()=>{
-      const q = S.queues[c], j = i + d;
-      if (j < 0 || j >= q.length) return;
-      [q[i], q[j]] = [q[j], q[i]];
-    });
-    return;
-  }
-  if (act === 'xcourt'){
-    mutate(()=>{
-      const { times, breakTimes } = Core.computeTimes(S);
-      const q = S.queues[c], it = q[i];
-      const t0 = times[it.id]?.start ?? 0;
-      q.splice(i,1);
-      const q2 = S.queues[1-c];
-      let j = q2.length;
-      for (let k = 0; k < q2.length; k++){
-        const ts = q2[k].t === 'm' ? times[q2[k].id].start : breakTimes[q2[k].id].start;
-        if (ts >= t0){ j = k; break; }
-      }
-      q2.splice(j, 0, it);
-    });
-    return;
-  }
-  if (act === 'bedit'){
-    const br = S.breaks[S.queues[c][i].id];
-    const v = parseInt(prompt('Novo trajanje premora (min):', br.dur), 10);
-    if (v && v > 0) mutate(()=>{ br.dur = v; });
-    return;
-  }
-  if (act === 'bdel'){
-    mutate(()=>{ const it = S.queues[c][i]; delete S.breaks[it.id]; S.queues[c].splice(i,1); });
-    return;
-  }
-  if (act === 'rsave'){
-    const id = +btn.dataset.id;
-    const a = parseInt($('#sa'+id).value, 10), b = parseInt($('#sb'+id).value, 10);
-    if (isNaN(a) || isNaN(b) || a < 0 || b < 0) return alert('Vpiši obe številki rezultata.');
-    mutate(()=>{ S.matches[id].res = { a, b }; });
-    return;
-  }
-  if (act === 'redit'){
-    const id = +btn.dataset.id;
-    mutate(()=>{ S.matches[id].res = null; });
-    return;
-  }
-});
-document.addEventListener('input', e => { if (e.target.id === 'girls' || e.target.id === 'boys') setupCounts(); });
-document.addEventListener('change', e => {
-  if (e.target && e.target.id === 'psel'){ playerView = e.target.value === '' ? -1 : +e.target.value; renderAll(); }
-});
-
-/* ---------- glavni izris ---------- */
-function renderMain(){
-  const m = $('#main');
-  if (tab === 'setup' && !readonly) { m.innerHTML = renderSetup(); setupCounts(); }
-  else if (tab === 'board' && S.queues) m.innerHTML = (readonly ? viewerBanner() : '') + renderBoard();
-  else if (S.queues) m.innerHTML = renderSched();
-  else if (readonly) m.innerHTML = viewerLoading
-    ? '<div class="card">Nalagam razpored …</div>'
-    : '<div class="card"><h2>Razpored še ni objavljen</h2><p class="hint">Organizator ga bo kmalu objavil — poskusi znova čez nekaj minut.</p></div>';
-  else { tab = 'setup'; m.innerHTML = renderSetup(); setupCounts(); }
-}
-function renderAll(){ if (locked && tab === 'setup') tab = 'sched'; renderTop(); renderMain(); }
-</script>
-
 </body>
 </html>
