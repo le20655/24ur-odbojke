@@ -1148,7 +1148,7 @@ function renderPlayerSched(){
       <div class="time mono">${fmtT(x.t)}</div>
       <div class="body">
         <div class="pair">${pairStr(x.m.g1, x.m.b1)}<span class="vs">proti</span>${pairStr(x.m.g2, x.m.b2)}</div>
-        <div class="meta"><span class="chip crt${x.c}">Igrišče ${x.c + 1}</span> <span class="chip">${roundChip(x.m)}</span>${x.m.off ? ' &nbsp;· odpade' : ''}${isNow ? ' &nbsp;· zdaj igrajo' : ''}${isNext ? ' &nbsp;· naslednja' : ''}</div>
+        <div class="meta"><span class="chip crt${x.c}">Igrišče ${x.c + 1}</span> ${x.m.off ? ' &nbsp;· odpade' : ''}${isNow ? ' &nbsp;· zdaj igrajo' : ''}${isNext ? ' &nbsp;· naslednja' : ''}</div>
       </div>
       <div class="scorebox">${x.m.off ? '<span class="chip offc">ODPADE</span>' : x.m.res ? `<span class="score mono">${x.m.res.a} : ${x.m.res.b}</span>` : '<span class="hint">—</span>'}</div>
     </div>`;
