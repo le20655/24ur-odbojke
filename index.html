@@ -11,27 +11,29 @@
    Ce hoces spremeniti barvo, jo popravi tukaj in velja povsod.
    ============================================================ */
 :root{
-  --bg:#f5f4ee;        /* ozadje strani */
+  --bg:#f7f6f2;        /* ozadje strani (svetlo nevtralno) */
   --surface:#ffffff;   /* ozadje kartic/glave */
-  --surface2:#eceade;  /* rahlo temnejse ozadje (naslovi) */
-  --ink:#1e2026;       /* glavna barva besedila */
-  --muted:#5c5f69;     /* zbledelo besedilo (opombe, casi) */
-  --line:#dedbce;      /* crte in obrobe */
-  --accent:#a86f0a;    /* zlata poudarna barva */
-  --accent-bg:#f5e3bc; /* zlato ozadje (highlight tekme) */
+  --surface2:#f0eee7;  /* rahlo temnejse ozadje (naslovi) */
+  --ink:#191c23;       /* glavna barva besedila */
+  --muted:#555a66;     /* pomozno besedilo (opombe, casi) — temneje za sonce */
+  --line:#e3e0d6;      /* crte in obrobe */
+  --accent:#b8770a;    /* zlata poudarna barva (bolj ziva) */
+  --accent-bg:#fdeecb; /* zlato ozadje (highlight tekme) */
   --accent-strong:#8a5c08;
-  --courtA:#a86f0a; --courtA-bg:#f8ecd2;  /* igrisce 1 = zlata */
-  --courtB:#35609f; --courtB-bg:#dfe8f5;  /* igrisce 2 = modra */
-  --ok:#2f7d4f;        /* zelena za zmagovalca */
-  --gold:#b8860b; --silver:#7a7f8a; --bronze:#9a6039;  /* prva tri mesta lestvice */
-  --shadow:0 1px 3px rgba(35,37,44,.08);
+  --courtA:#b8770a; --courtA-bg:#fbf0d7;  /* igrisce 1 = zlata */
+  --courtB:#2d62ad; --courtB-bg:#e7effa;  /* igrisce 2 = modra (bolj nasicena) */
+  --ok:#1f7a48;        /* zelena za zmagovalca */
+  --err:#b0433c; --err-bg:#fdeceb;        /* rdeca za opozorila */
+  --gold:#b8860b; --silver:#71767f; --bronze:#9a6039;  /* prva tri mesta lestvice */
+  --shadow:0 1px 4px rgba(35,37,44,.06);
 }
 /* temna tema — iste spremenljivke, temnejse vrednosti */
 @media (prefers-color-scheme: dark){:root{
   --bg:#14161d; --surface:#1d2029; --surface2:#252935; --ink:#e9eaee; --muted:#9a9daa;
   --line:#2e3341; --accent:#e8a020; --accent-bg:#3a2f14; --accent-strong:#f2b747;
   --courtA:#e8a020; --courtA-bg:#33290f; --courtB:#7fa8e0; --courtB-bg:#1c2637;
-  --ok:#58b380; --gold:#e8b53a; --silver:#a8aeba; --bronze:#c98a5e;
+  --ok:#58b380; --err:#e07b74; --err-bg:#3d1f1d;
+  --gold:#e8b53a; --silver:#a8aeba; --bronze:#c98a5e;
   --shadow:0 1px 4px rgba(0,0,0,.4);
 }}
 
@@ -155,6 +157,12 @@ table.board tbody tr:nth-child(1) td.nm{color:var(--gold);font-weight:800}
 table.board tbody tr:nth-child(2) td.nm{color:var(--silver);font-weight:800}
 table.board tbody tr:nth-child(3) td.nm{color:var(--bronze);font-weight:800}
 
+/* opozorilo ob napacnem vpisu rezultata v data.js (rdeca leva obroba) */
+.warnbox{border:1px solid var(--line);border-left:4px solid var(--err);border-radius:8px;
+         background:var(--err-bg);color:var(--err);padding:8px 14px;margin-bottom:14px;
+         font-size:13.5px;font-weight:600}
+.warnbox code{font-weight:800}
+
 /* opomba na dnu strani */
 .opomba{color:var(--muted);font-size:13.5px;text-align:center;margin:24px 0 8px}
 .opomba a{color:var(--accent-strong)}
@@ -218,6 +226,40 @@ function casKroga(krog) {
        + String(skupaj % 60).padStart(2, "0");
 }
 
+// Kateri krog PO URI ravno tece? Racuna iz DATUM + ZACETEK (zato dela
+// tudi cez polnoc). Vrne 1..33 med turnirjem, sicer null (pred/po njem).
+// Parameter zdaj je za teste; privzeto trenutni cas.
+function krogPoUri(zdaj = new Date()) {
+  const zacetek = new Date(DATUM + "T" + ZACETEK + ":00");
+  const minut = (zdaj - zacetek) / 60000;          // pretecene minute od 1. kroga
+  if (minut < 0) return null;                       // turnir se se ni zacel
+  const krog = Math.floor(minut / TRAJANJE_KROGA) + 1;
+  return krog <= 33 ? krog : null;                  // po 33. krogu je konec
+}
+
+// Preveri REZULTATI in vrne seznam napacnih vpisov (za rdece opozorilo):
+// - vrednost, ki ni prazna in ni oblike "st:st" (npr. "28-24"),
+// - kljuc, ki ne obstaja v razporedu (tipkarska napaka, npr. "34a").
+function napacniVpisi() {
+  const veljavniKljuci = new Set(RAZPORED.map(t => t[0] + t[1]));  // "1a".."33b"
+  const napake = [];
+  for (const [kljuc, vrednost] of Object.entries(REZULTATI)) {
+    const v = (vrednost || "").trim();
+    if (!veljavniKljuci.has(kljuc)) napake.push(kljuc + " (ta tekma ne obstaja)");
+    else if (v !== "" && !/^\d+\s*:\s*\d+$/.test(v))
+      napake.push(kljuc + ' = "' + v + '"');
+  }
+  return napake;
+}
+
+// HTML opozorila (prazen niz, ce je vse v redu) — prikaze se v obeh pogledih
+function opozoriloHtml() {
+  const napake = napacniVpisi();
+  if (!napake.length) return "";
+  return '<div class="warnbox">Napačen vpis v <code>data.js</code>: '
+       + napake.join(", ") + ' → uporabi obliko <code>"28:24"</code>.</div>';
+}
+
 // Prebere RAZPORED + REZULTATI in vrne seznam tekem:
 // {krog, igrisce, g1, b1, g2, b2, t1, t2}
 // g1&b1 = prvi par, g2&b2 = drugi par; t1/t2 = tocke (null = ni rezultata).
@@ -266,11 +308,18 @@ function vrsticaHtml(t, now, sCipom) {
 function prikaziRazpored() {
   const vse = tekme();
 
-  // za vsako igrisce poisci prvi krog brez rezultata -> ta tekma dobi highlight
+  // HIGHLIGHT ("zdaj na vrsti"):
+  // med turnirjem je merodajna URA -> highlightan je krog, ki po urniku
+  // ravno tece (na obeh igriscih); pred zacetkom / po koncu turnirja pa
+  // je highlightana prva tekma brez rezultata na vsakem igriscu.
+  const poUri = krogPoUri();
   const zdaj = {};
   for (const igr of ["a", "b"]) {
-    const t = vse.find(t => t.igrisce === igr && t.t1 === null);
-    if (t) zdaj[igr] = t.krog;
+    if (poUri !== null) zdaj[igr] = poUri;
+    else {
+      const t = vse.find(t => t.igrisce === igr && t.t1 === null);
+      if (t) zdaj[igr] = t.krog;
+    }
   }
   const jeZdaj = t => zdaj[t.igrisce] === t.krog;
 
@@ -289,7 +338,8 @@ function prikaziRazpored() {
          + (c + 1) + "</div>"
          + ts.map(t => vrsticaHtml(t, jeZdaj(t), false)).join("") + "</div>";
   }
-  document.getElementById("vsebina").innerHTML = html;
+  // pred vsebino se morebitno rdece opozorilo o napacnih vpisih
+  document.getElementById("vsebina").innerHTML = opozoriloHtml() + html;
 }
 
 /* ============================================================
@@ -330,8 +380,9 @@ function prikaziLestvico() {
     }
     return h + "</tbody></table></div></div>";
   };
-  document.getElementById("vsebina").innerHTML =
-    '<div class="boards">' + tabela("Punce", PUNCE) + tabela("Fantje", FANTJE) + "</div>";
+  // pred vsebino se morebitno rdece opozorilo o napacnih vpisih
+  document.getElementById("vsebina").innerHTML = opozoriloHtml()
+    + '<div class="boards">' + tabela("Punce", PUNCE) + tabela("Fantje", FANTJE) + "</div>";
 }
 
 /* ============================================================
@@ -377,9 +428,21 @@ for (const [skupina, oznake] of [["Punce", PUNCE], ["Fantje", FANTJE]]) {
 filter.onchange = () => { izbran = filter.value; pogled = "razpored"; prikazi(); };
 document.getElementById("zav-razpored").onclick = () => { pogled = "razpored"; prikazi(); };
 document.getElementById("zav-lestvica").onclick = () => { pogled = "lestvica"; prikazi(); };
-document.getElementById("seg-a").onclick = () => { igrisce = "a"; prikazi(); };
-document.getElementById("seg-b").onclick = () => { igrisce = "b"; prikazi(); };
+
+// klik na gumb igrisca: pokazi igrisce IN zascrollaj do highlightane tekme
+function pokaziIgrisce(igr) {
+  igrisce = igr; pogled = "razpored"; izbran = ""; filter.value = "";
+  prikazi();
+  const now = document.querySelector(".qrow.now");   // highlightana vrstica
+  if (now) now.scrollIntoView({block: "center", behavior: "smooth"});
+}
+document.getElementById("seg-a").onclick = () => pokaziIgrisce("a");
+document.getElementById("seg-b").onclick = () => pokaziIgrisce("b");
+
 prikazi();   // prvi izris ob nalaganju strani
+// vsako minuto ponovno narisi, da highlight po uri ne zastara
+// (samo lokalni izris, stran NE prenasa podatkov s streznika)
+setInterval(prikazi, 60000);
 </script>
 </body>
 </html>

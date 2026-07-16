@@ -21,6 +21,10 @@ Ureja se direktno na GitHubu — stran se posodobi ~1 minuto po commitu.
    Prazen niz `""` pomeni, da tekma še ni odigrana.
 5. Klikni **Commit changes** (dvakrat zeleno).
 
+Če se pri vpisu zatipkaš (npr. `28-24` namesto `28:24` ali napačen ključ),
+stran na vrhu pokaže **rdeče opozorilo** s ključem napačnega vpisa —
+tekma pa se do popravka šteje kot neodigrana.
+
 Točke se prištejejo **obema** članoma para; lestvici (punce in fantje ločeno)
 se razvrščata po skupnih točkah, nato po razliki.
 
@@ -35,12 +39,14 @@ razpored (tudi tabela premorov spodaj velja za oznake, ne za imena).
 V razdelku `URNIK`:
 
 ```js
+const DATUM = "2026-07-17";   // datum 1. kroga (za izračun tekočega kroga)
 const ZACETEK = "17:30";      // začetek 1. kroga
 const TRAJANJE_KROGA = 40;    // 35 min igre + 5 min menjava
 ```
 
-Stran čase vseh 33 krogov izračuna sama. Če urnik zamuja, popravi `ZACETEK`
-(velja za cel turnir) — posamičnih krogov se ne da zamikati.
+Stran čase vseh 33 krogov izračuna sama in po uri **highlighta krog, ki ravno
+teče**. Če urnik zamuja, popravi `ZACETEK` (velja za cel turnir) — posamičnih
+krogov se ne da zamikati. `DATUM` popravi le, če se turnir prestavi na drug dan.
 
 ## Največji premori po igralcih
 

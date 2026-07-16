@@ -28,8 +28,9 @@ const IMENA = {
   "12": "BRIC KROLNIK",
 };
 
-// ===== URNIK: zacetek prvega kroga in trajanje kroga v minutah =====
-// Ob zamiku urnika popravi ti dve vrednosti (stran case izracuna sama).
+// ===== URNIK: datum in zacetek prvega kroga, trajanje kroga v minutah =====
+// Ob zamiku urnika popravi te vrednosti (stran case izracuna sama).
+const DATUM = "2026-07-17";
 const ZACETEK = "17:30";
 const TRAJANJE_KROGA = 40;
 
