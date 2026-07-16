@@ -5,13 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>24 ur odbojke</title>
 <style>
+/* ============================================================
+   BARVE (CSS spremenljivke)
+   Svetla tema je privzeta; temna se vklopi sama glede na telefon.
+   Ce hoces spremeniti barvo, jo popravi tukaj in velja povsod.
+   ============================================================ */
 :root{
-  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#1e2026; --muted:#5c5f69;
-  --line:#dedbce; --accent:#a86f0a; --accent-bg:#f5e3bc; --accent-strong:#8a5c08;
-  --courtA:#a86f0a; --courtA-bg:#f8ecd2; --courtB:#35609f; --courtB-bg:#dfe8f5;
-  --ok:#2f7d4f; --gold:#b8860b; --silver:#7a7f8a; --bronze:#9a6039;
+  --bg:#f5f4ee;        /* ozadje strani */
+  --surface:#ffffff;   /* ozadje kartic/glave */
+  --surface2:#eceade;  /* rahlo temnejse ozadje (naslovi) */
+  --ink:#1e2026;       /* glavna barva besedila */
+  --muted:#5c5f69;     /* zbledelo besedilo (opombe, casi) */
+  --line:#dedbce;      /* crte in obrobe */
+  --accent:#a86f0a;    /* zlata poudarna barva */
+  --accent-bg:#f5e3bc; /* zlato ozadje (highlight tekme) */
+  --accent-strong:#8a5c08;
+  --courtA:#a86f0a; --courtA-bg:#f8ecd2;  /* igrisce 1 = zlata */
+  --courtB:#35609f; --courtB-bg:#dfe8f5;  /* igrisce 2 = modra */
+  --ok:#2f7d4f;        /* zelena za zmagovalca */
+  --gold:#b8860b; --silver:#7a7f8a; --bronze:#9a6039;  /* prva tri mesta lestvice */
   --shadow:0 1px 3px rgba(35,37,44,.08);
 }
+/* temna tema — iste spremenljivke, temnejse vrednosti */
 @media (prefers-color-scheme: dark){:root{
   --bg:#14161d; --surface:#1d2029; --surface2:#252935; --ink:#e9eaee; --muted:#9a9daa;
   --line:#2e3341; --accent:#e8a020; --accent-bg:#3a2f14; --accent-strong:#f2b747;
@@ -19,26 +34,50 @@
   --ok:#58b380; --gold:#e8b53a; --silver:#a8aeba; --bronze:#c98a5e;
   --shadow:0 1px 4px rgba(0,0,0,.4);
 }}
+
+/* ============================================================
+   OSNOVA — stran ne sme biti nikoli sirsa od zaslona
+   ============================================================ */
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0;max-width:100vw;overflow-x:hidden}  /* prepove drsenje levo-desno */
 body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,"Segoe UI",Roboto,sans-serif}
 button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
-select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;max-width:52vw}
 button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 
+/* ============================================================
+   GLAVA (lepljiva na vrhu): naslov + statistika,
+   pod njo zavihki Razpored/Lestvica + iskalnik igralca,
+   pod njima izbirnik igrisca.
+   ============================================================ */
 header.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:2px solid var(--accent);box-shadow:var(--shadow)}
-.topline{display:flex;align-items:center;gap:12px;padding:9px 16px;flex-wrap:nowrap}
+.topline{display:flex;align-items:center;gap:12px;padding:9px 16px;min-width:0}
 .brand{font-size:18px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
 .brand b{color:var(--accent)}
-.topstats{color:var(--muted);font-size:12.5px;white-space:nowrap}
+/* statistika v glavi: "odigranih X/66 · konec ob HH:MM" */
+.topstats{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .topstats b{color:var(--ink)}
-.spacer{flex:1}
-@media (max-width:640px){.topstats{font-size:11.5px}}
-nav.tabs{display:flex;gap:2px;padding:0 12px;border-top:1px solid var(--line)}
-nav.tabs button{padding:8px 14px;font-weight:600;color:var(--muted);border-bottom:2.5px solid transparent;margin-bottom:-1px}
-nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent)}
 
-/* izbirnik igrisca v lepljivi glavi */
+/* vrstica z zavihki in iskalnikom */
+nav.tabs{display:flex;gap:2px;align-items:center;padding:0 12px;border-top:1px solid var(--line)}
+nav.tabs button{padding:8px 14px;font-weight:600;color:var(--muted);border-bottom:2.5px solid transparent;margin-bottom:-1px}
+nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent)}  /* aktivni zavihek: zlata crta spodaj */
+/* iskalnik igralca: potisnjen desno, z ikono lupe (SVG v ozadju) */
+select#filter{
+  margin-left:auto;            /* potisne na desni rob vrstice */
+  margin-top:4px;margin-bottom:4px;
+  font:inherit;color:var(--ink);background-color:var(--surface);
+  border:1px solid var(--line);border-radius:99px;   /* zaobljen kot gumb */
+  padding:5px 10px 5px 30px;                          /* levo prostor za lupo */
+  max-width:44vw;min-width:0;                         /* na telefonu se skrci, ne razsiri strani */
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a8f9b' stroke-width='2.5' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4.2-4.2'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:9px center;background-size:15px;
+  box-shadow:var(--shadow);
+}
+/* ko je igralec izbran, se iskalnik obarva zlato (vidno, da je filter aktiven) */
+select#filter.aktiven{background-color:var(--accent-bg);border-color:var(--accent);color:var(--accent-strong);font-weight:700}
+
+/* izbirnik igrisca (Igrisce 1 / Igrisce 2) — viden samo na razporedu brez filtra */
 .segbar{display:flex;justify-content:center;align-items:center;padding:7px 10px;border-top:1px solid var(--line)}
 .segbar[hidden]{display:none}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
@@ -46,79 +85,96 @@ nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent)}
 .seg button+button{border-left:1px solid var(--line)}
 .seg button.active{background:var(--accent-bg);color:var(--accent-strong);font-weight:700}
 
+/* osrednji del strani */
 main{max-width:860px;margin:0 auto;padding:16px}
-@media (max-width:640px){main{padding:10px 8px}.topline{padding:7px 10px;gap:10px}}
 
-/* razpored: en stolpec izbranega igrisca */
+/* ============================================================
+   RAZPORED — seznam tekem enega igrisca
+   Vsaka vrstica (.qrow): cas + krog | para | rezultat
+   ============================================================ */
 .court{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
 .courthead{padding:9px 14px;border-bottom:1px solid var(--line);font-weight:800;letter-spacing:.04em}
-.court[data-c="0"] .courthead{background:var(--courtA-bg);color:var(--courtA)}
-.court[data-c="1"] .courthead{background:var(--courtB-bg);color:var(--courtB)}
+.court[data-c="0"] .courthead{background:var(--courtA-bg);color:var(--courtA)}  /* naslov igrisca 1: zlat */
+.court[data-c="1"] .courthead{background:var(--courtB-bg);color:var(--courtB)}  /* naslov igrisca 2: moder */
 .qrow{display:flex;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);position:relative}
 .qrow:last-child{border-bottom:none}
 .qrow .time{width:60px;flex:none;font-weight:700;font-size:15.5px;font-variant-numeric:tabular-nums}
-.qrow .time .nd{display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.qrow .time .nd{display:block;font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}  /* mala "krog X" pod uro */
 .body{flex:1;min-width:0;font-size:15px;line-height:1.45}
-.pair{font-weight:600}
-.pair.zmagovalec{color:var(--ok);font-weight:800}
-.vs{color:var(--muted);font-weight:400;padding:0 4px}
+.pair{font-weight:600}                                /* par: PUNCA & FANT */
+.pair.zmagovalec{color:var(--ok);font-weight:800}     /* zmagovalni par: zeleno + krepko */
+.vs{color:var(--muted);font-weight:400;padding:0 4px} /* beseda "proti" */
 .score{font-size:16px;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
-.score.prazen{color:var(--muted);font-weight:400}
-.qrow.done{opacity:.62}
+.score.prazen{color:var(--muted);font-weight:400}     /* "–" ce tekma se ni odigrana */
+.qrow.done{opacity:.62}                               /* odigrane tekme so zbledene */
+/* highlight: prva tekma brez rezultata na igriscu ("zdaj na vrsti") */
 .qrow.now{background:var(--accent-bg);box-shadow:inset 0 0 0 2px var(--accent)}
-.qrow.now::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.qrow.now::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}  /* zlata crta na levi */
 .qrow.now .time{color:var(--accent-strong);font-size:17px}
 .qrow.now .time .nd{color:var(--accent-strong)}
 .qrow.now .pair{font-size:16px;font-weight:700}
+/* cip z imenom igrisca (viden le v pogledu filtriranega igralca) */
 .chip{flex:none;display:inline-block;font-size:10.5px;font-weight:700;border:1px solid var(--line);border-radius:99px;padding:0 7px;color:var(--muted);white-space:nowrap}
 .chip.crt0{color:var(--courtA);border-color:var(--courtA);background:var(--courtA-bg)}
 .chip.crt1{color:var(--courtB);border-color:var(--courtB);background:var(--courtB-bg)}
-mark{background:var(--accent-bg);color:var(--accent-strong);border-radius:3px;padding:0 2px}
+mark{background:var(--accent-bg);color:var(--accent-strong);border-radius:3px;padding:0 2px}  /* oznaceno ime iskanega igralca */
 
-/* telefon */
+/* ============================================================
+   PRILAGODITVE ZA TELEFON (zaslon do 640 px)
+   ============================================================ */
 @media (max-width:640px){
   body{font-size:16px}
-  .qrow{flex-wrap:wrap;row-gap:4px;padding:9px 10px;gap:10px}
+  main{padding:10px 8px}
+  .topline{padding:7px 10px;gap:10px}
+  .topstats{font-size:11.5px}
+  nav.tabs{padding:0 6px}
+  nav.tabs button{padding:8px 10px}
+  .qrow{flex-wrap:wrap;row-gap:4px;padding:9px 10px;gap:10px}  /* vrstica tekme se prelomi v dve vrsti */
   .body{min-width:calc(100% - 82px)}
-  .vs{display:block;padding:0;font-size:12.5px}
+  .vs{display:block;padding:0;font-size:12.5px}                /* "proti" v svoji vrstici */
   .score{margin-left:70px}
-  .qrow .chip{position:absolute;top:9px;right:10px}
+  .qrow .chip{position:absolute;top:9px;right:10px}            /* cip igrisca v zgornji desni kot */
   .seg button{padding:9px 24px;font-size:16px}
 }
 
-/* lestvica */
+/* ============================================================
+   LESTVICA — dve tabeli (punce, fantje), samo top 5
+   ============================================================ */
 .boards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-@media (max-width:860px){.boards{grid-template-columns:1fr}}
+@media (max-width:860px){.boards{grid-template-columns:1fr}}   /* na ozkem zaslonu ena pod drugo */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0;overflow:hidden}
 .card h2{font-size:17px;margin:0;padding:12px 14px;border-bottom:1px solid var(--line)}
-.tablewrap{overflow-x:auto;padding:0 8px 8px}
+.tablewrap{overflow-x:auto;padding:0 8px 8px}                  /* siroka tabela drsi ZNOTRAJ kartice, ne cela stran */
 table.board{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
 table.board th{text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:6px 7px;border-bottom:2px solid var(--line)}
-table.board th.nm,table.board td.nm{text-align:left}
+table.board th.nm,table.board td.nm{text-align:left}           /* stolpec z imenom je poravnan levo */
 table.board td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:right}
 table.board tr:last-child td{border-bottom:none}
+/* prva tri mesta: zlata, srebrna, bronasta barva imena */
 table.board tbody tr:nth-child(1) td.nm{color:var(--gold);font-weight:800}
 table.board tbody tr:nth-child(2) td.nm{color:var(--silver);font-weight:800}
 table.board tbody tr:nth-child(3) td.nm{color:var(--bronze);font-weight:800}
 
+/* opomba na dnu strani */
 .opomba{color:var(--muted);font-size:13.5px;text-align:center;margin:24px 0 8px}
 .opomba a{color:var(--accent-strong)}
 </style>
 </head>
 <body>
 
+<!-- ============ GLAVA: naslov, statistika, zavihki, iskalnik, igrisci ============ -->
 <header class="top">
   <div class="topline">
     <div class="brand">24 UR <b>ODBOJKE</b></div>
-    <div class="topstats" id="topstats"></div>
-    <div class="spacer"></div>
+    <div class="topstats" id="topstats"></div>  <!-- "odigranih X/66 · konec ob HH:MM" (polni JS) -->
   </div>
   <nav class="tabs">
     <button id="zav-razpored" class="active">Razpored</button>
     <button id="zav-lestvica">Lestvica</button>
+    <!-- iskalnik igralca: JS ga napolni z imeni iz data.js -->
     <select id="filter"><option value="">Vsi igralci</option></select>
   </nav>
-  <div class="segbar" id="segbar">
+  <div class="segbar" id="segbar">  <!-- preklop med igriscema -->
     <div class="seg">
       <button id="seg-a" class="active">Igrišče 1</button>
       <button id="seg-b">Igrišče 2</button>
@@ -127,24 +183,34 @@ table.board tbody tr:nth-child(3) td.nm{color:var(--bronze);font-weight:800}
 </header>
 
 <main>
-  <div id="vsebina"></div>
+  <div id="vsebina"></div>  <!-- sem JS narise razpored ali lestvico -->
   <p class="opomba">Rezultati se vpisujejo v <code>data.js</code> na GitHubu —
   navodila v <a href="https://github.com/le20655/24ur-odbojke/blob/main/NAVODILA.md">NAVODILA.md</a>.</p>
 </main>
 
+<!-- podatki: IMENA, ZACETEK, TRAJANJE_KROGA, REZULTATI, RAZPORED -->
 <script src="data.js"></script>
 <script>
 "use strict";
-const PUNCE = "ABCDEFGHIJK".split("");
-const FANTJE = Array.from({length: 12}, (_, i) => String(i + 1));
+/* ============================================================
+   STANJE STRANI
+   ============================================================ */
+const PUNCE = "ABCDEFGHIJK".split("");                        // oznake punc A..K
+const FANTJE = Array.from({length: 12}, (_, i) => String(i + 1)); // oznake fantov 1..12
 
-let pogled = "razpored";   // "razpored" | "lestvica"
-let izbran = "";           // oznaka filtriranega igralca ("" = vsi)
-let igrisce = "a";         // prikazano igrisce ("a" = 1, "b" = 2)
+let pogled = "razpored";   // kateri zavihek je odprt: "razpored" | "lestvica"
+let izbran = "";           // oznaka igralca v iskalniku ("" = brez filtra)
+let igrisce = "a";         // katero igrisce kaze razpored ("a" = 1, "b" = 2)
 
+// oznaka -> prikazano ime (iz IMENA v data.js); ce imena ni, pokaze oznako
 const ime = o => IMENA[o] || o;
 
-// cas zacetka kroga: ZACETEK + (krog-1) * TRAJANJE_KROGA minut (cez polnoc se prelije)
+/* ============================================================
+   POMOZNE FUNKCIJE
+   ============================================================ */
+
+// cas zacetka kroga: ZACETEK + (krog-1) * TRAJANJE_KROGA minut.
+// Racuna po modulu 24 ur, zato se cez polnoc pravilno prelije.
 function casKroga(krog) {
   const [h, m] = ZACETEK.split(":").map(Number);
   const skupaj = (h * 60 + m + (krog - 1) * TRAJANJE_KROGA) % 1440;
@@ -152,26 +218,35 @@ function casKroga(krog) {
        + String(skupaj % 60).padStart(2, "0");
 }
 
-// tekma = {krog, igrisce, g1, b1, g2, b2, t1, t2}; t1/t2 = null, ce ni rezultata
+// Prebere RAZPORED + REZULTATI in vrne seznam tekem:
+// {krog, igrisce, g1, b1, g2, b2, t1, t2}
+// g1&b1 = prvi par, g2&b2 = drugi par; t1/t2 = tocke (null = ni rezultata).
 function tekme() {
   const sez = [];
   for (const [krog, igrisce, g1, b1, g2, b2] of RAZPORED) {
-    const rez = (REZULTATI[krog + igrisce] || "").trim();
+    const rez = (REZULTATI[krog + igrisce] || "").trim();   // kljuc npr. "5b"
     let t1 = null, t2 = null;
-    const m = rez.match(/^(\d+)\s*:\s*(\d+)$/);
+    const m = rez.match(/^(\d+)\s*:\s*(\d+)$/);             // sprejme npr. "28:24"
     if (m) { t1 = +m[1]; t2 = +m[2]; }
     sez.push({krog, igrisce, g1, b1, g2, b2, t1, t2});
   }
   return sez;
 }
 
+/* ============================================================
+   RAZPORED (zavihek 1)
+   ============================================================ */
+
+// HTML za en par; zmagovalec je zeleno-krepek, iskani igralec oznacen (mark)
 function parHtml(g, b, zmagal) {
   const oznaci = o => o === izbran ? "<mark>" + ime(o) + "</mark>" : ime(o);
   return '<span class="pair' + (zmagal ? " zmagovalec" : "") + '">'
        + oznaci(g) + " &amp; " + oznaci(b) + "</span>";
 }
 
-// vrstica tekme; "now" = prva tekma brez rezultata na svojem igriscu
+// HTML za eno vrstico tekme.
+// now = highlight (prva tekma brez rezultata na svojem igriscu)
+// sCipom = pokazi cip z imenom igrisca (v pogledu filtriranega igralca)
 function vrsticaHtml(t, now, sCipom) {
   const odigrana = t.t1 !== null;
   const c = t.igrisce === "a" ? 0 : 1;
@@ -190,7 +265,8 @@ function vrsticaHtml(t, now, sCipom) {
 
 function prikaziRazpored() {
   const vse = tekme();
-  // prva neodigrana tekma vsakega igrisca
+
+  // za vsako igrisce poisci prvi krog brez rezultata -> ta tekma dobi highlight
   const zdaj = {};
   for (const igr of ["a", "b"]) {
     const t = vse.find(t => t.igrisce === igr && t.t1 === null);
@@ -200,13 +276,13 @@ function prikaziRazpored() {
 
   let html;
   if (izbran) {
-    // pogled igralca: vse njegove tekme z obeh igrisc, urejene po casu
+    // POGLED IGRALCA: vse njegove tekme z OBEH igrisc, urejene po krogih
     const moje = vse.filter(t => [t.g1, t.b1, t.g2, t.b2].includes(izbran))
                     .sort((x, y) => x.krog - y.krog);
     html = '<div class="court"><div class="courthead">Tekme: ' + ime(izbran) + "</div>"
          + moje.map(t => vrsticaHtml(t, jeZdaj(t), true)).join("") + "</div>";
   } else {
-    // pogled enega igrisca
+    // POGLED IGRISCA: vseh 33 tekem izbranega igrisca
     const c = igrisce === "a" ? 0 : 1;
     const ts = vse.filter(t => t.igrisce === igrisce);
     html = '<div class="court" data-c="' + c + '"><div class="courthead">IGRIŠČE '
@@ -216,11 +292,21 @@ function prikaziRazpored() {
   document.getElementById("vsebina").innerHTML = html;
 }
 
+/* ============================================================
+   LESTVICA (zavihek 2)
+   Tockovanje: tocke tekme se pristejejo OBEMA claroma para
+   (npr. rezultat 28:24 -> punca in fant zmagovalnega para dobita
+   vsak po 28 tock, porazenca vsak po 24). Lestvici sta loceni
+   (punce igrajo 12, fantje 11 tekem); razvrscanje: skupne tocke,
+   nato razlika tock, nato zmage. Prikaze samo top 5.
+   ============================================================ */
 function prikaziLestvico() {
+  // sestej statistiko za vsakega igralca
   const st = {};  // oznaka -> {tekme, zmage, tocke, razlika}
   for (const o of [...PUNCE, ...FANTJE]) st[o] = {tekme: 0, zmage: 0, tocke: 0, razlika: 0};
   for (const t of tekme()) {
-    if (t.t1 === null) continue;
+    if (t.t1 === null) continue;   // neodigrane tekme ne stejejo
+    // vsak od 4 igralcev tekme dobi tocke svojega para (moje) proti nasprotnim (tuje)
     for (const [o, moje, tuje] of [[t.g1, t.t1, t.t2], [t.b1, t.t1, t.t2],
                                    [t.g2, t.t2, t.t1], [t.b2, t.t2, t.t1]]) {
       st[o].tekme++;
@@ -229,11 +315,12 @@ function prikaziLestvico() {
       if (moje > tuje) st[o].zmage++;
     }
   }
+  // zgradi eno tabelo (Punce ali Fantje), najboljsih 5
   const tabela = (naslov, oznake) => {
     const vrstice = oznake
       .map(o => ({o, ...st[o]}))
       .sort((a, b) => b.tocke - a.tocke || b.razlika - a.razlika || b.zmage - a.zmage)
-      .slice(0, 5);
+      .slice(0, 5);   // samo top 5
     let h = '<div class="card"><h2>' + naslov + '</h2><div class="tablewrap"><table class="board">'
       + '<thead><tr><th class="nm">Ime</th><th>Tekme</th><th>Zmage</th><th>Točke</th><th>+/−</th></tr></thead><tbody>';
     for (const v of vrstice) {
@@ -247,19 +334,33 @@ function prikaziLestvico() {
     '<div class="boards">' + tabela("Punce", PUNCE) + tabela("Fantje", FANTJE) + "</div>";
 }
 
+/* ============================================================
+   IZRIS — poklice se ob vsakem kliku/preklopu
+   ============================================================ */
 function prikazi() {
+  // statistika v glavi: koliko tekem ima vpisan rezultat + predviden konec
+  // (konec = zacetek 34. kroga, tj. po 33 krogih po 40 min)
   const odigranih = tekme().filter(t => t.t1 !== null).length;
   document.getElementById("topstats").innerHTML =
     "odigranih <b>" + odigranih + "/66</b> · konec ob <b>" + casKroga(34) + "</b>";
+
+  // oznaci aktivni zavihek, aktivno igrisce in aktivni filter
   document.getElementById("zav-razpored").classList.toggle("active", pogled === "razpored");
   document.getElementById("zav-lestvica").classList.toggle("active", pogled === "lestvica");
   document.getElementById("seg-a").classList.toggle("active", igrisce === "a");
   document.getElementById("seg-b").classList.toggle("active", igrisce === "b");
+  document.getElementById("filter").classList.toggle("aktiven", !!izbran);
+
   // izbirnik igrisca je viden le na razporedu brez filtra igralca
   document.getElementById("segbar").hidden = pogled !== "razpored" || !!izbran;
+
   if (pogled === "razpored") prikaziRazpored(); else prikaziLestvico();
 }
 
+/* ============================================================
+   ZAGON: napolni iskalnik in povezi klike
+   ============================================================ */
+// iskalnik: skupini "Punce" in "Fantje" z imeni iz data.js
 const filter = document.getElementById("filter");
 for (const [skupina, oznake] of [["Punce", PUNCE], ["Fantje", FANTJE]]) {
   const og = document.createElement("optgroup");
@@ -272,12 +373,13 @@ for (const [skupina, oznake] of [["Punce", PUNCE], ["Fantje", FANTJE]]) {
   }
   filter.appendChild(og);
 }
+// izbira igralca preklopi na razpored in pokaze njegove tekme
 filter.onchange = () => { izbran = filter.value; pogled = "razpored"; prikazi(); };
 document.getElementById("zav-razpored").onclick = () => { pogled = "razpored"; prikazi(); };
 document.getElementById("zav-lestvica").onclick = () => { pogled = "lestvica"; prikazi(); };
 document.getElementById("seg-a").onclick = () => { igrisce = "a"; prikazi(); };
 document.getElementById("seg-b").onclick = () => { igrisce = "b"; prikazi(); };
-prikazi();
+prikazi();   // prvi izris ob nalaganju strani
 </script>
 </body>
 </html>

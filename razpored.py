@@ -29,13 +29,14 @@ import sys
 PUNCE = [chr(ord("A") + i) for i in range(11)]   # A..K
 FANTJE = [str(i + 1) for i in range(12)]          # 1..12
 
-# prava imena (iz prejsnjega razporeda); manjkajoce punce so se placeholderji
-IMENA_PUNCE = ["NEŽA BERCE", "NINA TOMAŽIN", "ERIKA MOHORIČ", "MARUŠA DOLINAR",
-               "LIZA POLJANČŠEK", "LIA BERCE", "LOTI GRUŠKO VANJAK", "MAŠA VEGELJ",
-               "PUNCA 9", "PUNCA 10", "PUNCA 11"]
-IMENA_FANTJE = ["JAKA KOPAČ", "ROK MROULE", "MATIC ENIKO", "JAN GOVEKAR",
-                "JUŠ BURJEK", "DOMEN DOLENC", "KRIŠTOF GANTAR", "DAVID ŠENK",
-                "JAN DOLENC", "URBAN JEREB", "LUYGGY", "JAKA ENIKO"]
+# prava imena po oznakah A-K / 1-12 (vrstni red je uskladil organizator
+# na GitHubu 16. 7. 2026 -- ob spremembi uskladi z IMENA v data.js!)
+IMENA_PUNCE = ["NEŽA BERCE", "NINA TOMAŽIN", "LIA BERCE", "MARUŠA DOLINAR",
+               "TIA MOČNIK", "ERIKA MOHORIČ", "LOTI GRUŠKOVNJAK", "MAŠA VEGELJ",
+               "LIZA POLJANŠEK", "LENA KRISTAN", "EMA KAVČIČ"]
+IMENA_FANTJE = ["KRIŠTOF GANTAR", "ROK MROULE", "MATIC ENIKO", "JAN GOVEKAR",
+                "JUŠ BURJEK", "DOMEN DOLENC", "JAKA KOPAČ", "DAVID ŠENK",
+                "JAN DOLENC", "URBAN JEREB", "LUYGGY", "BRIC KROLNIK"]
 
 N_KROGOV = 33
 

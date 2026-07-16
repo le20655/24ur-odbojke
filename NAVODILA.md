@@ -26,8 +26,9 @@ se razvrščata po skupnih točkah, nato po razliki.
 
 ## Imena igralcev
 
-V razdelku `IMENA` v `data.js` zamenjaj placeholderje (`"Punca A"`, `"Fant 1"` …)
-s pravimi imeni — oznake (`"A"`, `"1"` …) pusti pri miru.
+Imena so v razdelku `IMENA` v `data.js`. Ime lahko kadarkoli popraviš,
+**oznake** (`"A"`–`"K"`, `"1"`–`"12"`) pa pusti pri miru — nanje je vezan
+razpored (tudi tabela premorov spodaj velja za oznake, ne za imena).
 
 ## Zamik urnika
 
@@ -56,34 +57,34 @@ Prva/zadnja tekma = krog, v katerem igralec igra prvič oz. zadnjič
 |---|---|---|---|---|
 | A | NEŽA BERCE | 2 | 28 | 3 |
 | B | NINA TOMAŽIN | 6 | 33 | 3 |
-| C | ERIKA MOHORIČ | 1 | 28 | 3 |
+| C | LIA BERCE | 1 | 28 | 3 |
 | D | MARUŠA DOLINAR | 2 | 33 | 3 |
-| E | LIZA POLJANČŠEK | 3 | 32 | 3 |
-| F | LIA BERCE | 1 | 32 | 4 |
-| G | LOTI GRUŠKO VANJAK | 2 | 33 | 3 |
+| E | TIA MOČNIK | 3 | 32 | 3 |
+| F | ERIKA MOHORIČ | 1 | 32 | 4 |
+| G | LOTI GRUŠKOVNJAK | 2 | 33 | 3 |
 | H | MAŠA VEGELJ | 1 | 32 | 4 |
-| I | PUNCA 9 | 1 | 31 | 3 |
-| J | PUNCA 10 | 4 | 32 | **5** |
-| K | PUNCA 11 | 2 | 33 | 4 |
+| I | LIZA POLJANŠEK | 1 | 31 | 3 |
+| J | LENA KRISTAN | 4 | 32 | **5** |
+| K | EMA KAVČIČ | 2 | 33 | 4 |
 
 **Fantje**
 
 | Fant | Ime | Prva tekma (krog) | Zadnja tekma (krog) | Najdaljši premor |
 |---|---|---|---|---|
-| 1 | JAKA KOPAČ | 9 | 32 | 3 |
+| 1 | KRIŠTOF GANTAR | 9 | 32 | 3 |
 | 2 | ROK MROULE | 2 | 31 | 4 |
 | 3 | MATIC ENIKO | 2 | 33 | 3 |
 | 4 | JAN GOVEKAR | 1 | 32 | 4 |
 | 5 | JUŠ BURJEK | 4 | 33 | 4 |
 | 6 | DOMEN DOLENC | 3 | 32 | 4 |
-| 7 | KRIŠTOF GANTAR | 1 | 31 | 3 |
+| 7 | JAKA KOPAČ | 1 | 31 | 3 |
 | 8 | DAVID ŠENK | 5 | 33 | 3 |
 | 9 | JAN DOLENC | 3 | 33 | 3 |
 | 10 | URBAN JEREB | 1 | 22 | 3 |
 | 11 | LUYGGY | 4 | 32 | 3 |
-| 12 | JAKA ENIKO | 1 | 29 | 3 |
+| 12 | BRIC KROLNIK | 1 | 29 | 3 |
 
-Edini premor dolžine 5 v celem turnirju ima punca J (PUNCA 10), vsi ostali
+Edini premor dolžine 5 v celem turnirju ima punca J (LENA KRISTAN), vsi ostali
 čakajo največ 4 kroge. (Tabela velja za trenutni razpored; po morebitni
 regeneraciji z `razpored.py` jo je treba preračunati.)
 
