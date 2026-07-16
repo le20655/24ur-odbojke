@@ -376,18 +376,21 @@ function prikaziLestvico() {
       .map(o => ({o, ...st[o]}))
       .sort((a, b) => b.tocke - a.tocke || b.razlika - a.razlika || b.zmage - a.zmage)
       .slice(0, 5);   // samo top 5
+    // stolpci so v vrstnem redu kriterija razvrscanja: tocke, +/-, zmage
     let h = '<div class="card"><h2>' + naslov + '</h2><div class="tablewrap"><table class="board">'
-      + '<thead><tr><th class="nm">Ime</th><th>Tekme</th><th>Zmage</th><th>Točke</th><th>+/−</th></tr></thead><tbody>';
+      + '<thead><tr><th class="nm">Ime</th><th>Tekme</th><th>Točke</th><th>+/−</th><th>Zmage</th></tr></thead><tbody>';
     for (const v of vrstice) {
-      h += '<tr><td class="nm">' + ime(v.o) + "</td><td>" + v.tekme + "</td><td>" + v.zmage
+      h += '<tr><td class="nm">' + ime(v.o) + "</td><td>" + v.tekme
          + "</td><td><b>" + v.tocke + "</b></td><td>"
-         + (v.razlika > 0 ? "+" : "") + v.razlika + "</td></tr>";
+         + (v.razlika > 0 ? "+" : "") + v.razlika + "</td><td>" + v.zmage + "</td></tr>";
     }
     return h + "</tbody></table></div></div>";
   };
-  // pred vsebino se morebitno rdece opozorilo o napacnih vpisih
+  // pred vsebino se morebitno rdece opozorilo, pod tabelama pa kriterij razvrscanja
   document.getElementById("vsebina").innerHTML = opozoriloHtml()
-    + '<div class="boards">' + tabela("Punce", PUNCE) + tabela("Fantje", FANTJE) + "</div>";
+    + '<div class="boards">' + tabela("Punce", PUNCE) + tabela("Fantje", FANTJE) + "</div>"
+    + '<p class="opomba">Razvrščanje: 1. <b>točke</b>, 2. <b>razlika (+/−)</b>, 3. <b>zmage</b>.'
+    + ' Točke tekme se prištejejo obema članoma para.</p>';
 }
 
 /* ============================================================
