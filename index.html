@@ -5,83 +5,100 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>24 ur odbojke</title>
 <style>
-  :root {
-    --ozadje: #f5f6f8; --kartica: #ffffff; --crta: #e2e5ea;
-    --besedilo: #1c2330; --sivo: #6b7484; --poudarek: #2563eb;
-    --zmaga: #157347; --oznaka: #fff3bf;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --ozadje: #14181f; --kartica: #1d232d; --crta: #2c3442;
-      --besedilo: #e8ebf0; --sivo: #97a0b0; --poudarek: #60a5fa;
-      --zmaga: #4ade80; --oznaka: #4a4420;
-    }
-  }
-  * { box-sizing: border-box; margin: 0; }
-  body {
-    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-    background: var(--ozadje); color: var(--besedilo);
-    max-width: 760px; margin: 0 auto; padding: 12px 12px 60px;
-  }
-  h1 { font-size: 1.5rem; margin: 8px 0 14px; text-align: center; }
-  .vrstica-orodij {
-    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
-    margin-bottom: 16px;
-  }
-  .zavihek {
-    padding: 8px 18px; border: 1px solid var(--crta); border-radius: 20px;
-    background: var(--kartica); color: var(--besedilo); font-size: 0.95rem;
-    cursor: pointer;
-  }
-  .zavihek.aktiven { background: var(--poudarek); border-color: var(--poudarek); color: #fff; }
-  select {
-    padding: 8px 12px; border: 1px solid var(--crta); border-radius: 20px;
-    background: var(--kartica); color: var(--besedilo); font-size: 0.95rem;
-  }
-  .krog {
-    background: var(--kartica); border: 1px solid var(--crta);
-    border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;
-  }
-  .krog h2 { font-size: 0.85rem; color: var(--sivo); text-transform: uppercase;
-             letter-spacing: 0.04em; margin-bottom: 6px; }
-  .tekma {
-    display: flex; align-items: center; gap: 8px;
-    padding: 6px 0; border-top: 1px solid var(--crta); font-size: 0.98rem;
-  }
-  .tekma:first-of-type { border-top: none; }
-  .igrisce { color: var(--sivo); font-size: 0.8rem; min-width: 62px; }
-  .par { flex: 1; }
-  .par.zmagovalec { font-weight: 700; color: var(--zmaga); }
-  .proti { color: var(--sivo); font-size: 0.85rem; }
-  .rezultat { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 54px; text-align: right; }
-  .rezultat.prazen { color: var(--sivo); font-weight: 400; }
-  mark { background: var(--oznaka); color: inherit; border-radius: 3px; padding: 0 2px; }
-  table { width: 100%; border-collapse: collapse; background: var(--kartica);
-          border: 1px solid var(--crta); border-radius: 10px; overflow: hidden; }
-  .tabela-ovoj { overflow-x: auto; margin-bottom: 20px; }
-  th, td { padding: 8px 10px; text-align: right; font-variant-numeric: tabular-nums; }
-  th:first-child, td:first-child { text-align: left; }
-  th { background: none; color: var(--sivo); font-size: 0.8rem; text-transform: uppercase;
-       letter-spacing: 0.04em; border-bottom: 1px solid var(--crta); }
-  tr + tr td { border-top: 1px solid var(--crta); }
-  h3 { margin: 18px 0 8px; font-size: 1.1rem; }
-  .opomba { color: var(--sivo); font-size: 0.85rem; text-align: center; margin-top: 24px; }
-  .opomba a { color: var(--poudarek); }
+:root{
+  --bg:#f5f4ee; --surface:#ffffff; --surface2:#eceade; --ink:#1e2026; --muted:#5c5f69;
+  --line:#dedbce; --accent:#a86f0a; --accent-bg:#f5e3bc; --accent-strong:#8a5c08;
+  --courtA:#a86f0a; --courtA-bg:#f8ecd2; --courtB:#35609f; --courtB-bg:#dfe8f5;
+  --ok:#2f7d4f; --gold:#b8860b; --silver:#7a7f8a; --bronze:#9a6039;
+  --shadow:0 1px 3px rgba(35,37,44,.08);
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#14161d; --surface:#1d2029; --surface2:#252935; --ink:#e9eaee; --muted:#9a9daa;
+  --line:#2e3341; --accent:#e8a020; --accent-bg:#3a2f14; --accent-strong:#f2b747;
+  --courtA:#e8a020; --courtA-bg:#33290f; --courtB:#7fa8e0; --courtB-bg:#1c2637;
+  --ok:#58b380; --gold:#e8b53a; --silver:#a8aeba; --bronze:#c98a5e;
+  --shadow:0 1px 4px rgba(0,0,0,.4);
+}}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,"Segoe UI",Roboto,sans-serif}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;max-width:52vw}
+button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+header.top{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:2px solid var(--accent);box-shadow:var(--shadow)}
+.topline{display:flex;align-items:center;gap:12px;padding:9px 16px;flex-wrap:nowrap}
+.brand{font-size:18px;font-weight:800;letter-spacing:.02em;white-space:nowrap}
+.brand b{color:var(--accent)}
+.spacer{flex:1}
+nav.tabs{display:flex;gap:2px;padding:0 12px;border-top:1px solid var(--line)}
+nav.tabs button{padding:8px 14px;font-weight:600;color:var(--muted);border-bottom:2.5px solid transparent;margin-bottom:-1px}
+nav.tabs button.active{color:var(--ink);border-bottom-color:var(--accent)}
+
+main{max-width:860px;margin:0 auto;padding:16px}
+@media (max-width:640px){main{padding:10px 8px}.topline{padding:7px 10px;gap:10px}}
+
+/* razpored */
+.krog{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);margin-bottom:12px}
+.kroghead{padding:8px 14px;background:var(--surface2);border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:10px}
+.kroghead .naslov{font-weight:800;letter-spacing:.04em}
+.kroghead .cas{font-weight:700;color:var(--accent-strong);font-variant-numeric:tabular-nums}
+.tekma{display:flex;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.tekma:last-child{border-bottom:none}
+.chip{flex:none;display:inline-block;font-size:10.5px;font-weight:700;border:1px solid var(--line);border-radius:99px;padding:0 7px;color:var(--muted);white-space:nowrap}
+.chip.crt0{color:var(--courtA);border-color:var(--courtA);background:var(--courtA-bg)}
+.chip.crt1{color:var(--courtB);border-color:var(--courtB);background:var(--courtB-bg)}
+.body{flex:1;min-width:0;font-size:15px;line-height:1.45}
+.pair{font-weight:600}
+.pair.zmagovalec{color:var(--ok);font-weight:800}
+.vs{color:var(--muted);font-weight:400;padding:0 4px}
+.score{font-size:16px;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+.score.prazen{color:var(--muted);font-weight:400}
+mark{background:var(--accent-bg);color:var(--accent-strong);border-radius:3px;padding:0 2px}
+@media (max-width:640px){
+  .tekma{flex-wrap:wrap;row-gap:5px;padding:8px 10px}
+  .body{min-width:calc(100% - 80px)}
+  .vs{display:block;padding:0;font-size:12.5px}
+}
+
+/* lestvica */
+.boards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:860px){.boards{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0;overflow:hidden}
+.card h2{font-size:17px;margin:0;padding:12px 14px;border-bottom:1px solid var(--line)}
+.tablewrap{overflow-x:auto;padding:0 8px 8px}
+table.board{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+table.board th{text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);padding:6px 7px;border-bottom:2px solid var(--line)}
+table.board th.nm,table.board td.nm{text-align:left}
+table.board td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:right}
+table.board tr:last-child td{border-bottom:none}
+table.board tbody tr:nth-child(1) td.nm{color:var(--gold);font-weight:800}
+table.board tbody tr:nth-child(2) td.nm{color:var(--silver);font-weight:800}
+table.board tbody tr:nth-child(3) td.nm{color:var(--bronze);font-weight:800}
+
+.opomba{color:var(--muted);font-size:13.5px;text-align:center;margin:24px 0 8px}
+.opomba a{color:var(--accent-strong)}
 </style>
 </head>
 <body>
-<h1>🏐 24 ur odbojke</h1>
 
-<div class="vrstica-orodij">
-  <button class="zavihek aktiven" id="zav-razpored">Razpored</button>
-  <button class="zavihek" id="zav-lestvica">Lestvica</button>
-  <select id="filter"><option value="">Vsi igralci</option></select>
-</div>
+<header class="top">
+  <div class="topline">
+    <div class="brand">24 UR <b>ODBOJKE</b></div>
+    <div class="spacer"></div>
+    <select id="filter"><option value="">Vsi igralci</option></select>
+  </div>
+  <nav class="tabs">
+    <button id="zav-razpored" class="active">Razpored</button>
+    <button id="zav-lestvica">Lestvica</button>
+  </nav>
+</header>
 
-<div id="vsebina"></div>
-
-<p class="opomba">Rezultati se vpisujejo v <code>data.js</code> na GitHubu —
-navodila v <a href="https://github.com/le20655/24ur-odbojke/blob/main/NAVODILA.md">NAVODILA.md</a>.</p>
+<main>
+  <div id="vsebina"></div>
+  <p class="opomba">Rezultati se vpisujejo v <code>data.js</code> na GitHubu —
+  navodila v <a href="https://github.com/le20655/24ur-odbojke/blob/main/NAVODILA.md">NAVODILA.md</a>.</p>
+</main>
 
 <script src="data.js"></script>
 <script>
@@ -117,7 +134,7 @@ function tekme() {
 
 function parHtml(g, b, zmagal) {
   const oznaci = o => o === izbran ? "<mark>" + ime(o) + "</mark>" : ime(o);
-  return '<span class="par' + (zmagal ? " zmagovalec" : "") + '">'
+  return '<span class="pair' + (zmagal ? " zmagovalec" : "") + '">'
        + oznaci(g) + " &amp; " + oznaci(b) + "</span>";
 }
 
@@ -130,15 +147,20 @@ function prikaziRazpored() {
   }
   let html = "";
   for (const [krog, ts] of poKrogih) {
-    html += '<div class="krog"><h2>Krog ' + krog + " · " + casKroga(krog) + "</h2>";
+    html += '<div class="krog"><div class="kroghead">'
+      + '<span class="naslov">Krog ' + krog + "</span>"
+      + '<span class="cas">· ' + casKroga(krog) + "</span></div>";
     for (const t of ts) {
       const odigrana = t.t1 !== null;
+      const c = t.igrisce === "a" ? 0 : 1;
       html += '<div class="tekma">'
-        + '<span class="igrisce">Igrišče ' + (t.igrisce === "a" ? 1 : 2) + "</span>"
+        + '<span class="chip crt' + c + '">Igrišče ' + (c + 1) + "</span>"
+        + '<span class="body">'
         + parHtml(t.g1, t.b1, odigrana && t.t1 > t.t2)
-        + '<span class="proti">proti</span>'
+        + '<span class="vs">proti</span>'
         + parHtml(t.g2, t.b2, odigrana && t.t2 > t.t1)
-        + '<span class="rezultat' + (odigrana ? "" : " prazen") + '">'
+        + "</span>"
+        + '<span class="score' + (odigrana ? "" : " prazen") + '">'
         + (odigrana ? t.t1 + ":" + t.t2 : "–") + "</span></div>";
     }
     html += "</div>";
@@ -163,23 +185,24 @@ function prikaziLestvico() {
   const tabela = (naslov, oznake) => {
     const vrstice = oznake
       .map(o => ({o, ...st[o]}))
-      .sort((a, b) => b.tocke - a.tocke || b.razlika - a.razlika || b.zmage - a.zmage);
-    let h = "<h3>" + naslov + '</h3><div class="tabela-ovoj"><table>'
-      + "<tr><th>Ime</th><th>Tekme</th><th>Zmage</th><th>Točke</th><th>+/−</th></tr>";
+      .sort((a, b) => b.tocke - a.tocke || b.razlika - a.razlika || b.zmage - a.zmage)
+      .slice(0, 5);
+    let h = '<div class="card"><h2>' + naslov + '</h2><div class="tablewrap"><table class="board">'
+      + '<thead><tr><th class="nm">Ime</th><th>Tekme</th><th>Zmage</th><th>Točke</th><th>+/−</th></tr></thead><tbody>';
     for (const v of vrstice) {
-      h += "<tr><td>" + ime(v.o) + "</td><td>" + v.tekme + "</td><td>" + v.zmage
+      h += '<tr><td class="nm">' + ime(v.o) + "</td><td>" + v.tekme + "</td><td>" + v.zmage
          + "</td><td><b>" + v.tocke + "</b></td><td>"
          + (v.razlika > 0 ? "+" : "") + v.razlika + "</td></tr>";
     }
-    return h + "</table></div>";
+    return h + "</tbody></table></div></div>";
   };
   document.getElementById("vsebina").innerHTML =
-    tabela("Punce", PUNCE) + tabela("Fantje", FANTJE);
+    '<div class="boards">' + tabela("Punce", PUNCE) + tabela("Fantje", FANTJE) + "</div>";
 }
 
 function prikazi() {
-  document.getElementById("zav-razpored").classList.toggle("aktiven", pogled === "razpored");
-  document.getElementById("zav-lestvica").classList.toggle("aktiven", pogled === "lestvica");
+  document.getElementById("zav-razpored").classList.toggle("active", pogled === "razpored");
+  document.getElementById("zav-lestvica").classList.toggle("active", pogled === "lestvica");
   if (pogled === "razpored") prikaziRazpored(); else prikaziLestvico();
 }
 
