@@ -7,13 +7,13 @@ const IMENA = {
   "B": "NINA TOMAŽIN",
   "C": "ERIKA MOHORIČ",
   "D": "MARUŠA DOLINAR",
-  "E": "LIZA POLJANČŠEK",
+  "E": "LIZA POLJANŠEK",
   "F": "LIA BERCE",
-  "G": "LOTI GRUŠKO VANJAK",
+  "G": "LOTI GRUŠKOVNJAK",
   "H": "MAŠA VEGELJ",
-  "I": "PUNCA 9",
-  "J": "PUNCA 10",
-  "K": "PUNCA 11",
+  "I": "TIA MOČNIK",
+  "J": "LENA KRISTAN",
+  "K": "EMA KAVČIČ",
   "1": "JAKA KOPAČ",
   "2": "ROK MROULE",
   "3": "MATIC ENIKO",
@@ -25,7 +25,7 @@ const IMENA = {
   "9": "JAN DOLENC",
   "10": "URBAN JEREB",
   "11": "LUYGGY",
-  "12": "JAKA ENIKO",
+  "12": "BRIC KROLNIK",
 };
 
 // ===== URNIK: zacetek prvega kroga in trajanje kroga v minutah =====
