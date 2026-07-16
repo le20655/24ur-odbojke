@@ -1529,7 +1529,7 @@ function sheetsExport(){
         push(ura, br.dur, 'PREMOR — ' + (br.label || ''));
       } else {
         const m = S.matches[it.id];
-        push(ura, slotDur, m.makeup ? 'dodatna' : 'krog ' + (m.round+1),
+        push(ura, slotDur,
           c.girls[m.g1], c.boys[m.b1], c.girls[m.g2], c.boys[m.b2],
           m.res ? m.res.a : '', m.res ? m.res.b : '');
       }
