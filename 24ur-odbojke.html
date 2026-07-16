@@ -1199,7 +1199,10 @@ function renderSched(){
         const night = /noč/i.test(br.label);
         html += `<div class="qrow brk ${night?'night':''}">
           <div class="time mono">${fmtT(bt.start)}</div>
-          <div class="body">⏸ ${esc(br.label || 'Premor')} — ${br.dur} min</div>
+          <div class="body">
+            <div class="pair">⏸ ${esc(br.label || 'Premor')}</div>
+            <div class="meta">${br.dur} min</div>
+          </div>
           ${readonly ? '' : `<div class="ctl">
             <button title="premakni gor" data-act="mv" data-c="${c}" data-i="${i}" data-d="-1">↑</button>
             <button title="premakni dol" data-act="mv" data-c="${c}" data-i="${i}" data-d="1">↓</button>
