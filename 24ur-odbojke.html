@@ -1220,7 +1220,7 @@ function renderSched(){
         <div class="time mono">${fmtT(tm.start)}</div>
         <div class="body">
           <div class="pair">${pairStr(m.g1,m.b1)}<span class="vs">proti</span>${pairStr(m.g2,m.b2)}</div>
-          <div class="meta"><span class="chip">${roundChip(m)}</span>${isNow?' &nbsp;· zdaj igrajo':''}${isNext?' &nbsp;· naslednji':''}</div>
+          <div class="meta">${isNow?' &nbsp;· zdaj igrajo':''}${isNext?' &nbsp;· naslednji':''}</div>
         </div>
         <div class="scorebox">${score}</div>
         ${readonly ? '' : `<div class="ctl">
