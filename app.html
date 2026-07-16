@@ -312,7 +312,6 @@ function mutate(fn){
 }
 function newId(){ return S.nextId = (S.nextId || 5000) + 1; }
 function pairStr(g,b){ return esc(S.cfg.girls[g]) + ' & ' + esc(S.cfg.boys[b]); }
-function roundChip(m){ return m.makeup ? 'dod.' : 'krog ' + (m.round+1); }
 
 /* ---------- zagon ---------- */
 (function boot(){
@@ -597,7 +596,7 @@ function renderPlayerSched(){
       <div class="time mono">${fmtT(x.t)}</div>
       <div class="body">
         <div class="pair">${pairStr(x.m.g1, x.m.b1)}<span class="vs">proti</span>${pairStr(x.m.g2, x.m.b2)}</div>
-        <div class="meta"><span class="chip crt${x.c}">Igrišče ${x.c + 1}</span> <span class="chip">${roundChip(x.m)}</span>${x.m.off ? ' &nbsp;· odpade' : ''}${isNow ? ' &nbsp;· zdaj igrajo' : ''}${isNext ? ' &nbsp;· naslednja' : ''}</div>
+        <div class="meta"><span class="chip crt${x.c}">Igrišče ${x.c + 1}</span>${x.m.off ? ' &nbsp;· odpade' : ''}${isNow ? ' &nbsp;· zdaj igrajo' : ''}${isNext ? ' &nbsp;· naslednja' : ''}</div>
       </div>
       <div class="scorebox">${x.m.off ? '<span class="chip offc">ODPADE</span>' : x.m.res ? `<span class="score mono">${x.m.res.a} : ${x.m.res.b}</span>` : '<span class="hint">—</span>'}</div>
     </div>`;
@@ -669,7 +668,7 @@ function renderSched(){
         <div class="time mono">${fmtT(tm.start)}</div>
         <div class="body">
           <div class="pair">${pairStr(m.g1,m.b1)}<span class="vs">proti</span>${pairStr(m.g2,m.b2)}</div>
-          <div class="meta"><span class="chip">${roundChip(m)}</span>${isNow?' &nbsp;· zdaj igrajo':''}${isNext?' &nbsp;· naslednji':''}</div>
+          <div class="meta">${isNow?'zdaj igrajo':isNext?'naslednji':''}</div>
         </div>
         <div class="scorebox">${score}</div>
         ${readonly ? '' : `<div class="ctl">
