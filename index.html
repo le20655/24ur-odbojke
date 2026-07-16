@@ -85,7 +85,9 @@ select#filter.aktiven{background-color:var(--accent-bg);border-color:var(--accen
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
 .seg button{background:var(--surface);padding:8px 20px;font-size:15px;font-weight:600}
 .seg button+button{border-left:1px solid var(--line)}
+/* aktivni gumb dobi barvo svojega igrisca: 1 = zlata, 2 = modra */
 .seg button.active{background:var(--accent-bg);color:var(--accent-strong);font-weight:700}
+.seg #seg-b.active{background:var(--courtB-bg);color:var(--courtB)}
 
 /* osrednji del strani */
 main{max-width:860px;margin:0 auto;padding:16px}
