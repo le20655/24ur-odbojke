@@ -41,8 +41,8 @@ const TRAJANJE_KROGA = 40;
 const REZULTATI = {
   "1a": "54:27",           // 17:30 ig.1 | LIA BERCE & JAN GOVEKAR — ERIKA MOHORIČ & JAKA KOPAČ
   "1b": "62:41",           // 17:30 ig.2 | LIZA POLJANŠEK & BRIC KROLNIK — MAŠA VEGELJ & URBAN JEREB
-  "2a": "",           // 18:10 ig.1 | MARUŠA DOLINAR & URBAN JEREB — LOTI GRUŠKOVNJAK & ROK MROULE
-  "2b": "",           // 18:10 ig.2 | EMA KAVČIČ & MATIC ENIKO — NEŽA BERCE & JAN GOVEKAR
+  "2a": "49:46",           // 18:10 ig.1 | MARUŠA DOLINAR & URBAN JEREB — LOTI GRUŠKOVNJAK & ROK MROULE
+  "2b": "28:47",           // 18:10 ig.2 | EMA KAVČIČ & MATIC ENIKO — NEŽA BERCE & JAN GOVEKAR
   "3a": "",           // 18:50 ig.1 | TIA MOČNIK & JAN DOLENC — LIA BERCE & JAKA KOPAČ
   "3b": "",           // 18:50 ig.2 | NEŽA BERCE & BRIC KROLNIK — EMA KAVČIČ & DOMEN DOLENC
   "4a": "",           // 19:30 ig.1 | LIA BERCE & URBAN JEREB — MARUŠA DOLINAR & LUYGGY
