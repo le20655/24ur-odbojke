@@ -9,7 +9,7 @@ const IMENA = {
   "D": "MARUŠA DOLINAR", // PLAČANO
   "E": "TIA MOČNIK",
   "F": "ERIKA MOHORIČ", // PLAČANO
-  "G": "LOTI GRUŠKOVNJAK",
+  "G": "LOTI GRUŠKOVNJAK", // PLAČANO
   "H": "MAŠA VEGELJ",
   "I": "LIZA POLJANŠEK",
   "J": "LENA KRISTAN",
@@ -19,7 +19,7 @@ const IMENA = {
   "3": "MATIC ENIKO",
   "4": "JAN GOVEKAR",
   "5": "JUŠ BURJEK",
-  "6": "DOMEN DOLENC",
+  "6": "DOMEN DOLENC", // PLAČANO
   "7": "JAKA KOPAČ",
   "8": "DAVID ŠENK", // PLAČANO
   "9": "JAN DOLENC",
@@ -39,8 +39,8 @@ const TRAJANJE_KROGA = 40;
 // Prazen niz "" pomeni, da tekma se ni odigrana.
 // Komentarji (ura in para) so informativni; veljajo za zacetek ob 17:30.
 const REZULTATI = {
-  "1a": "",           // 17:30 ig.1 | LIA BERCE & JAN GOVEKAR — ERIKA MOHORIČ & JAKA KOPAČ
-  "1b": "",           // 17:30 ig.2 | LIZA POLJANŠEK & BRIC KROLNIK — MAŠA VEGELJ & URBAN JEREB
+  "1a": "54:27",           // 17:30 ig.1 | LIA BERCE & JAN GOVEKAR — ERIKA MOHORIČ & JAKA KOPAČ
+  "1b": "62:41",           // 17:30 ig.2 | LIZA POLJANŠEK & BRIC KROLNIK — MAŠA VEGELJ & URBAN JEREB
   "2a": "",           // 18:10 ig.1 | MARUŠA DOLINAR & URBAN JEREB — LOTI GRUŠKOVNJAK & ROK MROULE
   "2b": "",           // 18:10 ig.2 | EMA KAVČIČ & MATIC ENIKO — NEŽA BERCE & JAN GOVEKAR
   "3a": "",           // 18:50 ig.1 | TIA MOČNIK & JAN DOLENC — LIA BERCE & JAKA KOPAČ
