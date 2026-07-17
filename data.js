@@ -20,9 +20,9 @@ const IMENA = {
   "4": "JAN GOVEKAR",
   "5": "JUŠ BURJEK",
   "6": "DOMEN DOLENC", // PLAČANO
-  "7": "JAKA KOPAČ",
+  "7": "JAKA KOPAČ", 
   "8": "DAVID ŠENK", // PLAČANO
-  "9": "JAN DOLENC",
+  "9": "JAN DOLENC", // PLAČANO
   "10": "URBAN JEREB",
   "11": "LUYGGY",
   "12": "BRIC KROLNIK",
