@@ -352,8 +352,8 @@ function prikaziRazpored() {
    Tockovanje: tocke tekme se pristejejo OBEMA claroma para
    (npr. rezultat 28:24 -> punca in fant zmagovalnega para dobita
    vsak po 28 tock, porazenca vsak po 24). Lestvici sta loceni
-   (punce igrajo 12, fantje 11 tekem); razvrscanje: skupne tocke,
-   nato razlika tock, nato zmage. Prikaze samo top 5.
+   (punce igrajo 12, fantje 11 tekem); razvrscanje: razlika tock,
+   nato skupne tocke, nato zmage. Prikaze samo top 5.
    ============================================================ */
 function prikaziLestvico() {
   // sestej statistiko za vsakega igralca
@@ -374,22 +374,22 @@ function prikaziLestvico() {
   const tabela = (naslov, oznake) => {
     const vrstice = oznake
       .map(o => ({o, ...st[o]}))
-      .sort((a, b) => b.tocke - a.tocke || b.razlika - a.razlika || b.zmage - a.zmage)
+      .sort((a, b) => b.razlika - a.razlika || b.tocke - a.tocke || b.zmage - a.zmage)
       .slice(0, 5);   // samo top 5
-    // stolpci so v vrstnem redu kriterija razvrscanja: tocke, +/-, zmage
+    // stolpci so v vrstnem redu kriterija razvrscanja: +/-, tocke, zmage
     let h = '<div class="card"><h2>' + naslov + '</h2><div class="tablewrap"><table class="board">'
-      + '<thead><tr><th class="nm">Ime</th><th>Tekme</th><th>Točke</th><th>+/−</th><th>Zmage</th></tr></thead><tbody>';
+      + '<thead><tr><th class="nm">Ime</th><th>Tekme</th><th>+/−</th><th>Točke</th><th>Zmage</th></tr></thead><tbody>';
     for (const v of vrstice) {
       h += '<tr><td class="nm">' + ime(v.o) + "</td><td>" + v.tekme
-         + "</td><td><b>" + v.tocke + "</b></td><td>"
-         + (v.razlika > 0 ? "+" : "") + v.razlika + "</td><td>" + v.zmage + "</td></tr>";
+         + "</td><td><b>" + (v.razlika > 0 ? "+" : "") + v.razlika + "</b></td><td>"
+         + v.tocke + "</td><td>" + v.zmage + "</td></tr>";
     }
     return h + "</tbody></table></div></div>";
   };
   // pred vsebino se morebitno rdece opozorilo, pod tabelama pa kriterij razvrscanja
   document.getElementById("vsebina").innerHTML = opozoriloHtml()
     + '<div class="boards">' + tabela("Punce", PUNCE) + tabela("Fantje", FANTJE) + "</div>"
-    + '<p class="opomba">Razvrščanje: 1. <b>točke</b>, 2. <b>razlika (+/−)</b>, 3. <b>zmage</b>.'
+    + '<p class="opomba">Razvrščanje: 1. <b>razlika (+/−)</b>, 2. <b>točke</b>, 3. <b>zmage</b>.'
     + ' Točke tekme se prištejejo obema članoma para.</p>';
 }
 
