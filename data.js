@@ -8,20 +8,20 @@ const IMENA = {
   "C": "LIA BERCE",
   "D": "MARUŠA DOLINAR",
   "E": "TIA MOČNIK",
-  "F": "ERIKA MOHORIČ",
+  "F": "ERIKA MOHORIČ", // PLAČANO
   "G": "LOTI GRUŠKOVNJAK",
   "H": "MAŠA VEGELJ",
   "I": "LIZA POLJANŠEK",
   "J": "LENA KRISTAN",
   "K": "EMA KAVČIČ",
-  "1": "KRIŠTOF GANTAR",
+  "1": "KRIŠTOF GANTAR", // PLAČANO
   "2": "ROK MROULE",
   "3": "MATIC ENIKO",
   "4": "JAN GOVEKAR",
   "5": "JUŠ BURJEK",
   "6": "DOMEN DOLENC",
   "7": "JAKA KOPAČ",
-  "8": "DAVID ŠENK",
+  "8": "DAVID ŠENK", // PLAČANO
   "9": "JAN DOLENC",
   "10": "URBAN JEREB",
   "11": "LUYGGY",
