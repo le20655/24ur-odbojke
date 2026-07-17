@@ -7,10 +7,10 @@ const IMENA = {
   "B": "NINA TOMAŽIN",
   "C": "LIA BERCE",
   "D": "MARUŠA DOLINAR", // PLAČANO
-  "E": "TIA MOČNIK",
+  "E": "TIA MOČNIK", // PLAČANO
   "F": "ERIKA MOHORIČ", // PLAČANO
   "G": "LOTI GRUŠKOVNJAK", // PLAČANO
-  "H": "MAŠA VEGELJ",
+  "H": "MAŠA VEGELJ", // PLAČANO
   "I": "LIZA POLJANŠEK",
   "J": "LENA KRISTAN",
   "K": "EMA KAVČIČ",
