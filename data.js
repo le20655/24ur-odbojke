@@ -6,7 +6,7 @@ const IMENA = {
   "A": "NEŽA BERCE",
   "B": "NINA TOMAŽIN",
   "C": "LIA BERCE",
-  "D": "MARUŠA DOLINAR",
+  "D": "MARUŠA DOLINAR", // PLAČANO
   "E": "TIA MOČNIK",
   "F": "ERIKA MOHORIČ", // PLAČANO
   "G": "LOTI GRUŠKOVNJAK",
