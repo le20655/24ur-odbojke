@@ -123,6 +123,7 @@ main{max-width:860px;margin:0 auto;padding:16px}
 .qrow.next{background:var(--next-bg)}
 .qrow.next::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--next)}
 .qrow.next .time .nd{color:var(--next);font-weight:700}
+.qrow.next.kmalu .time .nd{color:var(--err)}  /* zadnjih 5 min do zacetka: rdece besedilo */
 /* cip z imenom igrisca (viden le v pogledu filtriranega igralca) */
 .chip{flex:none;display:inline-block;font-size:10.5px;font-weight:700;border:1px solid var(--line);border-radius:99px;padding:0 7px;color:var(--muted);white-space:nowrap}
 .chip.crt0{color:var(--courtA);border-color:var(--courtA);background:var(--courtA-bg)}
@@ -257,12 +258,13 @@ function minutDoKroga(krog, zdaj = new Date()) {
   return Math.round((start - zdaj) / 60000);
 }
 
-// "čez X min" / "čez Xh YYmin" za highlight naslednje tekme; null, ce se ni na vrsti
-// (krog ni tocno naslednji) ali ce odstevanja ni mogoce izracunati / je ze zacel.
+// {besedilo, kmalu} za highlight naslednje tekme; null, ce odstevanja ni mogoce
+// izracunati ali je krog ze zacel. kmalu = true pri <=5 min (za rdec poudarek).
 function cezKoliko(krog) {
   const m = minutDoKroga(krog);
   if (m === null || m < 0) return null;
-  return m < 60 ? "čez " + m + " min" : "čez " + Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0") + " min";
+  const besedilo = "čez " + (m < 60 ? m + " min" : Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0") + " min");
+  return { besedilo, kmalu: m <= 5 };
 }
 
 // Preveri REZULTATI in vrne seznam napacnih vpisov (za rdece opozorilo):
@@ -322,9 +324,9 @@ function vrsticaHtml(t, now, sCipom, next) {
   const odigrana = t.t1 !== null;
   const c = t.igrisce === "a" ? 0 : 1;
   const cez = next ? cezKoliko(t.krog) : null;
-  return '<div class="qrow' + (now ? " now" : "") + (next ? " next" : "") + (odigrana ? " done" : "") + '">'
+  return '<div class="qrow' + (now ? " now" : "") + (next ? " next" : "") + (cez && cez.kmalu ? " kmalu" : "") + (odigrana ? " done" : "") + '">'
     + '<span class="time">' + casKroga(t.krog)
-    + '<span class="nd">' + (cez || "krog " + t.krog) + "</span></span>"
+    + '<span class="nd">' + (cez ? cez.besedilo : "krog " + t.krog) + "</span></span>"
     + (sCipom ? '<span class="chip crt' + c + '">Igrišče ' + (c + 1) + "</span>" : "")
     + '<span class="body">'
     + parHtml(t.g1, t.b1, odigrana && t.t1 > t.t2)
