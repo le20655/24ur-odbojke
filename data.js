@@ -24,7 +24,7 @@ const IMENA = {
   "8": "DAVID ŠENK", // PLAČANO
   "9": "JAN DOLENC", // PLAČANO
   "10": "URBAN JEREB", // PLAČANO
-  "11": "LUYGGY",
+  "11": "LUYGGY", // PLAČANO
   "12": "BRIC KROLNIK",
 };
 
@@ -91,8 +91,8 @@ const REZULTATI = {
   "25b": "34:39",          // 09:30 ig.2 | NINA TOMAŽIN & JAN GOVEKAR — LIA BERCE & JUŠ BURJEK
   "26a": "38:29",          // 10:10 ig.1 | ERIKA MOHORIČ & BRIC KROLNIK — TIA MOČNIK & MATIC ENIKO
   "26b": "21:49",          // 10:10 ig.2 | LENA KRISTAN & JAKA KOPAČ — MARUŠA DOLINAR & KRIŠTOF GANTAR
-  "27a": "",          // 10:50 ig.1 | LOTI GRUŠKOVNJAK & LUYGGY — NEŽA BERCE & JUŠ BURJEK
-  "27b": "",          // 10:50 ig.2 | LIZA POLJANŠEK & DOMEN DOLENC — TIA MOČNIK & ROK MROULE
+  "27a": "35:29",          // 10:50 ig.1 | LOTI GRUŠKOVNJAK & LUYGGY — NEŽA BERCE & JUŠ BURJEK
+  "27b": "55:17",          // 10:50 ig.2 | LIZA POLJANŠEK & DOMEN DOLENC — TIA MOČNIK & ROK MROULE
   "28a": "",          // 11:30 ig.1 | LIA BERCE & DAVID ŠENK — NEŽA BERCE & DOMEN DOLENC
   "28b": "",          // 11:30 ig.2 | MAŠA VEGELJ & KRIŠTOF GANTAR — EMA KAVČIČ & JAN GOVEKAR
   "29a": "",          // 12:10 ig.1 | LOTI GRUŠKOVNJAK & BRIC KROLNIK — ERIKA MOHORIČ & JAN DOLENC
