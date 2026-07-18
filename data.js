@@ -13,14 +13,14 @@ const IMENA = {
   "H": "MAŠA VEGELJ", // PLAČANO
   "I": "LIZA POLJANŠEK", // PLAČANO
   "J": "LENA KRISTAN",
-  "K": "EMA KAVČIČ",
+  "K": "EMA KAVČIČ", // PLAČANO
   "1": "KRIŠTOF GANTAR", // PLAČANO
   "2": "ROK MROULE",
   "3": "MATIC ENIKO",
   "4": "JAN GOVEKAR", // PLAČANO
   "5": "JUŠ BURJEK",
   "6": "DOMEN DOLENC", // PLAČANO
-  "7": "JAKA KOPAČ", 
+  "7": "JAKA KOPAČ", // PLAČANO
   "8": "DAVID ŠENK", // PLAČANO
   "9": "JAN DOLENC", // PLAČANO
   "10": "URBAN JEREB", // PLAČANO
