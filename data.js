@@ -101,10 +101,10 @@ const REZULTATI = {
   "30b": "25:48",          // 12:50 ig.2 | MAŠA VEGELJ & JAKA KOPAČ — LIZA POLJANŠEK & DAVID ŠENK
   "31a": "48:38",          // 13:30 ig.1 | LIZA POLJANŠEK & LUYGGY — LOTI GRUŠKOVNJAK & JAN DOLENC
   "31b": "18:29",          // 13:30 ig.2 | EMA KAVČIČ & ROK MROULE — TIA MOČNIK & JAKA KOPAČ
-  "32a": "",          // 14:10 ig.1 | TIA MOČNIK & LUYGGY — ERIKA MOHORIČ & KRIŠTOF GANTAR
-  "32b": "",          // 14:10 ig.2 | LENA KRISTAN & DOMEN DOLENC — MAŠA VEGELJ & JAN GOVEKAR
-  "33a": "",          // 14:50 ig.1 | NINA TOMAŽIN & MATIC ENIKO — LOTI GRUŠKOVNJAK & DAVID ŠENK
-  "33b": "",          // 14:50 ig.2 | MARUŠA DOLINAR & JAN DOLENC — EMA KAVČIČ & JUŠ BURJEK
+  "32a": "32:39",          // 14:10 ig.1 | TIA MOČNIK & LUYGGY — ERIKA MOHORIČ & KRIŠTOF GANTAR
+  "32b": "15:23",          // 14:10 ig.2 | LENA KRISTAN & DOMEN DOLENC — MAŠA VEGELJ & JAN GOVEKAR
+  "33a": "7:11",          // 14:50 ig.1 | NINA TOMAŽIN & MATIC ENIKO — LOTI GRUŠKOVNJAK & DAVID ŠENK
+  "33b": "0:0",          // 14:50 ig.2 | MARUŠA DOLINAR & JAN DOLENC — EMA KAVČIČ & JUŠ BURJEK
 };
 
 // ===== RAZPORED: generiran z razpored.py - NE spreminjaj rocno =====
