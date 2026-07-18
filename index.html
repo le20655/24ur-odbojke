@@ -22,6 +22,7 @@
   --accent-strong:#8a5c08;
   --courtA:#b8770a; --courtA-bg:#fbf0d7;  /* igrisce 1 = zlata */
   --courtB:#2d62ad; --courtB-bg:#e7effa;  /* igrisce 2 = modra (bolj nasicena) */
+  --next:#1d4e8f; --next-bg:#e4ecf9;      /* naslednja tekma = temno modra (manjsi poudarek) */
   --ok:#1f7a48;        /* zelena za zmagovalca */
   --err:#b0433c; --err-bg:#fdeceb;        /* rdeca za opozorila */
   --gold:#b8860b; --silver:#71767f; --bronze:#9a6039;  /* prva tri mesta lestvice */
@@ -32,6 +33,7 @@
   --bg:#14161d; --surface:#1d2029; --surface2:#252935; --ink:#e9eaee; --muted:#9a9daa;
   --line:#2e3341; --accent:#e8a020; --accent-bg:#3a2f14; --accent-strong:#f2b747;
   --courtA:#e8a020; --courtA-bg:#33290f; --courtB:#7fa8e0; --courtB-bg:#1c2637;
+  --next:#5c86c9; --next-bg:#182640;      /* temnejsa/manj nasicena modra kot --courtB, da se locita */
   --ok:#58b380; --err:#e07b74; --err-bg:#3d1f1d;
   --gold:#e8b53a; --silver:#a8aeba; --bronze:#c98a5e;
   --shadow:0 1px 4px rgba(0,0,0,.4);
@@ -117,6 +119,10 @@ main{max-width:860px;margin:0 auto;padding:16px}
 .qrow.now .time{color:var(--accent-strong);font-size:17px}
 .qrow.now .time .nd{color:var(--accent-strong)}
 .qrow.now .pair{font-size:16px;font-weight:700}
+/* highlight: naslednja tekma za "zdaj" (manjsi poudarek, temno modra) */
+.qrow.next{background:var(--next-bg)}
+.qrow.next::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--next)}
+.qrow.next .time .nd{color:var(--next);font-weight:700}
 /* cip z imenom igrisca (viden le v pogledu filtriranega igralca) */
 .chip{flex:none;display:inline-block;font-size:10.5px;font-weight:700;border:1px solid var(--line);border-radius:99px;padding:0 7px;color:var(--muted);white-space:nowrap}
 .chip.crt0{color:var(--courtA);border-color:var(--courtA);background:var(--courtA-bg)}
@@ -242,6 +248,23 @@ function krogPoUri(zdaj = new Date()) {
   return krog <= 33 ? krog : null;                  // po 33. krogu je konec
 }
 
+// Minute do zacetka danega kroga (negativno, ce je krog ze zacel).
+// null, ce DATUM ni na voljo (stara predpomnjena verzija) - takrat se odstevanje ne izpise.
+function minutDoKroga(krog, zdaj = new Date()) {
+  if (typeof DATUM === "undefined") return null;
+  const zacetek = new Date(DATUM + "T" + ZACETEK + ":00");
+  const start = new Date(zacetek.getTime() + (krog - 1) * TRAJANJE_KROGA * 60000);
+  return Math.round((start - zdaj) / 60000);
+}
+
+// "čez X min" / "čez Xh YYmin" za highlight naslednje tekme; null, ce se ni na vrsti
+// (krog ni tocno naslednji) ali ce odstevanja ni mogoce izracunati / je ze zacel.
+function cezKoliko(krog) {
+  const m = minutDoKroga(krog);
+  if (m === null || m < 0) return null;
+  return m < 60 ? "čez " + m + " min" : "čez " + Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0") + " min";
+}
+
 // Preveri REZULTATI in vrne seznam napacnih vpisov (za rdece opozorilo):
 // - vrednost, ki ni prazna in ni oblike "st:st" (npr. "28-24"),
 // - kljuc, ki ne obstaja v razporedu (tipkarska napaka, npr. "34a").
@@ -293,13 +316,15 @@ function parHtml(g, b, zmagal) {
 
 // HTML za eno vrstico tekme.
 // now = highlight (prva tekma brez rezultata na svojem igriscu)
+// next = manjsi highlight za tekmo takoj po "now" (naslednja na vrsti)
 // sCipom = pokazi cip z imenom igrisca (v pogledu filtriranega igralca)
-function vrsticaHtml(t, now, sCipom) {
+function vrsticaHtml(t, now, sCipom, next) {
   const odigrana = t.t1 !== null;
   const c = t.igrisce === "a" ? 0 : 1;
-  return '<div class="qrow' + (now ? " now" : "") + (odigrana ? " done" : "") + '">'
+  const cez = next ? cezKoliko(t.krog) : null;
+  return '<div class="qrow' + (now ? " now" : "") + (next ? " next" : "") + (odigrana ? " done" : "") + '">'
     + '<span class="time">' + casKroga(t.krog)
-    + '<span class="nd">krog ' + t.krog + "</span></span>"
+    + '<span class="nd">' + (cez || "krog " + t.krog) + "</span></span>"
     + (sCipom ? '<span class="chip crt' + c + '">Igrišče ' + (c + 1) + "</span>" : "")
     + '<span class="body">'
     + parHtml(t.g1, t.b1, odigrana && t.t1 > t.t2)
@@ -327,6 +352,7 @@ function prikaziRazpored() {
     }
   }
   const jeZdaj = t => zdaj[t.igrisce] === t.krog;
+  const jeNaslednja = t => zdaj[t.igrisce] + 1 === t.krog;
 
   let html;
   if (izbran) {
@@ -334,14 +360,14 @@ function prikaziRazpored() {
     const moje = vse.filter(t => [t.g1, t.b1, t.g2, t.b2].includes(izbran))
                     .sort((x, y) => x.krog - y.krog);
     html = '<div class="court"><div class="courthead">Tekme: ' + ime(izbran) + "</div>"
-         + moje.map(t => vrsticaHtml(t, jeZdaj(t), true)).join("") + "</div>";
+         + moje.map(t => vrsticaHtml(t, jeZdaj(t), true, jeNaslednja(t))).join("") + "</div>";
   } else {
     // POGLED IGRISCA: vseh 33 tekem izbranega igrisca
     const c = igrisce === "a" ? 0 : 1;
     const ts = vse.filter(t => t.igrisce === igrisce);
     html = '<div class="court" data-c="' + c + '"><div class="courthead">IGRIŠČE '
          + (c + 1) + "</div>"
-         + ts.map(t => vrsticaHtml(t, jeZdaj(t), false)).join("") + "</div>";
+         + ts.map(t => vrsticaHtml(t, jeZdaj(t), false, jeNaslednja(t))).join("") + "</div>";
   }
   // pred vsebino se morebitno rdece opozorilo o napacnih vpisih
   document.getElementById("vsebina").innerHTML = opozoriloHtml() + html;
