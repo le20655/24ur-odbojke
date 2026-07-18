@@ -79,8 +79,8 @@ const REZULTATI = {
   "19b": "45:28",          // 05:30 ig.2 | NEŽA BERCE & ROK MROULE — MAŠA VEGELJ & JAN DOLENC
   "20a": "26:40",          // 06:10 ig.1 | TIA MOČNIK & JAN GOVEKAR — NEŽA BERCE & LUYGGY
   "20b": "49:26",          // 06:10 ig.2 | LIA BERCE & BRIC KROLNIK — NINA TOMAŽIN & JAKA KOPAČ
-  "21a": "",          // 06:50 ig.1 | ERIKA MOHORIČ & JUŠ BURJEK — EMA KAVČIČ & URBAN JEREB
-  "21b": "",          // 06:50 ig.2 | MARUŠA DOLINAR & JAN GOVEKAR — LIZA POLJANŠEK & JAN DOLENC
+  "21a": "56:36",          // 06:50 ig.1 | ERIKA MOHORIČ & JUŠ BURJEK — EMA KAVČIČ & URBAN JEREB
+  "21b": "36:31",          // 06:50 ig.2 | MARUŠA DOLINAR & JAN GOVEKAR — LIZA POLJANŠEK & JAN DOLENC
   "22a": "",          // 07:30 ig.1 | LIZA POLJANŠEK & ROK MROULE — LENA KRISTAN & MATIC ENIKO
   "22b": "",          // 07:30 ig.2 | LOTI GRUŠKOVNJAK & URBAN JEREB — TIA MOČNIK & DAVID ŠENK
   "23a": "",          // 08:10 ig.1 | LOTI GRUŠKOVNJAK & DOMEN DOLENC — LENA KRISTAN & JAN DOLENC
