@@ -11,7 +11,7 @@ const IMENA = {
   "F": "ERIKA MOHORIČ", // PLAČANO
   "G": "LOTI GRUŠKOVNJAK", // PLAČANO
   "H": "MAŠA VEGELJ", // PLAČANO
-  "I": "LIZA POLJANŠEK",
+  "I": "LIZA POLJANŠEK", // PLAČANO
   "J": "LENA KRISTAN",
   "K": "EMA KAVČIČ",
   "1": "KRIŠTOF GANTAR", // PLAČANO
@@ -25,7 +25,7 @@ const IMENA = {
   "9": "JAN DOLENC", // PLAČANO
   "10": "URBAN JEREB", // PLAČANO
   "11": "LUYGGY", // PLAČANO
-  "12": "BRIC KROLNIK",
+  "12": "BRIC KROLNIK", // PLAČANO
 };
 
 // ===== URNIK: datum in zacetek prvega kroga, trajanje kroga v minutah =====
@@ -93,8 +93,8 @@ const REZULTATI = {
   "26b": "21:49",          // 10:10 ig.2 | LENA KRISTAN & JAKA KOPAČ — MARUŠA DOLINAR & KRIŠTOF GANTAR
   "27a": "35:29",          // 10:50 ig.1 | LOTI GRUŠKOVNJAK & LUYGGY — NEŽA BERCE & JUŠ BURJEK
   "27b": "55:17",          // 10:50 ig.2 | LIZA POLJANŠEK & DOMEN DOLENC — TIA MOČNIK & ROK MROULE
-  "28a": "",          // 11:30 ig.1 | LIA BERCE & DAVID ŠENK — NEŽA BERCE & DOMEN DOLENC
-  "28b": "",          // 11:30 ig.2 | MAŠA VEGELJ & KRIŠTOF GANTAR — EMA KAVČIČ & JAN GOVEKAR
+  "28a": "33:31",          // 11:30 ig.1 | LIA BERCE & DAVID ŠENK — NEŽA BERCE & DOMEN DOLENC
+  "28b": "46:30",          // 11:30 ig.2 | MAŠA VEGELJ & KRIŠTOF GANTAR — EMA KAVČIČ & JAN GOVEKAR
   "29a": "",          // 12:10 ig.1 | LOTI GRUŠKOVNJAK & BRIC KROLNIK — ERIKA MOHORIČ & JAN DOLENC
   "29b": "",          // 12:10 ig.2 | LENA KRISTAN & ROK MROULE — NINA TOMAŽIN & JUŠ BURJEK
   "30a": "",          // 12:50 ig.1 | MARUŠA DOLINAR & MATIC ENIKO — NINA TOMAŽIN & KRIŠTOF GANTAR
