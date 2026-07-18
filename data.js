@@ -17,7 +17,7 @@ const IMENA = {
   "1": "KRIŠTOF GANTAR", // PLAČANO
   "2": "ROK MROULE",
   "3": "MATIC ENIKO",
-  "4": "JAN GOVEKAR",
+  "4": "JAN GOVEKAR", // PLAČANO
   "5": "JUŠ BURJEK",
   "6": "DOMEN DOLENC", // PLAČANO
   "7": "JAKA KOPAČ", 
