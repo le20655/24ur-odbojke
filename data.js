@@ -4,7 +4,7 @@
 // ===== IMENA: placeholderje zamenjaj s pravimi imeni =====
 const IMENA = {
   "A": "NEŽA BERCE", // PLAČANO
-  "B": "NINA TOMAŽIN",
+  "B": "NINA TOMAŽIN", // PLAČANO
   "C": "LIA BERCE",
   "D": "MARUŠA DOLINAR", // PLAČANO
   "E": "TIA MOČNIK", // PLAČANO
@@ -12,7 +12,7 @@ const IMENA = {
   "G": "LOTI GRUŠKOVNJAK", // PLAČANO
   "H": "MAŠA VEGELJ", // PLAČANO
   "I": "LIZA POLJANŠEK", // PLAČANO
-  "J": "LENA KRISTAN",
+  "J": "LENA KRISTAN", // PLAČANO
   "K": "EMA KAVČIČ", // PLAČANO
   "1": "KRIŠTOF GANTAR", // PLAČANO
   "2": "ROK MROULE",
