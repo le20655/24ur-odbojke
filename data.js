@@ -3,29 +3,29 @@
 
 // ===== IMENA: placeholderje zamenjaj s pravimi imeni =====
 const IMENA = {
-  "A": "NEŽA BERCE", // PLAČANO
-  "B": "NINA TOMAŽIN", // PLAČANO
+  "A": "NEŽA BERCE",  
+  "B": "NINA TOMAŽIN",  
   "C": "LIA BERCE",
-  "D": "MARUŠA DOLINAR", // PLAČANO
-  "E": "TIA MOČNIK", // PLAČANO
-  "F": "ERIKA MOHORIČ", // PLAČANO
-  "G": "LOTI GRUŠKOVNJAK", // PLAČANO
-  "H": "MAŠA VEGELJ", // PLAČANO
-  "I": "LIZA POLJANŠEK", // PLAČANO
-  "J": "LENA KRISTAN", // PLAČANO
-  "K": "EMA KAVČIČ", // PLAČANO
-  "1": "KRIŠTOF GANTAR", // PLAČANO
+  "D": "MARUŠA DOLINAR",  
+  "E": "TIA MOČNIK",  
+  "F": "ERIKA MOHORIČ",  
+  "G": "LOTI GRUŠKOVNJAK",  
+  "H": "MAŠA VEGELJ",  
+  "I": "LIZA POLJANŠEK",  
+  "J": "LENA KRISTAN",  
+  "K": "EMA KAVČIČ",  
+  "1": "KRIŠTOF GANTAR",  
   "2": "ROK MROULE",
   "3": "MATIC ENIKO",
-  "4": "JAN GOVEKAR", // PLAČANO
+  "4": "JAN GOVEKAR",  
   "5": "JUŠ BURJEK",
-  "6": "DOMEN DOLENC", // PLAČANO
-  "7": "JAKA KOPAČ", // PLAČANO
-  "8": "DAVID ŠENK", // PLAČANO
-  "9": "JAN DOLENC", // PLAČANO
-  "10": "URBAN JEREB", // PLAČANO
-  "11": "LUYGGY", // PLAČANO
-  "12": "BRIC KROLNIK", // PLAČANO
+  "6": "DOMEN DOLENC",  
+  "7": "JAKA KOPAČ",  
+  "8": "DAVID ŠENK",  
+  "9": "JAN DOLENC",  
+  "10": "URBAN JEREB",  
+  "11": "LUYGGY",  
+  "12": "BRIC KROLNIK",  
 };
 
 // ===== URNIK: datum in zacetek prvega kroga, trajanje kroga v minutah =====
